@@ -1,7 +1,7 @@
 package by.epam.jwdsc.entity;
 
 public class Address {
-    private final long id;
+    private long id;
     private final String country;
     private final int postcode;
     private final String state;
@@ -26,6 +26,10 @@ public class Address {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id){
+        this.id=id;
     }
 
     public String getCountry() {
@@ -110,7 +114,7 @@ public class Address {
 
     public static class Builder {
 
-        private final long id;
+        private long id;
         private String country;
         private int postcode;
         private String state;
@@ -120,11 +124,15 @@ public class Address {
         private final int houseNumber;
         private int apartmentNumber;
 
-        public Builder(long id, String city, String street, int houseNumber) {
-            this.id = id;
+        public Builder(String city, String street, int houseNumber) {
             this.city = city;
             this.street = street;
             this.houseNumber = houseNumber;
+        }
+
+        public Builder id(long id) {
+            this.id = id;
+            return this;
         }
 
         public Builder country(String country) {

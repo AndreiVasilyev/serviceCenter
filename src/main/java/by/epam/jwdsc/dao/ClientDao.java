@@ -1,4 +1,6 @@
 package by.epam.jwdsc.dao;
 
-public interface ClientDao extends BaseDao{
+import by.epam.jwdsc.entity.Client;
+
+public interface ClientDao extends BaseDao<Client>{
 }

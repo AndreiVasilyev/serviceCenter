@@ -10,21 +10,22 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
 public interface BaseDao<T extends CommonEntity> {
     Logger log = LogManager.getLogger();
 
     List<T> findAll() throws DaoException;
 
-    T findById(long id);
+    Optional<T> findById(long id) throws DaoException;
 
-    boolean delete(T t);
+    boolean delete(T t) throws DaoException;
 
-    boolean deleteById(long id);
+    boolean deleteById(long id) throws DaoException;
 
-    boolean create(T t);
+    boolean create(T t) throws DaoException;
 
-    T update(T t);
+    T update(T t) throws DaoException;
 
     default void close(Statement statement) {
         try {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractUser extends CommonEntity {
-    private final long id;
+    private long id;
     private final String firstName;
     private final String secondName;
     private final String patronymic;
@@ -25,6 +25,10 @@ public abstract class AbstractUser extends CommonEntity {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFirstName() {

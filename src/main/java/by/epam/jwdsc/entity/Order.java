@@ -3,7 +3,7 @@ package by.epam.jwdsc.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Order {
+public class Order extends CommonEntity {
     private final long id;
     private final String orderNumber;
     private final LocalDateTime creationDate;

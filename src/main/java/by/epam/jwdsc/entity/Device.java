@@ -1,18 +1,26 @@
 package by.epam.jwdsc.entity;
 
-public class Device {
+public class Device extends CommonEntity {
 
-    private final long id;
+    private long id;
     private final String name;
 
 
+    public Device(String name) {
+        this.name = name;
+    }
+
     public Device(long id, String name) {
-        this.id = id;
+        this.id=id;
         this.name = name;
     }
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

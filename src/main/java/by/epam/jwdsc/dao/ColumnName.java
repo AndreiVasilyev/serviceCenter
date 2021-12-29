@@ -1,6 +1,6 @@
 package by.epam.jwdsc.dao;
 
-public class ColumnName {
+public final class ColumnName {
     //for table Orders
     public static final String ORDERS_ID = "order_id";
     public static final String ORDERS_ORDER_NUMBER = "order_number";
@@ -51,7 +51,7 @@ public class ColumnName {
     public static final String COMPANIES_IS_SERVICE_CONTRACT = "is_service_contract";
     //for table Devices
     public static final String DEVICES_ID = "device_id";
-    public static final String DEVICES_NAME = "name";
+    public static final String DEVICES_NAME = "device_name";
     //for table SpareParts
     public static final String SPARE_PARTS_ID = "id";
     public static final String SPARE_PARTS_PART_NUMBER = "part_number";

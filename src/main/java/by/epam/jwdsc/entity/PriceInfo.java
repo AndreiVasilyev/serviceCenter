@@ -2,15 +2,15 @@ package by.epam.jwdsc.entity;
 
 import java.math.BigDecimal;
 
-public class PriceInfo {
+public class PriceInfo extends CommonEntity {
 
     private final long id;
-    private final Device device;
+    private final long device;
     private final RepairLevel repairLevel;
     private final BigDecimal repairCost;
 
 
-    public PriceInfo(long id, Device device, RepairLevel repairLevel, BigDecimal repairCost) {
+    public PriceInfo(long id, long device, RepairLevel repairLevel, BigDecimal repairCost) {
         this.id = id;
         this.device = device;
         this.repairLevel = repairLevel;
@@ -21,7 +21,7 @@ public class PriceInfo {
         return id;
     }
 
-    public Device getDevice() {
+    public long getDevice() {
         return device;
     }
 
@@ -41,7 +41,7 @@ public class PriceInfo {
         PriceInfo priceInfo = (PriceInfo) o;
 
         if (id != priceInfo.id) return false;
-        if (!device.equals(priceInfo.device)) return false;
+        if (device != priceInfo.device) return false;
         if (repairLevel != priceInfo.repairLevel) return false;
         return repairCost.equals(priceInfo.repairCost);
     }
@@ -49,7 +49,7 @@ public class PriceInfo {
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + device.hashCode();
+        result = 31 * result + (int) (device ^ (device >>> 32));
         result = 31 * result + repairLevel.hashCode();
         result = 31 * result + repairCost.hashCode();
         return result;

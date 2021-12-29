@@ -1,9 +1,14 @@
 package by.epam.jwdsc.entity;
 
-public class Company {
-    private final long id;
+public class Company extends CommonEntity {
+    private long id;
     private final String name;
     private final boolean isContract;
+
+    public Company(String name, boolean isContract) {
+        this.name = name;
+        this.isContract = isContract;
+    }
 
     public Company(long id, String name, boolean isContract) {
         this.id = id;
@@ -13,6 +18,10 @@ public class Company {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

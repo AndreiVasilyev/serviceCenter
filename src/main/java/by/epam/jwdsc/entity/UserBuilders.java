@@ -12,7 +12,7 @@ public class UserBuilders {
         return new EmployeeBuilder();
     }
 
-    static class EmployeeBuilder extends AbstractUserBuilder<EmployeeBuilder, Employee> {
+    public static class EmployeeBuilder extends AbstractUserBuilder<EmployeeBuilder, Employee> {
 
         private String login;
         private String password;

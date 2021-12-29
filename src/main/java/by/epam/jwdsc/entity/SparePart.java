@@ -2,8 +2,8 @@ package by.epam.jwdsc.entity;
 
 import java.math.BigDecimal;
 
-public class SparePart {
-    private final long id;
+public class SparePart extends CommonEntity {
+    private long id;
     private final String partNumber;
     private final String name;
     private final String description;
@@ -75,17 +75,22 @@ public class SparePart {
     }
 
     public static class Builder {
-        private final long id;
+        private long id;
         private String partNumber;
         private final String name;
         private String description;
         private final BigDecimal cost;
 
 
-        public Builder(long id, String name, BigDecimal cost) {
+        public Builder(String name, BigDecimal cost) {
             this.id = id;
             this.name = name;
             this.cost = cost;
+        }
+
+        public Builder id(long id) {
+            this.id = id;
+            return this;
         }
 
         public Builder partNumber(String partNumber) {
