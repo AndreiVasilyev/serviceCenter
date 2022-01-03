@@ -46,16 +46,14 @@ public class SparePartDaoImpl implements SparePartDao {
 
     @Override
     public Optional<SparePart> findById(long id) throws DaoException {
-        Optional<SparePart> sparePart;
+        Optional<SparePart> sparePart = Optional.empty();
         Connection connection = DbConnectionPool.INSTANCE.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_SPARE_PART_BY_ID)) {
             statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                sparePart = Optional.ofNullable(extractPart(resultSet));
-
-            } else {
-                sparePart = Optional.empty();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    sparePart = Optional.of(extractPart(resultSet));
+                }
             }
         } catch (SQLException e) {
             log.error("Error executing query findById from SpareParts", e);
@@ -127,7 +125,6 @@ public class SparePartDaoImpl implements SparePartDao {
         String name = resultSet.getString(SPARE_PARTS_NAME);
         String description = resultSet.getString(SPARE_PARTS_DESCRIPTION);
         BigDecimal cost = resultSet.getBigDecimal(SPARE_PARTS_COST);
-
         return new SparePart.Builder(name, cost)
                 .id(id)
                 .partNumber(partNumber)

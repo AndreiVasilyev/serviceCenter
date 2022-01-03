@@ -66,16 +66,14 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public Optional<Employee> findById(long id) throws DaoException {
-        Optional<Employee> employee;
+        Optional<Employee> employee = Optional.empty();
         Connection connection = DbConnectionPool.INSTANCE.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_EMPLOYEE_BY_ID)) {
             statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                employee = Optional.ofNullable(extractEmployee(resultSet));
-
-            } else {
-                employee = Optional.empty();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    employee = Optional.of(extractEmployee(resultSet));
+                }
             }
         } catch (SQLException e) {
             log.error("Error executing query findById from Employees", e);
@@ -121,23 +119,25 @@ public class EmployeeDaoImpl implements EmployeeDao {
             connection.setAutoCommit(false);
             collectCreateAddressQuery(statementNewAddress, employee);
             statementNewAddress.executeUpdate();
-            ResultSet generatedAddressKey = statementNewAddress.getGeneratedKeys();
-            employee.getAddress().setId(generatedAddressKey.getLong(1));
-            collectCreateUserQuery(statementNewUser, employee);
-            statementNewUser.executeUpdate();
-            ResultSet generatedUserKey = statementNewUser.getGeneratedKeys();
-            employee.setId(generatedUserKey.getLong(1));
-            collectCreateEmployeeQuery(statementNewClient, employee);
-            statementNewClient.executeUpdate();
-            if (employee.getPhones() != null && !employee.getPhones().isEmpty()) {
-                for (String phoneNumber : employee.getPhones()) {
-                    statementNewPhones.setLong(1, employee.getId());
-                    statementNewClient.setString(2, phoneNumber);
-                    statementNewPhones.executeUpdate();
+            try (ResultSet generatedAddressKey = statementNewAddress.getGeneratedKeys()) {
+                employee.getAddress().setId(generatedAddressKey.getLong(1));
+                collectCreateUserQuery(statementNewUser, employee);
+                statementNewUser.executeUpdate();
+                try (ResultSet generatedUserKey = statementNewUser.getGeneratedKeys()) {
+                    employee.setId(generatedUserKey.getLong(1));
+                    collectCreateEmployeeQuery(statementNewClient, employee);
+                    statementNewClient.executeUpdate();
+                    if (employee.getPhones() != null && !employee.getPhones().isEmpty()) {
+                        for (String phoneNumber : employee.getPhones()) {
+                            statementNewPhones.setLong(1, employee.getId());
+                            statementNewClient.setString(2, phoneNumber);
+                            statementNewPhones.executeUpdate();
+                        }
+                    }
+                    connection.commit();
+                    connection.setAutoCommit(true);
                 }
             }
-            connection.commit();
-            connection.setAutoCommit(true);
         } catch (SQLException e) {
             try {
                 connection.rollback();

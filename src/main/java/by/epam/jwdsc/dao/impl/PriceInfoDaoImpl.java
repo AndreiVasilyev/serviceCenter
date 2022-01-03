@@ -18,9 +18,9 @@ import static by.epam.jwdsc.dao.ColumnName.*;
 public class PriceInfoDaoImpl implements PriceInfoDao {
 
     private static final String SQL_SELECT_ALL_PRICES = "SELECT p.id, p.device_id, p.repair_level, p.repair_cost, " +
-            "d.name FROM prices AS p JOIN devices AS d USING (device_id)";
+            "d.device_name FROM prices AS p JOIN devices AS d USING (device_id)";
     private static final String SQL_SELECT_PRICE_BY_ID = "SELECT p.id, p.device_id, p.repair_level, p.repair_cost, " +
-            "d.name FROM prices AS p JOIN devices AS d USING (device_id) WHERE p.id=?";
+            "d.device_name FROM prices AS p JOIN devices AS d USING (device_id) WHERE p.id=?";
     private static final String SQL_DELETE_PRICE_BY_ID = "DELETE p FROM prices AS p WHERE p.id=?";
     private static final String SQL_CREATE_PRICE = "INSERT INTO prices(device_id, repair_level, repair_cost) " +
             "VALUES(?,?,?)";
@@ -48,16 +48,14 @@ public class PriceInfoDaoImpl implements PriceInfoDao {
 
     @Override
     public Optional<PriceInfo> findById(long id) throws DaoException {
-        Optional<PriceInfo> price;
+        Optional<PriceInfo> price = Optional.empty();
         Connection connection = DbConnectionPool.INSTANCE.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_PRICE_BY_ID)) {
             statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                price = Optional.ofNullable(extractPrice(resultSet));
-
-            } else {
-                price = Optional.empty();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    price = Optional.of(extractPrice(resultSet));
+                }
             }
         } catch (SQLException e) {
             log.error("Error executing query findById from Prices", e);
@@ -129,13 +127,11 @@ public class PriceInfoDaoImpl implements PriceInfoDao {
         String repairLevelValue = resultSet.getString(PRICES_REPAIR_LEVEL);
         RepairLevel repairLevel = RepairLevel.valueOf(repairLevelValue);
         BigDecimal repairCost = resultSet.getBigDecimal(PRICES_REPAIR_COST);
-        String name = resultSet.getString(DEVICES_NAME);
-        Device device = new Device(deviceId, name);
-        return new PriceInfo(id, device, repairLevel, repairCost);
+        return new PriceInfo(id, deviceId, repairLevel, repairCost);
     }
 
     private void collectCreatePriceQuery(PreparedStatement statement, PriceInfo priceInfo) throws SQLException {
-        statement.setLong(1, priceInfo.getDevice().getId());
+        statement.setLong(1, priceInfo.getDevice());
         statement.setString(2, priceInfo.getRepairLevel().name());
         statement.setBigDecimal(3, priceInfo.getRepairCost());
     }

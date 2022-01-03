@@ -42,16 +42,14 @@ public class DeviceDaoImpl implements DeviceDao {
 
     @Override
     public Optional<Device> findById(long id) throws DaoException {
-        Optional<Device> device;
+        Optional<Device> device = Optional.empty();
         Connection connection = DbConnectionPool.INSTANCE.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_DEVICE_BY_ID)) {
             statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                device = Optional.ofNullable(extractDevice(resultSet));
-
-            } else {
-                device = Optional.empty();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    device = Optional.of(extractDevice(resultSet));
+                }
             }
         } catch (SQLException e) {
             log.error("Error executing query findById from Devices", e);

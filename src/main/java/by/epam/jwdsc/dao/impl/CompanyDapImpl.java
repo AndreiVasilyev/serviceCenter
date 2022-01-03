@@ -44,16 +44,14 @@ public class CompanyDapImpl implements CompanyDao {
 
     @Override
     public Optional<Company> findById(long id) throws DaoException {
-        Optional<Company> company;
+        Optional<Company> company = Optional.empty();
         Connection connection = DbConnectionPool.INSTANCE.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_COMPANY_BY_ID)) {
             statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                company = Optional.ofNullable(extractCompany(resultSet));
-
-            } else {
-                company = Optional.empty();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    company = Optional.of(extractCompany(resultSet));
+                }
             }
         } catch (SQLException e) {
             log.error("Error executing query findById from Companies", e);
