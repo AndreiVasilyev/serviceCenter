@@ -2,6 +2,7 @@ package by.epam.jwdsc.controller;
 
 import by.epam.jwdsc.controller.comand.Command;
 import by.epam.jwdsc.controller.comand.CommandProvider;
+import by.epam.jwdsc.controller.comand.Router;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,33 +17,37 @@ import java.io.IOException;
 @WebServlet(name = "scServlet", urlPatterns = "/control")
 public class ScController extends HttpServlet {
 
-    private static final Logger log= LogManager.getLogger();
-    private static final CommandProvider commandProvider= CommandProvider.getInstance();
+    private static final Logger log = LogManager.getLogger();
+    private static final CommandProvider commandProvider = CommandProvider.getInstance();
     public static final String COMMAND = "command";
+    public static final int ERROR_CODE = 500;
 
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        processRequest(request,response);
+        processRequest(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        processRequest(request,response);
+        processRequest(request, response);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
-        String commandStr = request.getParameter(COMMAND);
-        Command command = commandProvider.getCommand(commandStr);
-      /*  String page = command.execute(request);
-
-        if (page != null) {
-            RequestDispatcher dispatcher = request.getRequestDispatcher(page);
-            dispatcher.forward(request, response);
-        } else {
-            request.getSession().setAttribute("nullPage", MessageManager.EN.getMessage("message.nullpage"));
-            response.sendRedirect(request.getContextPath() + "/index.jsp");
-        }*/
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String commandName = request.getParameter(COMMAND);
+        Command command = commandProvider.getCommand(commandName);
+        Router router = command.execute(request);
+        switch (router.getRouterType()) {
+            case FORWARD -> {
+                RequestDispatcher requestDispatcher = request.getRequestDispatcher(router.getPagePath());
+                requestDispatcher.forward(request, response);
+                break;
+            }
+            case REDIRECT -> {
+                response.sendRedirect(router.getPagePath());
+                break;
+            }
+        }
     }
 
 
