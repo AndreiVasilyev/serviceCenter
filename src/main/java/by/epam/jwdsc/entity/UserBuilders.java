@@ -16,7 +16,6 @@ public class UserBuilders {
 
         private String login;
         private String password;
-        private EmployeeRole role;
 
         public EmployeeBuilder login(String login) {
             this.login = login;
@@ -28,15 +27,10 @@ public class UserBuilders {
             return this;
         }
 
-        public EmployeeBuilder role(EmployeeRole role) {
-            this.role = role;
-            return this;
-        }
-
         @Override
         protected Employee innerBuild() {
             return new Employee(this.id, this.firstName, this.secondName, this.patronymic, this.address,
-                    this.phones, this.email, this.login, this.password, this.role);
+                    this.phones, this.email, this.userRole, this.login, this.password);
         }
     }
 
@@ -52,7 +46,7 @@ public class UserBuilders {
         @Override
         protected Client innerBuild() {
             return new Client(this.id, this.firstName, this.secondName, this.patronymic, this.address,
-                    this.phones, this.email, this.discount);
+                    this.phones, this.email, this.userRole, this.discount);
         }
     }
 
@@ -64,6 +58,7 @@ public class UserBuilders {
         Address address;
         List<String> phones;
         String email;
+        UserRole userRole;
 
         @Override
         public S id(long id) {
@@ -97,6 +92,11 @@ public class UserBuilders {
 
         @Override
         public S email(String email) {
+            return self();
+        }
+
+        @Override
+        public S userRole(UserRole userRole) {
             return self();
         }
 

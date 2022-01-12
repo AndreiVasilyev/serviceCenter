@@ -1,8 +1,8 @@
 package by.epam.jwdsc.controller;
 
-import by.epam.jwdsc.controller.comand.Command;
-import by.epam.jwdsc.controller.comand.CommandProvider;
-import by.epam.jwdsc.controller.comand.Router;
+import by.epam.jwdsc.controller.command.Command;
+import by.epam.jwdsc.controller.command.CommandProvider;
+import by.epam.jwdsc.controller.command.Router;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,14 +14,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
+
+import static by.epam.jwdsc.controller.command.RequestParameter.COMMAND_PARAM;
+
 @WebServlet(name = "scServlet", urlPatterns = "/control")
 public class ScController extends HttpServlet {
 
     private static final Logger log = LogManager.getLogger();
     private static final CommandProvider commandProvider = CommandProvider.getInstance();
-    public static final String COMMAND = "command";
-    public static final int ERROR_CODE = 500;
-
+    private static int counter=0;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -34,7 +35,8 @@ public class ScController extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String commandName = request.getParameter(COMMAND);
+        System.out.println("query#"+(++counter));
+        String commandName = request.getParameter(COMMAND_PARAM);
         Command command = commandProvider.getCommand(commandName);
         Router router = command.execute(request);
         switch (router.getRouterType()) {
@@ -45,6 +47,11 @@ public class ScController extends HttpServlet {
             }
             case REDIRECT -> {
                 response.sendRedirect(router.getPagePath());
+                break;
+            }
+            case RESPONSE_BODY -> {
+                response.setContentType("text/plain");
+                response.getWriter().write(router.getJson());
                 break;
             }
         }

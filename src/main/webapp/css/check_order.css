@@ -1,0 +1,17 @@
+main {
+    margin-top: 12vh;
+}
+
+@media (max-width: 1000px) {
+    main {
+        margin-top: 20vh;
+    }
+}
+
+.input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    z-index: 5;
+}
+
+.alert{
+    font-size: 0.8rem;
+}

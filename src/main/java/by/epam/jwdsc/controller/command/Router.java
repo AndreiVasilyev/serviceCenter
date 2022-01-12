@@ -1,16 +1,22 @@
-package by.epam.jwdsc.controller.comand;
+package by.epam.jwdsc.controller.command;
 
 public final class Router {
     public enum RouterType {
-        FORWARD, REDIRECT
+        FORWARD, REDIRECT, RESPONSE_BODY
     }
 
-    private final String pagePath;
+    private String pagePath;
     private final RouterType routerType;
+    private String json;
 
     public Router(String pagePath, RouterType routerType) {
         this.pagePath = pagePath;
         this.routerType = routerType;
+    }
+
+    public Router(RouterType routerType, String json) {
+        this.routerType = routerType;
+        this.json = json;
     }
 
     public String getPagePath() {
@@ -19,5 +25,9 @@ public final class Router {
 
     public RouterType getRouterType() {
         return routerType;
+    }
+
+    public String getJson() {
+        return json;
     }
 }

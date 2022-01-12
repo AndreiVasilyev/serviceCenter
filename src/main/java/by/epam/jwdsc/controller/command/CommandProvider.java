@@ -1,10 +1,16 @@
-package by.epam.jwdsc.controller.comand;
+package by.epam.jwdsc.controller.command;
 
-import by.epam.jwdsc.controller.comand.impl.DefaultCommand;
+import by.epam.jwdsc.controller.command.impl.ChangeLocaleCommand;
+import by.epam.jwdsc.controller.command.impl.DefaultCommand;
+import by.epam.jwdsc.controller.command.impl.SendCodeCommand;
+import by.epam.jwdsc.controller.command.impl.gotocommand.GotoCheckOrderPageCommand;
+import by.epam.jwdsc.controller.command.impl.gotocommand.GotoMainPageCommand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.EnumMap;
+
+import static by.epam.jwdsc.controller.command.CommandName.*;
 
 
 public class CommandProvider {
@@ -15,7 +21,11 @@ public class CommandProvider {
 
     private CommandProvider() {
         commands = new EnumMap<CommandName, Command>(CommandName.class);
-        commands.put(CommandName.DEFAULT, new DefaultCommand());
+        commands.put(DEFAULT, new DefaultCommand());
+        commands.put(CHANGE_LOCALE, new ChangeLocaleCommand());
+        commands.put(GOTO_MAIN_PAGE, new GotoMainPageCommand());
+        commands.put(GOTO_CHECK_ORDER_PAGE, new GotoCheckOrderPageCommand());
+        commands.put(SEND_CODE_COMMAND, new SendCodeCommand());
     }
 
     public static CommandProvider getInstance() {

@@ -1,4 +1,4 @@
-package by.epam.jwdsc.controller.comand;
+package by.epam.jwdsc.controller.command;
 
 import jakarta.servlet.http.HttpServletRequest;
 

@@ -18,5 +18,7 @@ public interface UserBuilder<S extends UserBuilder, T> {
 
     S email(String email);
 
+    S userRole(UserRole email);
+
     T build();
 }

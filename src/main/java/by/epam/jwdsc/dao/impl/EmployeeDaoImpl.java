@@ -17,13 +17,13 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class EmployeeDaoImpl implements EmployeeDao {
 
-    private static final String SQL_SELECT_ALL_EMPLOYEES = "SELECT e.user_id, e.login, e.password, e.role, " +
+    private static final String SQL_SELECT_ALL_EMPLOYEES = "SELECT e.user_id, e.login, e.password, u.user_role, " +
             "u.first_name, u.second_name, u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, " +
             "a.region, a.city, a.street, a.house_number, a.apartment_number, " +
             "GROUP_CONCAT(p.phone_number) AS phone_number FROM employees AS e JOIN users AS u USING (user_id) " +
             "JOIN addresses AS a ON (u.address=a.address_id) JOIN phone_numbers AS p ON(u.user_id = p.user_id) " +
             "GROUP BY u.user_id";
-    private static final String SQL_SELECT_EMPLOYEE_BY_ID = "SELECT e.user_id, e.login, e.password, e.role, " +
+    private static final String SQL_SELECT_EMPLOYEE_BY_ID = "SELECT e.user_id, e.login, e.password, u.user_role, " +
             "u.first_name, u.second_name, u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, " +
             "a.region, a.city, a.street, a.house_number, a.apartment_number, GROUP_CONCAT(p.phone_number) " +
             "AS phone_number FROM employees AS e JOIN users AS u USING (user_id) JOIN addresses AS a " +
@@ -35,12 +35,12 @@ public class EmployeeDaoImpl implements EmployeeDao {
     private static final String SQL_CREATE_ADDRESS = "INSERT INTO addresses(country, postcode, state, region, city," +
             "street, house_number, apartment_number) VALUES(?,?,?,?,?,?,?,?)";
     private static final String SQL_CREATE_USER = "INSERT INTO users(first_name, second_name, patronymic, address, " +
-            "email) VALUES(?,?,?,?,?)";
-    private static final String SQL_CREATE_EMPLOYEE = "INSERT INTO employees(user_id, login, password, role) " +
-            "VALUES(?,?,?,?)";
+            "email,user_role) VALUES(?,?,?,?,?,?)";
+    private static final String SQL_CREATE_EMPLOYEE = "INSERT INTO employees(user_id, login, password) " +
+            "VALUES(?,?,?)";
     private static final String SQL_CREATE_PHONE_NUMBER = "INSERT INTO phone_numbers(user_id, phone_number) VALUES(?,?)";
     private static final String SQL_UPDATE_EMPLOYEE = "UPDATE employees AS e JOIN users AS u USING (user_id) " +
-            "JOIN addresses AS a ON (u.address=a.address_id) SET e.login=?, e.password=?, e.role=?, u.first_name=?, " +
+            "JOIN addresses AS a ON (u.address=a.address_id) SET e.login=?, e.password=?, u.user_role=?, u.first_name=?, " +
             "u.second_name=?, u.patronymic=?, u.email=?, a.country=?, a.postcode=?, a.state=?, a.region=?, a.city=?, " +
             "a.street=?, a.house_number=?, a.apartment_number=? WHERE u.user_id=?";
     private static final String SQL_DELETE_PHONE_NUMBER = "DELETE FROM phone_numbers WHERE user_id=?";
@@ -198,7 +198,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
         String email = resultSet.getString(USERS_EMAIL);
         String login = resultSet.getString(EMPLOYEES_LOGIN);
         String password = resultSet.getString(EMPLOYEES_PASSWORD);
-        String role = resultSet.getString(EMPLOYEES_ROLE);
+        String role = resultSet.getString(USERS_ROLE);
         String phones = resultSet.getString(PHONE_NUMBERS_NUMBER);
         List<String> phoneNumbers = extractPhones(phones);
         return UserBuilders.newEmployee()
@@ -210,7 +210,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 .email(email)
                 .login(login)
                 .password(password)
-                .role(EmployeeRole.valueOf(role))
+                .userRole(UserRole.valueOf(role))
                 .phones(phoneNumbers)
                 .build();
     }
@@ -291,6 +291,11 @@ public class EmployeeDaoImpl implements EmployeeDao {
         } else {
             statement.setNull(5, Types.VARCHAR);
         }
+        if (employee.getUserRole() != null) {
+            statement.setString(6, employee.getUserRole().name());
+        } else {
+            statement.setNull(6, Types.VARCHAR);
+        }
     }
 
     private void collectCreateEmployeeQuery(PreparedStatement statement, Employee employee) throws SQLException {
@@ -305,17 +310,12 @@ public class EmployeeDaoImpl implements EmployeeDao {
         } else {
             statement.setNull(3, Types.VARCHAR);
         }
-        if (employee.getRole() != null) {
-            statement.setString(4, employee.getRole().name());
-        } else {
-            statement.setNull(4, Types.VARCHAR);
-        }
     }
 
     private void collectUpdateEmployeeQuery(PreparedStatement statement, Employee employee) throws SQLException {
         statement.setString(1, employee.getLogin());
         statement.setString(2, employee.getPassword());
-        statement.setString(3, employee.getRole().name());
+        statement.setString(3, employee.getUserRole().name());
         statement.setString(4, employee.getFirstName());
         statement.setString(5, employee.getSecondName());
         statement.setString(6, employee.getPatronymic());

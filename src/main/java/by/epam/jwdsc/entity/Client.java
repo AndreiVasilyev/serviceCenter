@@ -6,8 +6,8 @@ public class Client extends AbstractUser {
     private final int discount;
 
     public Client(long id, String firstName, String secondName, String patronymic, Address address,
-                  List<String> phones, String email, int discount) {
-        super(id, firstName, secondName, patronymic, address, phones, email);
+                  List<String> phones, String email, UserRole userRole, int discount) {
+        super(id, firstName, secondName, patronymic, address, phones, email, userRole);
         this.discount = discount;
     }
 

@@ -11,9 +11,10 @@ public abstract class AbstractUser extends CommonEntity {
     private final Address address;
     private final List<String> phones;
     private final String email;
+    private final UserRole userRole;
 
     public AbstractUser(long id, String firstName, String secondName, String patronymic,
-                        Address address, List<String> phones, String email) {
+                        Address address, List<String> phones, String email, UserRole userRole) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
@@ -21,6 +22,7 @@ public abstract class AbstractUser extends CommonEntity {
         this.address = address;
         this.phones = phones == null ? new ArrayList<>() : phones;
         this.email = email;
+        this.userRole = userRole;
     }
 
     public long getId() {
@@ -59,6 +61,10 @@ public abstract class AbstractUser extends CommonEntity {
         return email;
     }
 
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,7 +77,9 @@ public abstract class AbstractUser extends CommonEntity {
         if (!secondName.equals(that.secondName)) return false;
         if (patronymic != null ? !patronymic.equals(that.patronymic) : that.patronymic != null) return false;
         if (address != null ? !address.equals(that.address) : that.address != null) return false;
-        return email != null ? email.equals(that.email) : that.email == null;
+        if (phones != null ? !phones.equals(that.phones) : that.phones != null) return false;
+        if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        return userRole == that.userRole;
     }
 
     @Override
@@ -81,13 +89,15 @@ public abstract class AbstractUser extends CommonEntity {
         result = 31 * result + secondName.hashCode();
         result = 31 * result + (patronymic != null ? patronymic.hashCode() : 0);
         result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (phones != null ? phones.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + userRole.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("User{");
+        final StringBuilder sb = new StringBuilder("AbstractUser{");
         sb.append("id=").append(id);
         sb.append(", firstName='").append(firstName).append('\'');
         sb.append(", secondName='").append(secondName).append('\'');
@@ -95,6 +105,7 @@ public abstract class AbstractUser extends CommonEntity {
         sb.append(", address=").append(address);
         sb.append(", phones=").append(phones);
         sb.append(", email='").append(email).append('\'');
+        sb.append(", userRole=").append(userRole);
         sb.append('}');
         return sb.toString();
     }

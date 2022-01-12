@@ -301,7 +301,7 @@ public class OrderDaoImpl implements OrderDao {
         String email = resultSet.getString(USERS_EMAIL);
         String login = resultSet.getString(EMPLOYEES_LOGIN);
         String password = resultSet.getString(EMPLOYEES_PASSWORD);
-        String role = resultSet.getString(EMPLOYEES_ROLE);
+        String role = resultSet.getString(USERS_ROLE);
         String phones = resultSet.getString(PHONE_NUMBERS_NUMBER);
         List<String> phoneNumbers = extractPhones(phones);
         return UserBuilders.newEmployee()
@@ -313,7 +313,7 @@ public class OrderDaoImpl implements OrderDao {
                 .email(email)
                 .login(login)
                 .password(password)
-                .role(EmployeeRole.valueOf(role))
+                .userRole(UserRole.valueOf(role))
                 .phones(phoneNumbers)
                 .build();
     }

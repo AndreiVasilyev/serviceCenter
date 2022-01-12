@@ -25,6 +25,7 @@ public final class ColumnName {
     public static final String USERS_PATRONYMIC = "patronymic";
     public static final String USERS_ADDRESS = "address";
     public static final String USERS_EMAIL = "email";
+    public static final String USERS_ROLE = "user_role";
     //for table Addresses
     public static final String ADDRESSES_ID = "address_id";
     public static final String ADDRESSES_COUNTRY = "country";
@@ -44,7 +45,6 @@ public final class ColumnName {
     public static final String EMPLOYEES_USER_ID = "user_id";
     public static final String EMPLOYEES_LOGIN = "login";
     public static final String EMPLOYEES_PASSWORD = "password";
-    public static final String EMPLOYEES_ROLE = "role";
     //for table Companies
     public static final String COMPANIES_ID = "company_id";
     public static final String COMPANIES_NAME = "name";
