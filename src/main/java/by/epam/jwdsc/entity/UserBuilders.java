@@ -62,41 +62,49 @@ public class UserBuilders {
 
         @Override
         public S id(long id) {
+            this.id = id;
             return self();
         }
 
         @Override
         public S firstName(String firstName) {
+            this.firstName = firstName;
             return self();
         }
 
         @Override
         public S secondName(String secondName) {
+            this.secondName = secondName;
             return self();
         }
 
         @Override
         public S patronymic(String patronymic) {
+            this.patronymic = patronymic;
             return self();
         }
 
         @Override
         public S address(Address address) {
+            this.address = address;
             return self();
         }
 
         @Override
         public S phones(List<String> phones) {
+            this.phones = phones;
             return self();
         }
 
         @Override
         public S email(String email) {
+            this.email = email;
             return self();
         }
 
         @Override
         public S userRole(UserRole userRole) {
+            this.userRole = userRole;
             return self();
         }
 

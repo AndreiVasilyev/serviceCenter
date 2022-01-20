@@ -1,18 +1,25 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<c:set var="locale" value="${not empty sessionScope.locale?sessionScope.locale:'en_EN'}"/>
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename="locale"/>
+<fmt:message var="error_title" key="error.title"/>
+
 <!DOCTYPE html>
 <html>
     <head>
-        <title>SC error page</title>
+        <link href="../css/bootstrap.css" rel="stylesheet">
+        <link href="../css/bootstrap-icons.css" rel="stylesheet">
+        <link href="../css/header.css" rel="stylesheet">
+        <title>${error_title}</title>
     </head>
     <body>
-
-        error appear!!!
-
+        <c:import url="header.jsp"/>
         <c:if test="${not empty pageContext.exception}">
             <c:set var="exception" value="${pageContext.exception}"/>
-            <div class="container payment_window mb-5 pt-3 pb-5">
+            <div class="container mb-5 pt-3 pb-5">
                 <div class="container mt-5">
                     <h1 class="ml-5">${head}</h1>
                     <h3>${error_head} ${exception} </h3>
@@ -28,7 +35,7 @@
         </c:if>
         <c:if test="${not empty requestScope.exception}">
             <c:set var="exception" value="${requestScope.exception}"/>
-            <div class="container payment_window mb-5 pt-3 pb-5">
+            <div class="container mb-5 pt-3 pb-5">
                 <div class="container mt-5">
                     <h1 class="ml-5">${head}</h1>
                     <h3>${error_head} ${exception} </h3>
@@ -43,8 +50,8 @@
                 </div>
             </div>
         </c:if>
-        <div>
-            <i>no exeptions</i>
-        </div>
+        <c:import url="footer.jsp"/>
+        <script src="../js/bootstrap.bundle.js" type="text/javascript"></script>
+        <script src="../js/header.js" type="text/javascript"></script>
     </body>
 </html>

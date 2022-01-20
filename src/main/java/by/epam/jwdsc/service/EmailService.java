@@ -1,6 +1,9 @@
 package by.epam.jwdsc.service;
 
-public interface EmailService extends ScService{
+import by.epam.jwdsc.exception.ServiceException;
 
-    void sendEmail(String toEmail);
+import java.util.Locale;
+
+public interface EmailService {
+    void sendConfirmationCodeEmail(String toEmail, String code, Locale locale) throws ServiceException;
 }

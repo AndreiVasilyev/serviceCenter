@@ -7,6 +7,7 @@
 <c:set var="request_parameters" value="${sessionScope.requestData.requestParameters}"/>
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="locale"/>
+<fmt:message var="check_order_title" key="checkOrder.title"/>
 <fmt:message var="page_header" key="checkOrder.main.header"/>
 <fmt:message var="number_label" key="checkOrder.main.form.number.label"/>
 <fmt:message var="number_tip" key="checkOrder.main.form.number.tip"/>
@@ -20,6 +21,8 @@
 <fmt:message var="code_tip" key="checkOrder.main.form.code.tip"/>
 <fmt:message var="code_error_match" key="checkOrder.main.form.code.error.match"/>
 <fmt:message var="form_submit" key="checkOrder.main.form.submit"/>
+<fmt:message var="alert_note" key="checkOrder.main.alert.note.send.code"/>
+<fmt:message var="alert_result" key="checkOrder.main.alert.result.send.code"/>
 
 <!DOCTYPE html>
 <html>
@@ -28,7 +31,7 @@
         <link href="../css/bootstrap-icons.css" rel="stylesheet">
         <link href="../css/header.css" rel="stylesheet">
         <link href="../css/check_order.css" rel="stylesheet">
-        <title>ServiceCenter check order status page</title>
+        <title>${check_order_title}</title>
     </head>
     <body>
         <c:import url="icon_sprite.jsp"/>
@@ -40,8 +43,7 @@
                         <h2>${page_header}</h2>
                     </div>
                     <div class="col-6 mx-auto">
-                        <form action="/control" method="POST" enctype="application/x-www-form-urlencoded"
-                              class="needs-validation">
+                        <form method="POST" name="order" class="needs-validation">
                             <div class="mb-3">
                                 <label for="order-number-input" class="form-label">${number_label}</label>
                                 <div class="form-floating">
@@ -83,16 +85,9 @@
                                 <svg class="bi flex-shrink-0 me-2" width="24" height="24">
                                     <use href="#exclamation-triangle-fill"/>
                                 </svg>
-                                <div id="error-send-code" class="d-none alert-block-message">
-                                    Возникли проблемы с отправкой почты. Проверьте указанный адрес и повторите.
-                                </div>
-                                <div id="note-input-code" class="d-none alert-block-message">
-                                    На указанный адрес выслан код подтверждения. Для поиска заказа введите код из
-                                    письма. Код активен 5 мин.
-                                </div>
-                                <div id="result-search-order" class="d-none alert-block-message">
-                                    Результаты поиска:
-                                </div>
+                                <div id="error-send-code" class="d-none alert-block-message"></div>
+                                <div id="note-input-code" class="d-none alert-block-message">${alert_note}</div>
+                                <div id="result-search-order" class="d-none alert-block-message">${alert_result}</div>
                             </div>
                         </form>
                     </div>

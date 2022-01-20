@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 
 public class PriceInfo extends CommonEntity {
 
-    private final long id;
-    private final long device;
-    private final RepairLevel repairLevel;
-    private final BigDecimal repairCost;
+    private long id;
+    private long device;
+    private RepairLevel repairLevel;
+    private BigDecimal repairCost;
 
 
     public PriceInfo(long id, long device, RepairLevel repairLevel, BigDecimal repairCost) {

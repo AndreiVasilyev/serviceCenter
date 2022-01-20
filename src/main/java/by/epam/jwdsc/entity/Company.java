@@ -2,8 +2,8 @@ package by.epam.jwdsc.entity;
 
 public class Company extends CommonEntity {
     private long id;
-    private final String name;
-    private final boolean isContract;
+    private String name;
+    private boolean isContract;
 
     public Company(String name, boolean isContract) {
         this.name = name;

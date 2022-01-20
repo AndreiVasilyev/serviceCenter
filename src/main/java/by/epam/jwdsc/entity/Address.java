@@ -2,14 +2,14 @@ package by.epam.jwdsc.entity;
 
 public class Address {
     private long id;
-    private final String country;
-    private final int postcode;
-    private final String state;
-    private final String region;
-    private final String city;
-    private final String street;
-    private final int houseNumber;
-    private final int apartmentNumber;
+    private String country;
+    private int postcode;
+    private String state;
+    private String region;
+    private String city;
+    private String street;
+    private int houseNumber;
+    private int apartmentNumber;
 
     private Address(long id, String country, int postcode, String state, String region, String city,
                     String street, int houseNumber, int apartmentNumber) {
@@ -28,40 +28,72 @@ public class Address {
         return id;
     }
 
-    public void setId(long id){
-        this.id=id;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getCountry() {
         return country;
     }
 
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     public int getPostcode() {
         return postcode;
+    }
+
+    public void setPostcode(int postcode) {
+        this.postcode = postcode;
     }
 
     public String getState() {
         return state;
     }
 
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public String getRegion() {
         return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public String getCity() {
         return city;
     }
 
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getStreet() {
         return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public int getHouseNumber() {
         return houseNumber;
     }
 
+    public void setHouseNumber(int houseNumber) {
+        this.houseNumber = houseNumber;
+    }
+
     public int getApartmentNumber() {
         return apartmentNumber;
+    }
+
+    public void setApartmentNumber(int apartmentNumber) {
+        this.apartmentNumber = apartmentNumber;
     }
 
     @Override

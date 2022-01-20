@@ -38,13 +38,12 @@ public class RequestListener implements ServletRequestListener {
         //save current request data in session scope
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String command = request.getParameter(COMMAND_PARAM);
-        if (command != null && !command.toUpperCase().equals(CommandName.CHANGE_LOCALE)) {
+        String requestReferer = request.getHeader(REQUEST_REFERER);
+        if (command != null && requestReferer!=null && !command.toUpperCase().equals(CommandName.CHANGE_LOCALE)) {
             String requestURI = request.getRequestURI();
             String requestURL = request.getRequestURL().toString();
-            String requestReferer = request.getHeader(REQUEST_REFERER);
             String pagePath = requestReferer.replaceAll(requestURL.replaceAll(requestURI, ""), "");
             Map<String, String[]> parameters = request.getParameterMap();
-
             Map<String, Object> attributes = new HashMap<>();
             Iterator<String> iterator = request.getAttributeNames().asIterator();
             while (iterator.hasNext()) {
@@ -52,6 +51,7 @@ public class RequestListener implements ServletRequestListener {
                 Object attributeValue = request.getAttribute(attributeName);
                 attributes.put(attributeName, attributeValue);
             }
+
             RequestData requestData = new RequestData(parameters, attributes, pagePath);
             HttpSession httpSession = request.getSession();
             httpSession.removeAttribute(REQUEST_DATA);

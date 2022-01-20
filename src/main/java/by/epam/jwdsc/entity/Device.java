@@ -3,7 +3,7 @@ package by.epam.jwdsc.entity;
 public class Device extends CommonEntity {
 
     private long id;
-    private final String name;
+    private String name;
 
 
     public Device(String name) {

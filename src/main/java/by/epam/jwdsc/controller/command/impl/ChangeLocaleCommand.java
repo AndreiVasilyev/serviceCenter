@@ -4,6 +4,7 @@ import by.epam.jwdsc.controller.command.Command;
 import by.epam.jwdsc.controller.command.Router;
 import by.epam.jwdsc.entity.RequestData;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.Locale;
@@ -18,7 +19,7 @@ public class ChangeLocaleCommand implements Command {
     private static final String LOCALE_PARAMS_SEPARATOR = "_";
 
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request, HttpServletResponse response) {
         String localeParameter = request.getParameter(LOCALE_PARAM);
         String[] localeParams = localeParameter.split(LOCALE_PARAMS_SEPARATOR);
         Locale locale = new Locale(localeParams[0], localeParams[1]);

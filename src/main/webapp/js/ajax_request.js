@@ -7,7 +7,7 @@ async function sendGetStringQuery(url) {
     let response;
     try {
         response = await fetch(url);
-        if(!response.ok){
+        if (!response.ok) {
             throw Error('Error sending query')
         }
         result = await response.text();
@@ -32,5 +32,18 @@ async function sendPostJsonQuery(url, data) {
         body: JSON.stringify(data)
     });
     console.log('status=' + response.status);
+    return response.ok ? await response.json() : 'error';
+}
+
+//post-query with form-data
+
+async function sendPostFormQuery(url, data) {
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: data
+    });
     return response.ok ? await response.json() : 'error';
 }

@@ -5,13 +5,13 @@ import java.util.List;
 
 public abstract class AbstractUser extends CommonEntity {
     private long id;
-    private final String firstName;
-    private final String secondName;
-    private final String patronymic;
-    private final Address address;
-    private final List<String> phones;
-    private final String email;
-    private final UserRole userRole;
+    private String firstName;
+    private String secondName;
+    private String patronymic;
+    private Address address;
+    private List<String> phones;
+    private String email;
+    private UserRole userRole;
 
     public AbstractUser(long id, String firstName, String secondName, String patronymic,
                         Address address, List<String> phones, String email, UserRole userRole) {

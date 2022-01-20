@@ -3,8 +3,8 @@ package by.epam.jwdsc.entity;
 import java.util.List;
 
 public class Employee extends AbstractUser {
-    private final String login;
-    private final String password;
+    private String login;
+    private String password;
 
     public Employee(long id, String firstName, String secondName, String patronymic, Address address,
                     List<String> phones, String email,UserRole userRole, String login, String password) {

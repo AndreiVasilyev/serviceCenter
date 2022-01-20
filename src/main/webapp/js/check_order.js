@@ -70,6 +70,9 @@ let validatedCheckOrderFormHandler = function () {
         if (isOrderNumberCorrect && isEmailCorrect && sendCodeButton.hasAttribute('disabled')) {
             sendCodeButton.removeAttribute('disabled');
         }
+        if ((!isOrderNumberCorrect || !isEmailCorrect) && !sendCodeButton.hasAttribute('disabled')) {
+            sendCodeButton.setAttribute('disabled', 'disabled');
+        }
         if (isOrderNumberCorrect && isEmailCorrect && isCodeCorrect) {
             document.getElementById('check-order-button').removeAttribute('disabled');
         }
@@ -89,6 +92,17 @@ createCustomValidation(codeInput, verificationCodeValidityChecks);
 //Set listeners after page loaded
 
 document.addEventListener('DOMContentLoaded', loadDocumentHandler);
+window.addEventListener('beforeunload', unloadDocumentHandler);
+
+//-----page unload handler
+
+function unloadDocumentHandler() {
+    let event = localStorage.getItem('currentEvent');
+    if (event !== 'changeLocale') {
+        localStorage.clear();
+    }
+    localStorage.removeItem('currentEvent');
+}
 
 //-----page loaded handler
 
@@ -133,7 +147,7 @@ function onFocusInputFieldHandler() {
 //-----send confirmation code button handler
 
 function sendCodeButtonHandler() {
-    let url = '/control?command=send_code_command&email=' + emailInput.value;
+    let url = '/control?command=send_code_command&email=' + emailInput.value + '&orderNumber=' + orderNumberInput.value;
     sendCodeButton.setAttribute('disabled', 'disabled');
     sendGetStringQuery(url).then(response => sendCodeResponseHandler(response));
 }
@@ -142,7 +156,10 @@ function sendCodeButtonHandler() {
 
 function sendCodeResponseHandler(response) {
     sendCodeButton.removeAttribute('disabled');
-    if (response === 'error') {
+    console.log(response);
+    let responseResult = response.split(":");
+    if (responseResult[0] === 'error') {
+        errorMessageElement.innerHTML = responseResult[1];
         activateAlertBlock(errorMessageElement, 'alert-danger', '#exclamation-triangle-fill');
     } else {
         localStorage.removeItem('isCodeActive');
@@ -170,7 +187,9 @@ function activateAlertBlock(messageElement, messageClass, iconId) {
     iconElement.setAttribute('href', iconId);
     alertBlockElement.classList.remove('d-none');
     alertBlockElement.classList.add('d-flex');
-    alertBlockElement.classList.remove('alert-.*');
+    alertBlockElement.classList.remove('alert-warning');
+    alertBlockElement.classList.remove('alert-danger');
+    alertBlockElement.classList.remove('alert-success');
     alertBlockElement.classList.add(messageClass);
     messageElements
         .forEach(element => element.classList.add('d-none'));
@@ -191,6 +210,12 @@ function deactivateCodeInputElement() {
 //-----submit form handler
 
 function submitFormHandler() {
+    let url = '/control';
+    let searchParams = new URLSearchParams();
+    searchParams.append('command', 'find_order_by_number');
+    searchParams.append('orderNumber', orderNumberInput.value);
+    searchParams.append('email', emailInput.value);
+    searchParams.append('code', codeInput.value);
     orderNumberInput.value = '';
     orderNumberInput.classList.remove('is-valid');
     this.setAttribute('disabled', 'disabled');
@@ -199,8 +224,18 @@ function submitFormHandler() {
         deactivateCodeInputElement();
         emailInput.value = '';
         emailInput.classList.remove('is-valid');
+        sendPostFormQuery(url, searchParams).then(response => findOrderResponseHandler(response));
     }
+
 
     //if code success - change role and hide email and show result search
     //else - show error message
+}
+
+function findOrderResponseHandler(response) {
+    console.log('resp handler: response=' + response);
+    let jsonString=response.split(":")[1];
+    let obj=JSON.parse(jsonString);
+    console.log("string:"+jsonString);
+    console.log("object:"+obj);
 }

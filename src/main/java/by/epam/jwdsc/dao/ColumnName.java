@@ -16,7 +16,7 @@ public final class ColumnName {
     public static final String ORDERS_ISSUE_DATE = "issue_date";
     public static final String ORDERS_WORK_DESCRIPTION = "work_description";
     public static final String ORDERS_WORK_PRICE = "work_price";
-    public static final String ORDERS_STATUS = "status";
+    public static final String ORDERS_STATUS = "order_status";
     public static final String ORDERS_NOTE = "note";
     //for table Users
     public static final String USERS_ID = "user_id";
@@ -70,6 +70,9 @@ public final class ColumnName {
     //for table OrdersSpareParts
     public static final String ORDERS_SPARE_PARTS_ORDER_ID = "order_id";
     public static final String ORDERS_SPARE_PARTS_PART_ID = "spare_part_id";
+    //for table Codes
+    public static final String CODES_EMAIL = "email";
+    public static final String CODES_CODE = "code";
 
     private ColumnName() {
     }

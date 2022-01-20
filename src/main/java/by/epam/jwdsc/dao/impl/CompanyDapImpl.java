@@ -26,8 +26,8 @@ public class CompanyDapImpl implements CompanyDao {
     @Override
     public List<Company> findAll() throws DaoException {
         List<Company> companies = new ArrayList<>();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (Statement statement = connection.createStatement();
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_COMPANIES)) {
             while (resultSet.next()) {
                 Company company = extractCompany(resultSet);
@@ -36,8 +36,6 @@ public class CompanyDapImpl implements CompanyDao {
         } catch (SQLException e) {
             log.error("Error executing query findAll from Companies", e);
             throw new DaoException("Error executing query findAll from Companies", e);
-        } finally {
-            close(connection);
         }
         return companies;
     }
@@ -45,8 +43,8 @@ public class CompanyDapImpl implements CompanyDao {
     @Override
     public Optional<Company> findById(long id) throws DaoException {
         Optional<Company> company = Optional.empty();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_COMPANY_BY_ID)) {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_COMPANY_BY_ID)) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -56,8 +54,6 @@ public class CompanyDapImpl implements CompanyDao {
         } catch (SQLException e) {
             log.error("Error executing query findById from Companies", e);
             throw new DaoException("Error executing query findById from Companies", e);
-        } finally {
-            close(connection);
         }
         return company;
     }
@@ -70,8 +66,8 @@ public class CompanyDapImpl implements CompanyDao {
     @Override
     public boolean deleteById(long id) throws DaoException {
         boolean result = false;
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_DELETE_COMPANY_BY_ID)) {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_COMPANY_BY_ID)) {
             statement.setLong(1, id);
             int updatedRows = statement.executeUpdate();
             if (updatedRows > 0) {
@@ -80,44 +76,40 @@ public class CompanyDapImpl implements CompanyDao {
         } catch (SQLException e) {
             log.error("Error executing query deleteById from Companies", e);
             throw new DaoException("Error executing query deleteById from Companies", e);
-        } finally {
-            close(connection);
         }
         return result;
     }
 
     @Override
     public boolean create(Company company) throws DaoException {
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_COMPANY)) {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_COMPANY)) {
             statement.setString(1, company.getName());
             statement.setBoolean(2, company.isContract());
             statement.executeUpdate();
         } catch (SQLException e) {
             log.error("Error executing query create new Company", e);
             throw new DaoException("Error executing query create new Company", e);
-        } finally {
-            close(connection);
         }
         return true;
     }
 
     @Override
-    public Company update(Company company) throws DaoException {
-        Company oldCompany = findById(company.getId()).get();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_COMPANY)) {
-            statement.setString(1, company.getName());
-            statement.setBoolean(2, company.isContract());
-            statement.setLong(3, company.getId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            log.error("Error executing query update Device", e);
-            throw new DaoException("Error executing query update Device", e);
-        } finally {
-            close(connection);
+    public Optional<Company> update(Company company) throws DaoException {
+        Optional<Company> oldCompanyFound = findById(company.getId());
+        if (oldCompanyFound.isPresent()) {
+            try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_COMPANY)) {
+                statement.setString(1, company.getName());
+                statement.setBoolean(2, company.isContract());
+                statement.setLong(3, company.getId());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                log.error("Error executing query update Device", e);
+                throw new DaoException("Error executing query update Device", e);
+            }
         }
-        return oldCompany;
+        return oldCompanyFound;
     }
 
     private Company extractCompany(ResultSet resultSet) throws SQLException {

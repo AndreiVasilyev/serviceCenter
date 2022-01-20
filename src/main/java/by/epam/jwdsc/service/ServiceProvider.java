@@ -1,22 +1,20 @@
 package by.epam.jwdsc.service;
 
+import by.epam.jwdsc.service.impl.ConfirmationCodeServiceImpl;
 import by.epam.jwdsc.service.impl.EmailServiceImpl;
+import by.epam.jwdsc.service.impl.OrderServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.EnumMap;
-
-import static by.epam.jwdsc.service.ServiceName.EMAIL;
 
 public class ServiceProvider {
 
     private static final Logger log = LogManager.getLogger();
     private static ServiceProvider instance;
-    private final EnumMap<ServiceName, ScService> services;
+    private final EmailService emailService = new EmailServiceImpl();
+    private final ConfirmationCodeService confirmationCodeService = new ConfirmationCodeServiceImpl();
+    private final OrderService orderService = new OrderServiceImpl();
 
     private ServiceProvider() {
-        services = new EnumMap<ServiceName, ScService>(ServiceName.class);
-        services.put(EMAIL, new EmailServiceImpl());
     }
 
     public static ServiceProvider getInstance() {
@@ -27,6 +25,14 @@ public class ServiceProvider {
     }
 
     public EmailService getEmailService() {
-        return (EmailService) services.get(EMAIL);
+        return emailService;
+    }
+
+    public ConfirmationCodeService getConfirmationCodeService() {
+        return confirmationCodeService;
+    }
+
+    public OrderService getOrderService() {
+        return orderService;
     }
 }

@@ -3,7 +3,7 @@ package by.epam.jwdsc.entity;
 import java.util.List;
 
 public class Client extends AbstractUser {
-    private final int discount;
+    private int discount;
 
     public Client(long id, String firstName, String secondName, String patronymic, Address address,
                   List<String> phones, String email, UserRole userRole, int discount) {

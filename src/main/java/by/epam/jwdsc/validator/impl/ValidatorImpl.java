@@ -2,6 +2,8 @@ package by.epam.jwdsc.validator.impl;
 
 import by.epam.jwdsc.validator.Validator;
 
+import static by.epam.jwdsc.validator.ValidatorTemplates.*;
+
 public class ValidatorImpl implements Validator {
 
     private static Validator instance;
@@ -16,6 +18,32 @@ public class ValidatorImpl implements Validator {
         return instance;
     }
 
+    @Override
+    public boolean isEmailValid(String email) {
+        boolean result = false;
+        if (email != null && email.length() >= EMAIL_MIN_LENGTH) {
+            result = email.matches(EMAIL_REGEX);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isOrderNumberValid(String orderNumber) {
+        boolean result = false;
+        if (orderNumber != null && !orderNumber.isBlank()) {
+            result = orderNumber.matches(ORDER_NUMBER_REGEX);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isCodeValid(String code) {
+        boolean result = false;
+        if (code != null && !code.isBlank()) {
+            result = code.matches(CODE_REGEX);
+        }
+        return result;
+    }
 
 
 }

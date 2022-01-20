@@ -1,6 +1,7 @@
 package by.epam.jwdsc.dao.impl;
 
 import by.epam.jwdsc.dao.EmployeeDao;
+import by.epam.jwdsc.dao.UserDao;
 import by.epam.jwdsc.entity.*;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.pool.DbConnectionPool;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 import static by.epam.jwdsc.dao.ColumnName.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
-public class EmployeeDaoImpl implements EmployeeDao {
+public class EmployeeDaoImpl extends UserDao implements EmployeeDao{
 
     private static final String SQL_SELECT_ALL_EMPLOYEES = "SELECT e.user_id, e.login, e.password, u.user_role, " +
             "u.first_name, u.second_name, u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, " +
@@ -38,12 +39,11 @@ public class EmployeeDaoImpl implements EmployeeDao {
             "email,user_role) VALUES(?,?,?,?,?,?)";
     private static final String SQL_CREATE_EMPLOYEE = "INSERT INTO employees(user_id, login, password) " +
             "VALUES(?,?,?)";
-    private static final String SQL_CREATE_PHONE_NUMBER = "INSERT INTO phone_numbers(user_id, phone_number) VALUES(?,?)";
     private static final String SQL_UPDATE_EMPLOYEE = "UPDATE employees AS e JOIN users AS u USING (user_id) " +
             "JOIN addresses AS a ON (u.address=a.address_id) SET e.login=?, e.password=?, u.user_role=?, u.first_name=?, " +
             "u.second_name=?, u.patronymic=?, u.email=?, a.country=?, a.postcode=?, a.state=?, a.region=?, a.city=?, " +
             "a.street=?, a.house_number=?, a.apartment_number=? WHERE u.user_id=?";
-    private static final String SQL_DELETE_PHONE_NUMBER = "DELETE FROM phone_numbers WHERE user_id=?";
+
 
     @Override
     public List<Employee> findAll() throws DaoException {
@@ -154,148 +154,23 @@ public class EmployeeDaoImpl implements EmployeeDao {
     }
 
     @Override
-    public Employee update(Employee employee) throws DaoException {
-        Employee oldEmployee = findById(employee.getId()).get();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_EMPLOYEE);
-             PreparedStatement statementAddPhone = connection.prepareStatement(SQL_CREATE_PHONE_NUMBER);
-             PreparedStatement statementDeletePhone = connection.prepareStatement(SQL_DELETE_PHONE_NUMBER)
-        ) {
-            collectUpdateEmployeeQuery(statement, employee);
-            statement.executeUpdate();
-            if (employee.getPhones() != null && !employee.getPhones().isEmpty()) {
-                for (String phoneNumber : employee.getPhones()) {
-                    if (!oldEmployee.getPhones().contains(phoneNumber)) {
-                        statementAddPhone.setLong(1, employee.getId());
-                        statementAddPhone.setString(2, phoneNumber);
-                        statementAddPhone.executeUpdate();
-                    }
-                }
-                if (!oldEmployee.getPhones().isEmpty()) {
-                    for (String phoneNumber : oldEmployee.getPhones()) {
-                        if (!employee.getPhones().contains(phoneNumber)) {
-                            statementDeletePhone.setLong(1, employee.getId());
-                            statementDeletePhone.executeUpdate();
-                        }
-                    }
-                }
+    public Optional<Employee> update(Employee employee) throws DaoException {
+        Optional<Employee> oldEmployeeFound=findById(employee.getId());
+        if(oldEmployeeFound.isPresent()) {
+            Employee oldEmployee=oldEmployeeFound.get();
+            Connection connection = DbConnectionPool.INSTANCE.getConnection();
+            try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_EMPLOYEE)) {
+                collectUpdateEmployeeQuery(statement, employee);
+                statement.executeUpdate();
+                updatePhoneNumbers(connection,employee,oldEmployee);
+            } catch (SQLException e) {
+                log.error("Error executing query update Employee", e);
+                throw new DaoException("Error executing query update Employee", e);
+            } finally {
+                close(connection);
             }
-        } catch (SQLException e) {
-            log.error("Error executing query update Employee", e);
-            throw new DaoException("Error executing query update Employee", e);
-        } finally {
-            close(connection);
         }
-        return oldEmployee;
-    }
-
-    private Employee extractEmployee(ResultSet resultSet) throws SQLException {
-        Address address = extractAddress(resultSet);
-        long id = resultSet.getLong(USERS_ID);
-        String firstName = resultSet.getString(USERS_FIRST_NAME);
-        String secondName = resultSet.getString(USERS_SECOND_NAME);
-        String patronymic = resultSet.getString(USERS_PATRONYMIC);
-        String email = resultSet.getString(USERS_EMAIL);
-        String login = resultSet.getString(EMPLOYEES_LOGIN);
-        String password = resultSet.getString(EMPLOYEES_PASSWORD);
-        String role = resultSet.getString(USERS_ROLE);
-        String phones = resultSet.getString(PHONE_NUMBERS_NUMBER);
-        List<String> phoneNumbers = extractPhones(phones);
-        return UserBuilders.newEmployee()
-                .id(id)
-                .firstName(firstName)
-                .secondName(secondName)
-                .patronymic(patronymic)
-                .address(address)
-                .email(email)
-                .login(login)
-                .password(password)
-                .userRole(UserRole.valueOf(role))
-                .phones(phoneNumbers)
-                .build();
-    }
-
-    private Address extractAddress(ResultSet resultSet) throws SQLException {
-        long addressId = resultSet.getLong(ADDRESSES_ID);
-        String country = resultSet.getString(ADDRESSES_COUNTRY);
-        int postcode = resultSet.getInt(ADDRESSES_POSTCODE);
-        String state = resultSet.getString(ADDRESSES_STATE);
-        String region = resultSet.getString(ADDRESSES_REGION);
-        String city = resultSet.getString(ADDRESSES_CITY);
-        String street = resultSet.getString(ADDRESSES_STREET);
-        int houseNumber = resultSet.getInt(ADDRESSES_HOUSE_NUMBER);
-        int apartmentNumber = resultSet.getInt(ADDRESSES_APARTMENT_NUMBER);
-        return new Address.Builder(city, street, houseNumber)
-                .id(addressId)
-                .country(country)
-                .postcode(postcode)
-                .state(state)
-                .region(region)
-                .apartmentNumber(apartmentNumber)
-                .build();
-    }
-
-    private List<String> extractPhones(String phoneNumbers) {
-        return Arrays.stream(phoneNumbers.split(","))
-                .map(phoneNumber -> phoneNumber.trim())
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    private void collectCreateAddressQuery(PreparedStatement statement, Employee employee) throws SQLException {
-        Address address = employee.getAddress();
-        if (address.getCountry() != null && !address.getCountry().isBlank()) {
-            statement.setString(1, address.getCountry());
-        } else {
-            statement.setNull(1, Types.VARCHAR);
-        }
-        if (address.getPostcode() != 0) {
-            statement.setInt(2, address.getPostcode());
-        } else {
-            statement.setNull(2, Types.INTEGER);
-        }
-        if (address.getState() != null && !address.getState().isBlank()) {
-            statement.setString(3, address.getState());
-        } else {
-            statement.setNull(3, Types.VARCHAR);
-        }
-        if (address.getRegion() != null && !address.getRegion().isBlank()) {
-            statement.setString(4, address.getRegion());
-        } else {
-            statement.setNull(4, Types.VARCHAR);
-        }
-        statement.setString(5, address.getCity());
-        statement.setString(6, address.getStreet());
-        statement.setInt(7, address.getHouseNumber());
-        if (address.getApartmentNumber() != 0) {
-            statement.setInt(8, address.getApartmentNumber());
-        } else {
-            statement.setNull(8, Types.INTEGER);
-        }
-    }
-
-    private void collectCreateUserQuery(PreparedStatement statement, Employee employee) throws SQLException {
-        statement.setString(1, employee.getFirstName());
-        statement.setString(2, employee.getSecondName());
-        if (employee.getPatronymic() != null && !employee.getPatronymic().isBlank()) {
-            statement.setString(3, employee.getPatronymic());
-        } else {
-            statement.setNull(3, Types.VARCHAR);
-        }
-        if (employee.getAddress() != null) {
-            statement.setLong(4, employee.getAddress().getId());
-        } else {
-            statement.setNull(4, Types.BIGINT);
-        }
-        if (employee.getEmail() != null && !employee.getEmail().isBlank()) {
-            statement.setString(5, employee.getEmail());
-        } else {
-            statement.setNull(5, Types.VARCHAR);
-        }
-        if (employee.getUserRole() != null) {
-            statement.setString(6, employee.getUserRole().name());
-        } else {
-            statement.setNull(6, Types.VARCHAR);
-        }
+        return oldEmployeeFound;
     }
 
     private void collectCreateEmployeeQuery(PreparedStatement statement, Employee employee) throws SQLException {

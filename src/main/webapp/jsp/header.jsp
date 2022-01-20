@@ -35,7 +35,7 @@
                     </li>
                     <span class="">|</span>
                     <li class="nav-item align-self-center">
-                        <a class="nav-link p-0 ps-1 text-light auth-link clearable" href="#">${signup}</a>
+                        <a class="nav-link p-0 ps-1 text-light auth-link " href="#">${signup}</a>
                     </li>
                     <li class="p-1 ms-3 ">
                         <select class="form-select form-select-sm p-0 pe-3 ps-1 locale-check" id="locale_selector">
@@ -74,24 +74,24 @@
                     <div class="collapse navbar-collapse" id="navbarToggler">
                         <ul class="navbar-nav ms-auto ">
                             <li class="nav-item">
-                                <a class="nav-link clearable" href="${main_page}">${home}</a>
+                                <a class="nav-link" href="${main_page}">${home}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link clearable" href="#">${about}</a>
+                                <a class="nav-link" href="#">${about}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
                                    role="button">${services}</a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="${check_order_page}">${check}</a></li>
-                                    <li><a class="dropdown-item clearable" href="#">${request}</a></li>
+                                    <li><a class="dropdown-item" href="#">${request}</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link clearable" href="#">${blog}</a>
+                                <a class="nav-link" href="#">${blog}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link clearable" href="#">${contacts}</a>
+                                <a class="nav-link" href="#">${contacts}</a>
                             </li>
                         </ul>
                     </div>

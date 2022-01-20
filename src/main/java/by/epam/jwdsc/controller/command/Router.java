@@ -15,7 +15,7 @@ public final class Router {
     }
 
     public Router(RouterType routerType, String json) {
-        this.routerType = routerType;
+        this.routerType = routerType ;
         this.json = json;
     }
 

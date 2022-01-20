@@ -2,8 +2,10 @@ package by.epam.jwdsc.controller.command;
 
 import by.epam.jwdsc.controller.command.impl.ChangeLocaleCommand;
 import by.epam.jwdsc.controller.command.impl.DefaultCommand;
+import by.epam.jwdsc.controller.command.impl.FindOrderByNumberCommand;
 import by.epam.jwdsc.controller.command.impl.SendCodeCommand;
 import by.epam.jwdsc.controller.command.impl.gotocommand.GotoCheckOrderPageCommand;
+import by.epam.jwdsc.controller.command.impl.gotocommand.GotoErrorPageCommand;
 import by.epam.jwdsc.controller.command.impl.gotocommand.GotoMainPageCommand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +28,8 @@ public class CommandProvider {
         commands.put(GOTO_MAIN_PAGE, new GotoMainPageCommand());
         commands.put(GOTO_CHECK_ORDER_PAGE, new GotoCheckOrderPageCommand());
         commands.put(SEND_CODE_COMMAND, new SendCodeCommand());
+        commands.put(FIND_ORDER_BY_NUMBER, new FindOrderByNumberCommand());
+        commands.put(GOTO_ERROR_PAGE, new GotoErrorPageCommand());
     }
 
     public static CommandProvider getInstance() {

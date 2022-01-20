@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 
 public class SparePart extends CommonEntity {
     private long id;
-    private final String partNumber;
-    private final String name;
-    private final String description;
-    private final BigDecimal cost;
+    private String partNumber;
+    private String name;
+    private String description;
+    private BigDecimal cost;
 
     private SparePart(long id, String partNumber, String name, String description, BigDecimal cost) {
         this.id = id;

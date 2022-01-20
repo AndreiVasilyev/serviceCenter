@@ -24,8 +24,8 @@ public class DeviceDaoImpl implements DeviceDao {
     @Override
     public List<Device> findAll() throws DaoException {
         List<Device> devices = new ArrayList<>();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (Statement statement = connection.createStatement();
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_DEVICES)) {
             while (resultSet.next()) {
                 Device device = extractDevice(resultSet);
@@ -34,8 +34,6 @@ public class DeviceDaoImpl implements DeviceDao {
         } catch (SQLException e) {
             log.error("Error executing query findAll from Devices", e);
             throw new DaoException("Error executing query findAll from Devices", e);
-        } finally {
-            close(connection);
         }
         return devices;
     }
@@ -43,8 +41,8 @@ public class DeviceDaoImpl implements DeviceDao {
     @Override
     public Optional<Device> findById(long id) throws DaoException {
         Optional<Device> device = Optional.empty();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_DEVICE_BY_ID)) {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_DEVICE_BY_ID)) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -54,8 +52,6 @@ public class DeviceDaoImpl implements DeviceDao {
         } catch (SQLException e) {
             log.error("Error executing query findById from Devices", e);
             throw new DaoException("Error executing query findById from Devices", e);
-        } finally {
-            close(connection);
         }
         return device;
     }
@@ -68,8 +64,8 @@ public class DeviceDaoImpl implements DeviceDao {
     @Override
     public boolean deleteById(long id) throws DaoException {
         boolean result = false;
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_DELETE_DEVICE_BY_ID)) {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_DEVICE_BY_ID)) {
             statement.setLong(1, id);
             int updatedRows = statement.executeUpdate();
             if (updatedRows > 0) {
@@ -78,42 +74,38 @@ public class DeviceDaoImpl implements DeviceDao {
         } catch (SQLException e) {
             log.error("Error executing query deleteById from Devices", e);
             throw new DaoException("Error executing query deleteById from Devices", e);
-        } finally {
-            close(connection);
         }
         return result;
     }
 
     @Override
     public boolean create(Device device) throws DaoException {
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_DEVICE)) {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_DEVICE)) {
             statement.setString(1, device.getName());
             statement.executeUpdate();
         } catch (SQLException e) {
             log.error("Error executing query create new Device", e);
             throw new DaoException("Error executing query create new Device", e);
-        } finally {
-            close(connection);
         }
         return true;
     }
 
     @Override
-    public Device update(Device device) throws DaoException {
-        Device oldDevice = findById(device.getId()).get();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_DEVICE)) {
-            statement.setString(1, device.getName());
-            statement.setLong(2, device.getId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            log.error("Error executing query update Device", e);
-            throw new DaoException("Error executing query update Device", e);
-        } finally {
-            close(connection);
+    public Optional<Device> update(Device device) throws DaoException {
+        Optional<Device> oldDeviceFound = findById(device.getId());
+        if (oldDeviceFound.isPresent()) {
+            try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_DEVICE)) {
+                statement.setString(1, device.getName());
+                statement.setLong(2, device.getId());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                log.error("Error executing query update Device", e);
+                throw new DaoException("Error executing query update Device", e);
+            }
         }
-        return oldDevice;
+        return oldDeviceFound;
     }
 
     private Device extractDevice(ResultSet resultSet) throws SQLException {

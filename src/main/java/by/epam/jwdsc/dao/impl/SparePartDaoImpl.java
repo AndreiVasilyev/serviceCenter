@@ -27,41 +27,30 @@ public class SparePartDaoImpl implements SparePartDao {
 
     @Override
     public List<SparePart> findAll() throws DaoException {
-        List<SparePart> spareParts = new ArrayList<>();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (Statement statement = connection.createStatement();
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_SPARE_PARTS)) {
-            while (resultSet.next()) {
-                SparePart sparePart = extractPart(resultSet);
-                spareParts.add(sparePart);
-            }
+            return extractSpareParts(resultSet);
         } catch (SQLException e) {
             log.error("Error executing query findAll from SpareParts", e);
             throw new DaoException("Error executing query findAll from SpareParts", e);
-        } finally {
-            close(connection);
         }
-        return spareParts;
     }
 
     @Override
     public Optional<SparePart> findById(long id) throws DaoException {
-        Optional<SparePart> sparePart = Optional.empty();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_SPARE_PART_BY_ID)) {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_SPARE_PART_BY_ID)) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    sparePart = Optional.of(extractPart(resultSet));
-                }
+                List<SparePart> spareParts = extractSpareParts(resultSet);
+                return Optional.ofNullable(spareParts.get(0));
             }
         } catch (SQLException e) {
             log.error("Error executing query findById from SpareParts", e);
             throw new DaoException("Error executing query findById from SpareParts", e);
-        } finally {
-            close(connection);
         }
-        return sparePart;
+
     }
 
     @Override
@@ -72,8 +61,8 @@ public class SparePartDaoImpl implements SparePartDao {
     @Override
     public boolean deleteById(long id) throws DaoException {
         boolean result = false;
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_DELETE_SPARE_PART_BY_ID)) {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_SPARE_PART_BY_ID)) {
             statement.setLong(1, id);
             int updatedRows = statement.executeUpdate();
             if (updatedRows > 0) {
@@ -82,54 +71,38 @@ public class SparePartDaoImpl implements SparePartDao {
         } catch (SQLException e) {
             log.error("Error executing query deleteById from SpareParts", e);
             throw new DaoException("Error executing query deleteById from SpareParts", e);
-        } finally {
-            close(connection);
         }
         return result;
     }
 
     @Override
     public boolean create(SparePart sparePart) throws DaoException {
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_SPARE_PART)) {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_SPARE_PART)) {
             collectCreateSparePartQuery(statement, sparePart);
             statement.executeUpdate();
         } catch (SQLException e) {
             log.error("Error executing query create new SparePart", e);
             throw new DaoException("Error executing query create new SparePart", e);
-        } finally {
-            close(connection);
         }
         return true;
     }
 
     @Override
-    public SparePart update(SparePart sparePart) throws DaoException {
-        SparePart oldSparePart = findById(sparePart.getId()).get();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_SPARE_PART)) {
-            collectUpdateSparePartQuery(statement, sparePart);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            log.error("Error executing query update SparePart", e);
-            throw new DaoException("Error executing query update SparePart", e);
-        } finally {
-            close(connection);
+    public Optional<SparePart> update(SparePart sparePart) throws DaoException {
+        Optional<SparePart> oldSparePartFound = findById(sparePart.getId());
+        if (oldSparePartFound.isPresent()) {
+            SparePart oldSparePart = oldSparePartFound.get();
+            try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_SPARE_PART)) {
+                collectUpdateSparePartQuery(statement, sparePart);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                log.error("Error executing query update SparePart", e);
+                throw new DaoException("Error executing query update SparePart", e);
+            }
         }
-        return oldSparePart;
-    }
-
-    private SparePart extractPart(ResultSet resultSet) throws SQLException {
-        long id = resultSet.getLong(SPARE_PARTS_ID);
-        String partNumber = resultSet.getString(SPARE_PARTS_PART_NUMBER);
-        String name = resultSet.getString(SPARE_PARTS_NAME);
-        String description = resultSet.getString(SPARE_PARTS_DESCRIPTION);
-        BigDecimal cost = resultSet.getBigDecimal(SPARE_PARTS_COST);
-        return new SparePart.Builder(name, cost)
-                .id(id)
-                .partNumber(partNumber)
-                .description(description)
-                .build();
+        return oldSparePartFound;
     }
 
     private void collectCreateSparePartQuery(PreparedStatement statement, SparePart sparePart) throws SQLException {

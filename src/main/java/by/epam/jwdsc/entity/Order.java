@@ -4,23 +4,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Order extends CommonEntity {
-    private final long id;
-    private final String orderNumber;
-    private final LocalDateTime creationDate;
-    private final Client client;
-    private final Employee acceptedEmployee;
-    private final Device device;
-    private final Company company;
-    private final String model;
-    private final String serialNumber;
-    private final Employee completedEmployee;
-    private final LocalDateTime comletionDate;
-    private final LocalDateTime issueDate;
-    private final String workDescription;
-    private final PriceInfo workPrice;
-    private final List<SparePart> spareParts;
-    private final OrderStatus orderStatus;
-    private final String note;
+    private long id;
+    private String orderNumber;
+    private LocalDateTime creationDate;
+    private Client client;
+    private Employee acceptedEmployee;
+    private Device device;
+    private Company company;
+    private String model;
+    private String serialNumber;
+    private Employee completedEmployee;
+    private LocalDateTime comletionDate;
+    private LocalDateTime issueDate;
+    private String workDescription;
+    private PriceInfo workPrice;
+    private List<SparePart> spareParts;
+    private OrderStatus orderStatus;
+    private String note;
 
 
     private Order(long id, String orderNumber, LocalDateTime creationDate, Client client, Employee acceptedEmployee,
@@ -192,12 +192,12 @@ public class Order extends CommonEntity {
     }
 
     public static class Builder {
-        private final long id;
-        private final String orderNumber;
-        private final LocalDateTime creationDate;
-        private final Client client;
-        private final Employee acceptedEmployee;
-        private final Device device;
+        private long id;
+        private String orderNumber;
+        private LocalDateTime creationDate;
+        private Client client;
+        private Employee acceptedEmployee;
+        private Device device;
         private Company company;
         private String model;
         private String serialNumber;

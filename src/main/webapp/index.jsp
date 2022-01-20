@@ -3,6 +3,6 @@
 <!DOCTYPE html>
 <html>
     <body>
-        <c:redirect url="jsp/main.jsp"/>
+        <c:redirect url="/control?command=goto_main_page"/>
     </body>
 </html>
