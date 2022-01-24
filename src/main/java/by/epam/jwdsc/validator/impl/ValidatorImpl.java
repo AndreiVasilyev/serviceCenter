@@ -45,5 +45,23 @@ public class ValidatorImpl implements Validator {
         return result;
     }
 
+    @Override
+    public boolean isLoginValid(String login) {
+        boolean result = false;
+        if (login != null && !login.isBlank()) {
+            result = login.matches(LOGIN_REGEX);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isPasswordValid(String password) {
+        boolean result = false;
+        if (password != null && !password.isBlank()) {
+            result = password.matches(PASSWORD_REGEX);
+        }
+        return result;
+    }
+
 
 }

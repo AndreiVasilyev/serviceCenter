@@ -21,6 +21,9 @@ function changeLocaleHandler() {
             return queryParams + '&' + name + '=' + value;
         }, '');
     localStorage.setItem('currentEvent','changeLocale');
+    if(localStorage.getItem('currentOrderNumber')!=null){
+        localStorage.setItem('isDisplayResults','true');
+    }
     let requestUrl = '/control?command=change_locale&locale=' + locale + requestParameters;
     location.href = requestUrl;
 }

@@ -2,6 +2,7 @@ package by.epam.jwdsc.service;
 
 import by.epam.jwdsc.service.impl.ConfirmationCodeServiceImpl;
 import by.epam.jwdsc.service.impl.EmailServiceImpl;
+import by.epam.jwdsc.service.impl.EmployeeServiceImpl;
 import by.epam.jwdsc.service.impl.OrderServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +14,7 @@ public class ServiceProvider {
     private final EmailService emailService = new EmailServiceImpl();
     private final ConfirmationCodeService confirmationCodeService = new ConfirmationCodeServiceImpl();
     private final OrderService orderService = new OrderServiceImpl();
+    private final EmployeeService employeeService = new EmployeeServiceImpl();
 
     private ServiceProvider() {
     }
@@ -34,5 +36,9 @@ public class ServiceProvider {
 
     public OrderService getOrderService() {
         return orderService;
+    }
+
+    public EmployeeService getEmployeeService() {
+        return employeeService;
     }
 }

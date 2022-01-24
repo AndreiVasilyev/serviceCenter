@@ -5,6 +5,7 @@ public final class PagePath {
     public static final String MAIN_PAGE = "/jsp/main.jsp";
     public static final String ERROR_PAGE = "/jsp/error.jsp";
     public static final String CHECK_ORDER_PAGE = "/jsp/check_order.jsp";
+    public static final String LOGIN_PAGE = "/jsp/login.jsp";
 
     private PagePath() {
     }

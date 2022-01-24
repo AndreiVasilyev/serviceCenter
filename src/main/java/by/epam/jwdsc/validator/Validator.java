@@ -6,4 +6,8 @@ public interface Validator {
     boolean isOrderNumberValid(String orderNumber);
 
     boolean isCodeValid(String code);
+
+    boolean isLoginValid(String code);
+
+    boolean isPasswordValid(String password);
 }

@@ -6,6 +6,7 @@
 <c:set var="locale" value="${not empty sessionScope.locale?sessionScope.locale:'en_EN'}"/>
 <c:url value="/control?command=goto_main_page" var="main_page"/>
 <c:url value="/control?command=goto_check_order_page" var="check_order_page"/>
+<c:url value="/control?command=goto_login_page" var="login_page"/>
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="locale"/>
 <fmt:message var="login" key="header.login"/>
@@ -31,7 +32,7 @@
                               id="current-role">${role}</span>
                     </li>
                     <li class="nav-item align-self-center ">
-                        <a class="nav-link p-0 pe-1 text-light auth-link " href="#">${login}</a>
+                        <a class="nav-link p-0 pe-1 text-light auth-link " href="${login_page}">${login}</a>
                     </li>
                     <span class="">|</span>
                     <li class="nav-item align-self-center">

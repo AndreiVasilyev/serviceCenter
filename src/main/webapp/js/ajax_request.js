@@ -14,7 +14,7 @@ async function sendGetStringQuery(url) {
     } catch (error) {
         console.log('error when sending json query to server:' + url);
         console.log('response status:' + response.status)
-        result = 'error';
+        location.href = '/control?command=goto_error_page';
     }
     return result;
 }
@@ -37,13 +37,27 @@ async function sendPostJsonQuery(url, data) {
 
 //post-query with form-data
 
+
 async function sendPostFormQuery(url, data) {
-    let response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: data
-    });
-    return response.ok ? await response.json() : 'error';
+    let result;
+    let response;
+    try {
+        response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: data
+        });
+        if (!response.ok) {
+            throw Error('Error sending query')
+        }
+        result = await response.json();
+    } catch (error) {
+        console.log('error when sending json query to server:' + url);
+        console.log('response status:' + response.status)
+        location.href = '/control?command=goto_error_page';
+    }
+    return result
 }
+

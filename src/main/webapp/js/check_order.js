@@ -11,16 +11,17 @@ let alertBlockElement = document.getElementById('alert-block');
 let noteMessageElement = document.getElementById('note-input-code');
 let iconElement = alertBlockElement.querySelector('use');
 let errorMessageElement = document.getElementById('error-send-code');
+let resultSearchMessageElement = document.getElementById('result-search-order');
 let messageElements = document.querySelectorAll('.alert-block-message');
 let currentRoleElement = document.getElementById("current-role");
-let currentRole = currentRoleElement.getAttribute('data-role');
+
 
 //----- prepare validity checks for form fields
 
 let orderNumberValidityChecks = [
     {
         isInvalid: function (inputField) {
-            let isInputFieldMatches = inputField.value.match(/[PS]\d{1,5}$/gm);
+            let isInputFieldMatches = inputField.value.match(/^[PS]\d{1,5}$/gm);
             return !isInputFieldMatches;
         },
         invalidityMessage: function () {
@@ -64,6 +65,7 @@ let verificationCodeValidityChecks = [
 
 let validatedCheckOrderFormHandler = function () {
     let isOrderNumberCorrect = isFieldValid(orderNumberInput);
+    let currentRole = currentRoleElement.dataset.role;
     if (currentRole === 'GUEST') {
         let isEmailCorrect = isFieldValid(emailInput);
         let isCodeCorrect = isFieldValid(codeInput);
@@ -89,7 +91,7 @@ createCustomValidation(orderNumberInput, orderNumberValidityChecks);
 createCustomValidation(emailInput, emailAddressValidityChecks);
 createCustomValidation(codeInput, verificationCodeValidityChecks);
 
-//Set listeners after page loaded
+//Set listeners after page load/unload
 
 document.addEventListener('DOMContentLoaded', loadDocumentHandler);
 window.addEventListener('beforeunload', unloadDocumentHandler);
@@ -128,6 +130,17 @@ function loadDocumentHandler() {
         checkInputField(codeInput, validatedCheckOrderFormHandler, checkOrderButton);
         activateCodeInputElement();
     }
+    let isDisplayResults = localStorage.getItem('isDisplayResults');
+    if (isDisplayResults != null && isDisplayResults === 'true') {
+        let currentOrderNumber = localStorage.getItem('currentOrderNumber');
+        let url = '/control';
+        let searchParams = new URLSearchParams();
+        searchParams.append('command', 'find_order_by_number');
+        searchParams.append('orderNumber', currentOrderNumber);
+        localStorage.removeItem('isDisplayResults');
+        orderNumberInput.value = currentOrderNumber;
+        sendPostFormQuery(url, searchParams).then(response => findOrderResponseHandler(response));
+    }
 }
 
 //-----input field OnBlur event handler
@@ -147,8 +160,11 @@ function onFocusInputFieldHandler() {
 //-----send confirmation code button handler
 
 function sendCodeButtonHandler() {
-    let url = '/control?command=send_code_command&email=' + emailInput.value + '&orderNumber=' + orderNumberInput.value;
+    let url = '/control?command=send_code&email=' + emailInput.value + '&orderNumber=' + orderNumberInput.value;
     sendCodeButton.setAttribute('disabled', 'disabled');
+    let spinnerElement = document.createElement('span');
+    spinnerElement.className = "spinner-border spinner-border-sm";
+    sendCodeButton.prepend(spinnerElement);
     sendGetStringQuery(url).then(response => sendCodeResponseHandler(response));
 }
 
@@ -156,7 +172,7 @@ function sendCodeButtonHandler() {
 
 function sendCodeResponseHandler(response) {
     sendCodeButton.removeAttribute('disabled');
-    console.log(response);
+    sendCodeButton.firstChild.remove();
     let responseResult = response.split(":");
     if (responseResult[0] === 'error') {
         errorMessageElement.innerHTML = responseResult[1];
@@ -196,6 +212,13 @@ function activateAlertBlock(messageElement, messageClass, iconId) {
     messageElement.classList.remove('d-none');
 }
 
+//-----function deactivate info block
+
+function deactivateAlertBlock() {
+    alertBlockElement.classList.remove('d-flex');
+    alertBlockElement.classList.add('d-none');
+}
+
 //-----function deactivate code input element with info block
 
 function deactivateCodeInputElement() {
@@ -203,39 +226,165 @@ function deactivateCodeInputElement() {
     codeInput.setAttribute('disabled', 'disabled');
     codeInput.value = '';
     codeInput.dispatchEvent(new Event("blur"));
-    alertBlockElement.classList.remove('d-flex');
-    alertBlockElement.classList.add('d-none');
+    deactivateAlertBlock();
 }
+
+//-----function deactivate result block
+
+function deactivateResultsBlock() {
+    let bodyPartsElement = document.querySelector('.body-parts');
+    bodyPartsElement.innerHTML = '';
+    let bodyOrderElements = document.querySelectorAll('.td-order');
+    Array.from(bodyOrderElements).forEach((cell) => cell.innerHTML = '');
+    let resultsElement = document.querySelector('.results');
+    resultsElement.classList.add('d-none');
+}
+
 
 //-----submit form handler
 
 function submitFormHandler() {
     let url = '/control';
     let searchParams = new URLSearchParams();
+    deactivateAlertBlock();
+    deactivateResultsBlock();
     searchParams.append('command', 'find_order_by_number');
     searchParams.append('orderNumber', orderNumberInput.value);
-    searchParams.append('email', emailInput.value);
-    searchParams.append('code', codeInput.value);
+    this.setAttribute('disabled', 'disabled');
+    let currentRole = currentRoleElement.dataset.role
+    if (currentRole === 'GUEST') {
+        searchParams.append('email', emailInput.value);
+        searchParams.append('code', codeInput.value);
+        sendCodeButton.setAttribute('disabled', 'disabled');
+    }
+    sendPostFormQuery(url, searchParams).then(response => findOrderResponseHandler(response));
+}
+
+//-----find order results handler
+
+function findOrderResponseHandler(response) {
+    let currentRole = currentRoleElement.dataset.role;
+    if (typeof response === 'object') {
+        if (currentRole === 'GUEST') {
+            currentRoleElement.dataset.role = 'CLIENT';
+            currentRoleElement.innerHTML = 'CLIENT';
+            emailInput.setAttribute('disabled', 'disabled');
+            codeInput.setAttribute('disabled', 'disabled');
+        }
+        activateResultsHeader(currentRole);
+        showResults(response);
+    } else {
+        let splitedResponse = response.split(':');
+        let responseResult = splitedResponse[0];
+        let responseText = splitedResponse[1];
+        if (responseResult === 'ok') {
+            activateResultsHeader(currentRole);
+            let div = document.createElement('div');
+            div.innerHTML = responseText;
+            resultSearchMessageElement.append(div);
+        } else {
+            errorMessageElement.innerHTML = responseText;
+            activateAlertBlock(errorMessageElement, 'alert-danger', '#exclamation-triangle-fill');
+            localStorage.setItem('currentOrderNumber', orderNumberInput.value);
+        }
+    }
+}
+
+//-----function activate message block for results
+
+function activateResultsHeader(currentRole) {
+    localStorage.clear();
+    resetInputFields(currentRole);
+    activateAlertBlock(resultSearchMessageElement, 'alert-success', '#check-circle-fill');
+    let lastElement = resultSearchMessageElement.lastElementChild;
+    if (lastElement != null) {
+        lastElement.remove();
+    }
+}
+
+//-----function clear all active input fields
+
+function resetInputFields(currentRole) {
+    localStorage.setItem('currentOrderNumber', orderNumberInput.value);
     orderNumberInput.value = '';
     orderNumberInput.classList.remove('is-valid');
-    this.setAttribute('disabled', 'disabled');
     if (currentRole === 'GUEST') {
-        sendCodeButton.setAttribute('disabled', 'disabled');
         deactivateCodeInputElement();
         emailInput.value = '';
         emailInput.classList.remove('is-valid');
-        sendPostFormQuery(url, searchParams).then(response => findOrderResponseHandler(response));
     }
-
-
-    //if code success - change role and hide email and show result search
-    //else - show error message
 }
 
-function findOrderResponseHandler(response) {
-    console.log('resp handler: response=' + response);
-    let jsonString=response.split(":")[1];
-    let obj=JSON.parse(jsonString);
-    console.log("string:"+jsonString);
-    console.log("object:"+obj);
+//-----function fill results table and show it
+
+function showResults(response) {
+    let resultsElement = document.querySelector('.results');
+    resultsElement.classList.remove('d-none');
+    fillCell('.td-number', response.orderNumber);
+    let orderStatus = response.orderStatus;
+    let orderStatusElement = document.querySelector('.td-status');
+    orderStatusElement.innerHTML = orderStatus;
+    orderStatusElement.classList.remove('table-danger', 'table-success', 'table-warning', 'table-info');
+    switch (orderStatus) {
+        case 'ACCEPTED':
+            orderStatusElement.classList.add('table-danger');
+            break;
+        case 'IN_PROGRESS':
+            orderStatusElement.classList.add('table-warning');
+            break;
+        case 'CLOSED':
+            orderStatusElement.classList.add('table-info');
+            break;
+        case 'ISSUED':
+            orderStatusElement.classList.add('table-success');
+            break;
+    }
+    let creationDate = response.creationDate.replace(/\d\d:\d\d:\d\d/, '');
+    fillCell('.td-creation', creationDate);
+    fillCell('.td-device', response.device.name);
+    fillCell('.td-company', response.company.name);
+    fillCell('.td-model', response.model);
+    fillCell('.td-serial', response.serialNumber);
+    let completionDate = response.completionDate.replace(/\d\d:\d\d:\d\d/, '');
+    fillCell('.td-completion', completionDate);
+    let issueDate = response.issueDate.replace(/\d\d:\d\d:\d\d/, '');
+    fillCell('.td-issue', issueDate);
+    fillCell('.td-work', response.workDescription);
+    fillCell('.td-work-cost', response.workPrice.repairCost);
+    if (response.spareParts.length > 0) {
+        response.spareParts.forEach(createPartRow);
+    }
+    let partsCost = Array.from(document.querySelectorAll('.td-part-cost'))
+        .map(item => Number.parseInt(item.innerHTML))
+        .reduce((sum, current) => sum + current, 0);
+    fillCell('.td-total-cost', response.workPrice.repairCost + partsCost);
 }
+
+//-----function create spare part row element
+
+function createPartRow(item) {
+    let bodyPartsElement = document.querySelector('.body-parts');
+    let rowElement = document.createElement('tr');
+    addPartCell(rowElement, 'td-part-number', item.partNumber);
+    addPartCell(rowElement, 'td-part-name', item.name);
+    addPartCell(rowElement, 'td-description', item.description);
+    addPartCell(rowElement, 'td-part-cost', item.cost);
+    bodyPartsElement.append(rowElement);
+}
+
+//-----function create and add spare part cell element
+
+function addPartCell(rowElement, className, value) {
+    let td = document.createElement('td');
+    td.setAttribute('class', className);
+    td.innerHTML = value;
+    rowElement.append(td);
+}
+
+//-----function insert value in table cell
+
+function fillCell(cellSelector, value) {
+    let cell = document.querySelector(cellSelector);
+    cell.innerHTML = value;
+}
+

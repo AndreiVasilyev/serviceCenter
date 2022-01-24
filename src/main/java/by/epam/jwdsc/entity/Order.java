@@ -14,7 +14,7 @@ public class Order extends CommonEntity {
     private String model;
     private String serialNumber;
     private Employee completedEmployee;
-    private LocalDateTime comletionDate;
+    private LocalDateTime completionDate;
     private LocalDateTime issueDate;
     private String workDescription;
     private PriceInfo workPrice;
@@ -25,7 +25,7 @@ public class Order extends CommonEntity {
 
     private Order(long id, String orderNumber, LocalDateTime creationDate, Client client, Employee acceptedEmployee,
                   Device device, Company company, String model, String serialNumber, Employee completedEmployee,
-                  LocalDateTime comletionDate, LocalDateTime issueDate, String workDescription, PriceInfo workPrice,
+                  LocalDateTime completionDate, LocalDateTime issueDate, String workDescription, PriceInfo workPrice,
                   List<SparePart> spareParts, OrderStatus orderStatus, String note) {
         this.id = id;
         this.orderNumber = orderNumber;
@@ -37,7 +37,7 @@ public class Order extends CommonEntity {
         this.model = model;
         this.serialNumber = serialNumber;
         this.completedEmployee = completedEmployee;
-        this.comletionDate = comletionDate;
+        this.completionDate = completionDate;
         this.issueDate = issueDate;
         this.workDescription = workDescription;
         this.workPrice = workPrice;
@@ -86,8 +86,8 @@ public class Order extends CommonEntity {
         return completedEmployee;
     }
 
-    public LocalDateTime getComletionDate() {
-        return comletionDate;
+    public LocalDateTime getCompletionDate() {
+        return completionDate;
     }
 
     public LocalDateTime getIssueDate() {
@@ -136,7 +136,7 @@ public class Order extends CommonEntity {
         if (serialNumber != null ? !serialNumber.equals(order.serialNumber) : order.serialNumber != null) return false;
         if (completedEmployee != null ? !completedEmployee.equals(order.completedEmployee) : order.completedEmployee != null)
             return false;
-        if (comletionDate != null ? !comletionDate.equals(order.comletionDate) : order.comletionDate != null)
+        if (completionDate != null ? !completionDate.equals(order.completionDate) : order.completionDate != null)
             return false;
         if (issueDate != null ? !issueDate.equals(order.issueDate) : order.issueDate != null) return false;
         if (workDescription != null ? !workDescription.equals(order.workDescription) : order.workDescription != null)
@@ -158,7 +158,7 @@ public class Order extends CommonEntity {
         result = 31 * result + (model != null ? model.hashCode() : 0);
         result = 31 * result + (serialNumber != null ? serialNumber.hashCode() : 0);
         result = 31 * result + (completedEmployee != null ? completedEmployee.hashCode() : 0);
-        result = 31 * result + (comletionDate != null ? comletionDate.hashCode() : 0);
+        result = 31 * result + (completionDate != null ? completionDate.hashCode() : 0);
         result = 31 * result + (issueDate != null ? issueDate.hashCode() : 0);
         result = 31 * result + (workDescription != null ? workDescription.hashCode() : 0);
         result = 31 * result + (workPrice != null ? workPrice.hashCode() : 0);
@@ -180,7 +180,7 @@ public class Order extends CommonEntity {
         sb.append(", model='").append(model).append('\'');
         sb.append(", serialNumber='").append(serialNumber).append('\'');
         sb.append(", completedEmployee=").append(completedEmployee);
-        sb.append(", comletionDate=").append(comletionDate);
+        sb.append(", comletionDate=").append(completionDate);
         sb.append(", issueDate=").append(issueDate);
         sb.append(", workDescription='").append(workDescription).append('\'');
         sb.append(", workPrice=").append(workPrice);
@@ -202,7 +202,7 @@ public class Order extends CommonEntity {
         private String model;
         private String serialNumber;
         private Employee completedEmployee;
-        private LocalDateTime comletionDate;
+        private LocalDateTime completionDate;
         private LocalDateTime issueDate;
         private String workDescription;
         private PriceInfo workPrice;
@@ -240,8 +240,8 @@ public class Order extends CommonEntity {
             return this;
         }
 
-        public Builder comletionDate(LocalDateTime comletionDate) {
-            this.comletionDate = comletionDate;
+        public Builder completionDate(LocalDateTime completionDate) {
+            this.completionDate = completionDate;
             return this;
         }
 
@@ -278,7 +278,7 @@ public class Order extends CommonEntity {
         public Order build() {
             return new Order(this.id, this.orderNumber, this.creationDate, this.client, this.acceptedEmployee,
                     this.device, this.company, this.model, this.serialNumber, this.completedEmployee,
-                    this.comletionDate, this.issueDate, this.workDescription, this.workPrice, this.spareParts,
+                    this.completionDate, this.issueDate, this.workDescription, this.workPrice, this.spareParts,
                     this.orderStatus, this.note);
         }
     }

@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static by.epam.jwdsc.dao.ColumnName.*;
 import static by.epam.jwdsc.dao.TableAliasName.*;
@@ -134,7 +133,7 @@ public class OrderDaoImpl implements OrderDao {
                                 try (ResultSet priceResultSet = pricePreparedStatement.executeQuery();
                                      ResultSet partsResultSet = partsPreparedStatement.executeQuery()) {
                                     priceInfo = priceResultSet.next() ? extractPrice(priceResultSet) : null;
-                                    spareParts = partsResultSet.next() ? extractSpareParts(partsResultSet) : null;
+                                    spareParts = extractSpareParts(partsResultSet);
                                 }
                             }
                         }
@@ -243,8 +242,8 @@ public class OrderDaoImpl implements OrderDao {
         String note = resultSet.getString(ORDERS_NOTE);
         boolean isOrderClosed = OrderStatus.CLOSED.name().equals(orderStatus);
         boolean isOrderIssued = OrderStatus.ISSUED.name().equals(orderStatus);
-        LocalDateTime completedDate = isOrderClosed ? resultSet.getTimestamp(ORDERS_COMPLETION_DATE).toLocalDateTime() : null;
-        String workDescription = isOrderClosed ? resultSet.getString(ORDERS_WORK_DESCRIPTION) : null;
+        LocalDateTime completedDate = isOrderClosed || isOrderIssued? resultSet.getTimestamp(ORDERS_COMPLETION_DATE).toLocalDateTime() : null;
+        String workDescription = isOrderClosed || isOrderIssued ? resultSet.getString(ORDERS_WORK_DESCRIPTION) : null;
         LocalDateTime issueDate = isOrderIssued ? resultSet.getTimestamp(ORDERS_ISSUE_DATE).toLocalDateTime() : null;
         return new Order.Builder(id, orderNumber, creationDate, client, acceptedEmployee, device)
                 .orderStatus(OrderStatus.valueOf(orderStatus))
@@ -252,7 +251,7 @@ public class OrderDaoImpl implements OrderDao {
                 .model(model)
                 .serialNumber(serialNumber)
                 .note(note)
-                .comletionDate(completedDate)
+                .completionDate(completedDate)
                 .workDescription(workDescription)
                 .issueDate(issueDate);
     }
@@ -291,7 +290,7 @@ public class OrderDaoImpl implements OrderDao {
         boolean isOrderIssued = OrderStatus.ISSUED.equals(order.getOrderStatus());
         if (isOrderClosed || isOrderIssued) {
             statement.setLong(11, order.getCompletedEmployee().getId());
-            statement.setTimestamp(12, Timestamp.valueOf(order.getComletionDate()));
+            statement.setTimestamp(12, Timestamp.valueOf(order.getCompletionDate()));
             if (isOrderIssued) {
                 statement.setTimestamp(13, Timestamp.valueOf(order.getIssueDate()));
             } else {

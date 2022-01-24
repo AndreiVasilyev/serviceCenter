@@ -23,6 +23,23 @@
 <fmt:message var="form_submit" key="checkOrder.main.form.submit"/>
 <fmt:message var="alert_note" key="checkOrder.main.alert.note.send.code"/>
 <fmt:message var="alert_result" key="checkOrder.main.alert.result.send.code"/>
+<fmt:message var="order_number" key="checkOrder.main.table.order.number"/>
+<fmt:message var="order_status" key="checkOrder.main.table.status"/>
+<fmt:message var="order_creation" key="checkOrder.main.table.creation"/>
+<fmt:message var="order_device" key="checkOrder.main.table.device"/>
+<fmt:message var="order_company" key="checkOrder.main.table.company"/>
+<fmt:message var="order_model" key="checkOrder.main.table.model"/>
+<fmt:message var="order_serial" key="checkOrder.main.table.serial"/>
+<fmt:message var="order_completion" key="checkOrder.main.table.completion"/>
+<fmt:message var="order_issue" key="checkOrder.main.table.issue"/>
+<fmt:message var="order_work_description" key="checkOrder.main.table.work.description"/>
+<fmt:message var="order_work_cost" key="checkOrder.main.table.work.cost"/>
+<fmt:message var="order_total_cost" key="checkOrder.main.table.total.cost"/>
+<fmt:message var="order_part_caption" key="checkOrder.main.table.part.caption"/>
+<fmt:message var="order_part_number" key="checkOrder.main.table.part.number"/>
+<fmt:message var="order_part_name" key="checkOrder.main.table.part.name"/>
+<fmt:message var="order_part_description" key="checkOrder.main.table.part.description"/>
+<fmt:message var="order_part_cost" key="checkOrder.main.table.part.cost"/>
 
 <!DOCTYPE html>
 <html>
@@ -36,7 +53,7 @@
     <body>
         <c:import url="icon_sprite.jsp"/>
         <c:import url="header.jsp"/>
-        <main>
+        <main class="mb-5">
             <div class="container">
                 <div class="row">
                     <div class="col-12 text-center fw-bolder text-secondary">
@@ -62,8 +79,7 @@
                                            value="${request_parameters.email[0]}" ${role eq 'GUEST'?'':'disabled'}/>
                                     <label for="email-input" class="input-field-tip">${email_tip}</label>
                                     <button class="btn btn-outline-success" type="button" id="send-code-button"
-                                            disabled>${email_button}
-                                    </button>
+                                            disabled> ${email_button}</button>
                                 </div>
                                 <div id="email-error" class="form-text text-danger"
                                      data-error-match="${email_error_match}"
@@ -73,7 +89,7 @@
                                 <label for="code-input" class="form-label">${code_label}</label>
                                 <div class="form-floating">
                                     <input type="text" class="form-control" id="code-input" disabled name="code"
-                                           value="${request_parameters.code[0]}"/>
+                                           value="${request_parameters.code[0]}" ${role eq 'GUEST'?'':'disabled'}/>
                                     <label for="code-input" class="input-field-tip">${code_tip}</label>
                                 </div>
                                 <div id="code-error" class="form-text text-danger"
@@ -90,6 +106,58 @@
                                 <div id="result-search-order" class="d-none alert-block-message">${alert_result}</div>
                             </div>
                         </form>
+                    </div>
+                    <div class="col-10 table-responsive mx-auto d-none results">
+                        <table class="table table-bordered table-sm">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th scope="col">${order_number}</th>
+                                    <th scope="col">${order_status}</th>
+                                    <th scope="col">${order_creation}</th>
+                                    <th scope="col">${order_device}</th>
+                                    <th scope="col">${order_company}</th>
+                                    <th scope="col">${order_model}</th>
+                                    <th scope="col">${order_serial}</th>
+                                    <th scope="col">${order_completion}</th>
+                                    <th scope="col">${order_issue}</th>
+                                    <th scope="col">${order_work_description}</th>
+                                    <th scope="col">${order_work_cost}</th>
+                                    <th scope="col">${order_total_cost}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="td-number td-order"></th>
+                                    <td class="td-status td-order"></td>
+                                    <td class="td-creation td-order"></td>
+                                    <td class="td-device td-order"></td>
+                                    <td class="td-company td-order"></td>
+                                    <td class="td-model td-order"></td>
+                                    <td class="td-serial td-order"></td>
+                                    <td class="td-completion td-order"></td>
+                                    <td class="td-issue td-order"></td>
+                                    <td class="td-work td-order"></td>
+                                    <td class="td-work-cost td-order"></td>
+                                    <td class="td-total-cost td-order"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="8">
+                                        <table class="table table-sm table-borderless mb-0 caption-top">
+                                            <caption>${order_part_caption}</caption>
+                                            <thead>
+                                                <th scope="col">${order_part_number}</th>
+                                                <th scope="col">${order_part_name}</th>
+                                                <th scope="col">${order_part_description}</th>
+                                                <th scope="col">${order_part_cost}</th>
+                                            </thead>
+                                            <tbody class="body-parts">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

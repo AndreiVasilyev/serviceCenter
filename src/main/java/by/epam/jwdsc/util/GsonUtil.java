@@ -9,7 +9,8 @@ import java.util.Locale;
 
 public final class GsonUtil {
 
-    private static final String DATE_TIME_FORMAT_PATTERN = "d::MMM::uuuu HH::mm::ss";
+    //private static final String DATE_TIME_FORMAT_PATTERN = "d::MMM::uuuu HH::mm::ss";
+    private static final String DATE_TIME_FORMAT_PATTERN = "d MMM uuuu HH:mm:ss";
     private static Gson gson;
 
     private GsonUtil() {
