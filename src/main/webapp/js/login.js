@@ -57,6 +57,18 @@ createCustomValidation(passwordInput, passwordValidityChecks);
 //Set listeners after page load/unload
 
 document.addEventListener('DOMContentLoaded', loadDocumentHandler);
+window.addEventListener('beforeunload', unloadDocumentHandler);
+
+//-----page unload handler
+
+function unloadDocumentHandler() {
+    let event = localStorage.getItem('currentEvent');
+    if (event !== 'changeLocale') {
+        console.log('clear storage');
+        localStorage.clear();
+    }
+    localStorage.removeItem('currentEvent');
+}
 
 //-----page loaded handler
 
@@ -70,16 +82,15 @@ function loadDocumentHandler() {
         if (lastValue != null) {
             inputFieldElements[i].value = lastValue;
         }
-        /*if (inputFieldElements[i].value !== '' && !inputFieldElements[i].hasAttribute('disabled')) {
-            checkInputField(inputFieldElements[i], validatedCheckOrderFormHandler, checkOrderButton);
-        }*/
+        if (inputFieldElements[i].value !== '') {
+            checkInputField(inputFieldElements[i], validatedLoginFormHandler, loginButton);
+        }
     }
 }
 
 //-----input field OnBlur event handler
 
 function onBlurInputFieldHandler() {
-    console.log('onblur');
     checkInputField(this, validatedLoginFormHandler, loginButton);
 }
 

@@ -5,6 +5,7 @@
 <c:set var="role" value="${not empty sessionScope.userRole?sessionScope.userRole:'GUEST'}"/>
 <c:set var="locale" value="${not empty sessionScope.locale?sessionScope.locale:'en_EN'}"/>
 <c:set var="request_parameters" value="${sessionScope.requestData.requestParameters}"/>
+
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="locale"/>
 <fmt:message var="login_title" key="login.title"/>
@@ -81,14 +82,15 @@
                                      data-error-match="${password_error_match}"></div>
                             </div>
                             <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="remember-input" name="remember">
+                                <input type="checkbox" class="form-check-input" id="remember-input" name="remember"
+                                ${request_parameters.remember[0]=='on'?'checked':''}>
                                 <label class="form-check-label" for="remember-input">${remember}</label>
                             </div>
                             <div class="row">
                                 <button type="submit" class="btn btn-success col-auto" id="login-button" disabled>
                                     ${form_submit}</button>
                                 <div class="ms-auto col-auto">
-                                    <a href="#" class="text-decoration-none">${registration}</a>
+                                    <a href="${registration_page}" class="text-decoration-none">${registration}</a>
                                 </div>
                             </div>
 

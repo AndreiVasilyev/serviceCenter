@@ -6,30 +6,24 @@ import by.epam.jwdsc.entity.*;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.pool.DbConnectionPool;
 
+import java.math.BigDecimal;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static by.epam.jwdsc.dao.ColumnName.*;
+import static by.epam.jwdsc.dao.TableAliasName.SC_EMPLOYEES;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
-public class EmployeeDaoImpl extends UserDao implements EmployeeDao{
+public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
 
-    private static final String SQL_SELECT_ALL_EMPLOYEES = "SELECT e.user_id, e.login, e.password, u.user_role, " +
+    private static final String SQL_SELECT_EMPLOYEES_TEMPLATE = "SELECT e.user_id, e.login, e.password, u.user_role, " +
             "u.first_name, u.second_name, u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, " +
             "a.region, a.city, a.street, a.house_number, a.apartment_number, " +
             "GROUP_CONCAT(p.phone_number) AS phone_number FROM employees AS e JOIN users AS u USING (user_id) " +
             "JOIN addresses AS a ON (u.address=a.address_id) JOIN phone_numbers AS p ON(u.user_id = p.user_id) " +
-            "GROUP BY u.user_id";
-    private static final String SQL_SELECT_EMPLOYEE_BY_ID = "SELECT e.user_id, e.login, e.password, u.user_role, " +
-            "u.first_name, u.second_name, u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, " +
-            "a.region, a.city, a.street, a.house_number, a.apartment_number, GROUP_CONCAT(p.phone_number) " +
-            "AS phone_number FROM employees AS e JOIN users AS u USING (user_id) JOIN addresses AS a " +
-            "ON (u.address=a.address_id) JOIN phone_numbers AS p ON(u.user_id = p.user_id) WHERE u.user_id=? " +
-            "GROUP BY u.user_id";
+            "%s GROUP BY u.user_id";
     private static final String SQL_DELETE_EMPLOYEE_BY_ID = "DELETE e, u, a, p FROM employees AS e JOIN users AS u " +
             "USING (user_id) JOIN addresses AS a ON (u.address=a.address_id) JOIN phone_numbers AS p " +
             "ON(u.user_id = p.user_id) WHERE u.user_id=?";
@@ -43,45 +37,58 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao{
             "JOIN addresses AS a ON (u.address=a.address_id) SET e.login=?, e.password=?, u.user_role=?, u.first_name=?, " +
             "u.second_name=?, u.patronymic=?, u.email=?, a.country=?, a.postcode=?, a.state=?, a.region=?, a.city=?, " +
             "a.street=?, a.house_number=?, a.apartment_number=? WHERE u.user_id=?";
-
+    private static final String WHERE_TEMPLATE = "WHERE ";
+    private static final String PARAMETER_TEMPLATE = "=? ";
+    private static final int START_PARAMETER_INDEX = 1;
 
     @Override
     public List<Employee> findAll() throws DaoException {
-        List<Employee> employees = new ArrayList<>();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_EMPLOYEES)) {
-            while (resultSet.next()) {
-                Employee employee = extractEmployee(resultSet);
-                employees.add(employee);
-            }
-        } catch (SQLException e) {
-            log.error("Error executing query findAll from Employees", e);
-            throw new DaoException("Error executing query findAll from Employees", e);
-        } finally {
-            close(connection);
-        }
-        return employees;
+        LinkedHashMap<String, Object> queryParameters = new LinkedHashMap<>();
+        return findByParams(queryParameters);
     }
 
     @Override
     public Optional<Employee> findById(long id) throws DaoException {
-        Optional<Employee> employee = Optional.empty();
-        Connection connection = DbConnectionPool.INSTANCE.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_EMPLOYEE_BY_ID)) {
-            statement.setLong(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    employee = Optional.of(extractEmployee(resultSet));
+        LinkedHashMap<String, Object> queryParameters = new LinkedHashMap<>();
+        StringBuilder parameterBuilder = new StringBuilder(SC_EMPLOYEES);
+        parameterBuilder.append(COLUMN_NAME_DELIMITER);
+        parameterBuilder.append(EMPLOYEES_USER_ID);
+        queryParameters.put(parameterBuilder.toString(), id);
+        List<Employee> employees = findByParams(queryParameters);
+        return employees.isEmpty() ? Optional.empty() : Optional.of(employees.get(0));
+    }
+
+    @Override
+    public List<Employee> findByParams(LinkedHashMap<String, Object> parameters) throws DaoException {
+        List<Employee> employees = new ArrayList<>();
+        String sqlSelectEmployeesByParameters;
+        if (parameters != null && parameters.size() > 0) {
+            StringBuilder whereBlockBuilder = new StringBuilder(WHERE_TEMPLATE);
+            for (String parameterName : parameters.keySet()) {
+                whereBlockBuilder.append(parameterName);
+                whereBlockBuilder.append(PARAMETER_TEMPLATE);
+            }
+            sqlSelectEmployeesByParameters = String.format(SQL_SELECT_EMPLOYEES_TEMPLATE, whereBlockBuilder.toString());
+        } else {
+            sqlSelectEmployeesByParameters = String.format(SQL_SELECT_EMPLOYEES_TEMPLATE, "");
+        }
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement employeeStatement = connection.prepareStatement(sqlSelectEmployeesByParameters)) {
+            int parameterIndex = START_PARAMETER_INDEX;
+            for (Object parameterValue : parameters.values()) {
+                employeeStatement.setObject(parameterIndex++, parameterValue);
+            }
+            try (ResultSet resultSet = employeeStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Employee employee = extractEmployee(resultSet);
+                    employees.add(employee);
                 }
             }
+            return employees;
         } catch (SQLException e) {
-            log.error("Error executing query findById from Employees", e);
-            throw new DaoException("Error executing query findById from Employees", e);
-        } finally {
-            close(connection);
+            log.error("Error executing query find by parameters from Employees", e);
+            throw new DaoException("Error executing query find by parameters from Employees", e);
         }
-        return employee;
     }
 
     @Override
@@ -155,14 +162,14 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao{
 
     @Override
     public Optional<Employee> update(Employee employee) throws DaoException {
-        Optional<Employee> oldEmployeeFound=findById(employee.getId());
-        if(oldEmployeeFound.isPresent()) {
-            Employee oldEmployee=oldEmployeeFound.get();
+        Optional<Employee> oldEmployeeFound = findById(employee.getId());
+        if (oldEmployeeFound.isPresent()) {
+            Employee oldEmployee = oldEmployeeFound.get();
             Connection connection = DbConnectionPool.INSTANCE.getConnection();
             try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_EMPLOYEE)) {
                 collectUpdateEmployeeQuery(statement, employee);
                 statement.executeUpdate();
-                updatePhoneNumbers(connection,employee,oldEmployee);
+                updatePhoneNumbers(connection, employee, oldEmployee);
             } catch (SQLException e) {
                 log.error("Error executing query update Employee", e);
                 throw new DaoException("Error executing query update Employee", e);

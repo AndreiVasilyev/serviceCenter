@@ -16,16 +16,6 @@ import static by.epam.jwdsc.dao.TableAliasName.*;
 
 public class OrderDaoImpl implements OrderDao {
 
-    private static final String SQL_SELECT_ALL_ORDERS = "SELECT o.order_id,o.order_number,o.order_status, " +
-            "o.creation_date,o.client,o.accepted_employee,o.device, o.company,o.model,o.serial_number," +
-            "o.completed_employee,o.completion_date,o.issue_date, o.work_description,o.work_price,o.note,c.user_id," +
-            "c.discount,u.first_name,u.second_name, u.patronymic,u.address,u.email,a.country,a.postcode,a.state," +
-            "a.region,a.city,a.street, a.house_number, a.apartment_number, d.device_name, co.name, " +
-            "co.is_service_contract, GROUP_CONCAT(p.phone_number) AS phone_number FROM orders AS o " +
-            "JOIN clients AS c ON(o.client=c.user_id) JOIN users AS u ON(o.client=u.user_id) " +
-            "JOIN addresses AS a ON(a.address_id = u.address) JOIN devices AS d ON(d.device_id=o.device) " +
-            "JOIN companies AS co ON(co.company_id=o.company) JOIN phone_numbers AS p ON(o.client=p.user_id) " +
-            "GROUP BY o.order_id";
     private static final String SQL_SELECT_ORDERS_TEMPLATE = "SELECT o.order_id,o.order_number,o.order_status, " +
             "o.creation_date,o.client,o.accepted_employee,o.device, o.company,o.model,o.serial_number," +
             "o.completed_employee,o.completion_date,o.issue_date, o.work_description,o.work_price,o.note,c.user_id," +

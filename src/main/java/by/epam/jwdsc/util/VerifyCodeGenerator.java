@@ -2,10 +2,10 @@ package by.epam.jwdsc.util;
 
 import java.util.Random;
 
-public final class CodeGenerator {
+public final class VerifyCodeGenerator {
     private static final Random random = new Random();
 
-    private CodeGenerator() {
+    private VerifyCodeGenerator() {
     }
 
     public static String generateCode() {

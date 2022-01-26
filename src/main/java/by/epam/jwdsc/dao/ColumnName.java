@@ -1,6 +1,8 @@
 package by.epam.jwdsc.dao;
 
 public final class ColumnName {
+
+    public static final String COLUMN_NAME_DELIMITER = ".";
     //for table Orders
     public static final String ORDERS_ID = "order_id";
     public static final String ORDERS_ORDER_NUMBER = "order_number";

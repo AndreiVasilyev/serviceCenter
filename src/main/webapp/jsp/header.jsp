@@ -4,12 +4,17 @@
 
 <c:set var="role" value="${not empty sessionScope.userRole?sessionScope.userRole:'GUEST'}"/>
 <c:set var="locale" value="${not empty sessionScope.locale?sessionScope.locale:'en_EN'}"/>
+
 <c:url value="/control?command=goto_main_page" var="main_page"/>
 <c:url value="/control?command=goto_check_order_page" var="check_order_page"/>
 <c:url value="/control?command=goto_login_page" var="login_page"/>
+<c:url value="/control?command=logout" var="logout_command"/>
+<c:url value="/control?command=goto_registration_page" var="registration_page"/>
+
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="locale"/>
 <fmt:message var="login" key="header.login"/>
+<fmt:message var="logout" key="header.logout"/>
 <fmt:message var="signup" key="header.signup"/>
 <fmt:message var="address" key="header.address"/>
 <fmt:message var="working" key="header.working"/>
@@ -32,11 +37,13 @@
                               id="current-role">${role}</span>
                     </li>
                     <li class="nav-item align-self-center ">
-                        <a class="nav-link p-0 pe-1 text-light auth-link " href="${login_page}">${login}</a>
+                        <a class="nav-link p-0 pe-1 text-light auth-link "
+                           href="${role eq 'GUEST' or role eq 'CLIENT'? login_page:logout_command}">
+                            ${role eq 'GUEST' or role eq 'CLIENT'?login:logout}</a>
                     </li>
-                    <span class="">|</span>
-                    <li class="nav-item align-self-center">
-                        <a class="nav-link p-0 ps-1 text-light auth-link " href="#">${signup}</a>
+                    <span class="registration ${role eq 'GUEST' or role eq 'CLIENT'? '':'d-none'}">|</span>
+                    <li class="nav-item align-self-center registration ${role eq 'GUEST' or role eq 'CLIENT'? '':'d-none'}">
+                        <a class="nav-link p-0 ps-1 text-light auth-link " href="${registration_page}">${signup}</a>
                     </li>
                     <li class="p-1 ms-3 ">
                         <select class="form-select form-select-sm p-0 pe-3 ps-1 locale-check" id="locale_selector">
@@ -75,13 +82,13 @@
                     <div class="collapse navbar-collapse" id="navbarToggler">
                         <ul class="navbar-nav ms-auto ">
                             <li class="nav-item">
-                                <a class="nav-link" href="${main_page}">${home}</a>
+                                <a class="nav-link menu-link" href="${main_page}">${home}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">${about}</a>
+                                <a class="nav-link menu-link" href="#">${about}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                                <a class="nav-link dropdown-toggle menu-link" data-bs-toggle="dropdown"
                                    role="button">${services}</a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="${check_order_page}">${check}</a></li>
@@ -89,10 +96,10 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">${blog}</a>
+                                <a class="nav-link menu-link" href="#">${blog}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">${contacts}</a>
+                                <a class="nav-link menu-link" href="#">${contacts}</a>
                             </li>
                         </ul>
                     </div>

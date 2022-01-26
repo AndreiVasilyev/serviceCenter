@@ -1,10 +1,7 @@
 package by.epam.jwdsc.controller.command;
 
 import by.epam.jwdsc.controller.command.impl.*;
-import by.epam.jwdsc.controller.command.impl.gotocommand.GotoCheckOrderPageCommand;
-import by.epam.jwdsc.controller.command.impl.gotocommand.GotoErrorPageCommand;
-import by.epam.jwdsc.controller.command.impl.gotocommand.GotoLoginPageCommand;
-import by.epam.jwdsc.controller.command.impl.gotocommand.GotoMainPageCommand;
+import by.epam.jwdsc.controller.command.impl.gotocommand.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +26,9 @@ public class CommandProvider {
         commands.put(FIND_ORDER_BY_NUMBER, new FindOrderByNumberCommand());
         commands.put(GOTO_ERROR_PAGE, new GotoErrorPageCommand());
         commands.put(GOTO_LOGIN_PAGE, new GotoLoginPageCommand());
-        commands.put(LOGIN,new LoginCommand());
+        commands.put(LOGIN, new LoginCommand());
+        commands.put(GOTO_REGISTRATION_PAGE, new GotoRegistrationPage());
+        commands.put(LOGOUT, new LogoutCommand());
     }
 
     public static CommandProvider getInstance() {

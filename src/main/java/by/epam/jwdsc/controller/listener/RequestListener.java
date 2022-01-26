@@ -56,15 +56,6 @@ public class RequestListener implements ServletRequestListener {
             HttpSession httpSession = request.getSession();
             httpSession.removeAttribute(REQUEST_DATA);
             httpSession.setAttribute(REQUEST_DATA, requestData);
-            System.out.println("creating order:\nParams");
-            for (Map.Entry<String,String[]> par:request.getParameterMap().entrySet()) {
-                System.out.println("key="+par.getKey()+", val="+par.getValue());
-            }
-            System.out.println("Attributes");
-            for (Iterator<String> it = request.getAttributeNames().asIterator(); it.hasNext(); ) {
-                String attr = it.next();
-                System.out.println("attr name="+attr+", val="+request.getAttribute(attr));
-            }
         }
     }
 }

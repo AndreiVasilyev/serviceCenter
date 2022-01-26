@@ -10,7 +10,7 @@ import by.epam.jwdsc.service.ConfirmationCodeService;
 import by.epam.jwdsc.service.EmailService;
 import by.epam.jwdsc.service.OrderService;
 import by.epam.jwdsc.service.ServiceProvider;
-import by.epam.jwdsc.util.CodeGenerator;
+import by.epam.jwdsc.util.VerifyCodeGenerator;
 import by.epam.jwdsc.validator.Validator;
 import by.epam.jwdsc.validator.impl.ValidatorImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +49,7 @@ public class SendCodeCommand implements Command {
             try {
                 Optional<Order> order = orderService.findOrderByOrderNumber(orderNumber);
                 if (order.isPresent() && order.get().getClient().getEmail().equalsIgnoreCase(toEmail)) {
-                    String confirmationCode = CodeGenerator.generateCode();
+                    String confirmationCode = VerifyCodeGenerator.generateCode();
                     confirmationCodeService.saveCode(confirmationCode, toEmail);
                     emailService.sendConfirmationCodeEmail(toEmail, confirmationCode, locale);
                     responseText = POSITIVE_RESPONSE;

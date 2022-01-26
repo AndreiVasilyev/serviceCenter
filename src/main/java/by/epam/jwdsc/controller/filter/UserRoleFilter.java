@@ -1,6 +1,7 @@
 package by.epam.jwdsc.controller.filter;
 
 import by.epam.jwdsc.entity.UserRole;
+import by.epam.jwdsc.util.CookieUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.Cookie;
@@ -24,31 +25,32 @@ public class UserRoleFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         //define userRole session attribute when start session
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession httpSession = httpRequest.getSession(true);
         Cookie[] cookies = httpRequest.getCookies();
+        CookieUtil cookieUtil = CookieUtil.getInstance();
         if (httpSession.getAttribute(USER_ROLE) == null) {
-            if (cookies == null || getCookie(cookies, USER_ROLE).isEmpty()) {
+            if (cookies == null || cookieUtil.getCookie(cookies, USER_ROLE).isEmpty()) {
                 Cookie cookie = new Cookie(USER_ROLE, GUEST.name());
                 cookie.setMaxAge(COOKIE_AGE_MONTH);
                 httpResponse.addCookie(cookie);
-                httpSession.setAttribute(USER_ROLE, GUEST.name());
+                httpSession.setAttribute(USER_ROLE, GUEST);
             } else {
-                Cookie cookieRole = getCookie(cookies, USER_ROLE).get();
-                httpSession.setAttribute(USER_ROLE, cookieRole.getValue());
+                Cookie cookieRole = cookieUtil.getCookie(cookies, USER_ROLE).get();
+                UserRole userRole = UserRole.valueOf(cookieRole.getValue());
+                httpSession.setAttribute(USER_ROLE, userRole);
+                if (CLIENT == userRole) {
+                    Cookie cookieLogin = cookieUtil.getCookie(cookies, CLIENT_LOGIN).get();
+                    httpSession.setAttribute(CLIENT_LOGIN, cookieLogin.getValue());
+                }
+                if (ADMIN == userRole || INGINEER == userRole || MANAGER == userRole) {
+                    Cookie cookieLogin = cookieUtil.getCookie(cookies, EMPLOYEE_ID).get();
+                    httpSession.setAttribute(EMPLOYEE_ID, Long.parseLong(cookieLogin.getValue()));
+                }
             }
         }
-        if (CLIENT.name().equalsIgnoreCase((String) httpSession.getAttribute(USER_ROLE))) {
-            Cookie cookieLogin = getCookie(cookies, CLIENT_LOGIN).get();
-            httpSession.setAttribute(CLIENT_LOGIN, cookieLogin.getValue());
-        }
         chain.doFilter(request, response);
-    }
-
-    private Optional<Cookie> getCookie(Cookie[] cookies, String name) {
-        return Arrays.stream(cookies)
-                .filter(c -> c.getName().equalsIgnoreCase(name))
-                .findFirst();
     }
 }
