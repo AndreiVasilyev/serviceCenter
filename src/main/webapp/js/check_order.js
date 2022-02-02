@@ -345,19 +345,34 @@ function showResults(response) {
     fillCell('.td-company', response.company.name);
     fillCell('.td-model', response.model);
     fillCell('.td-serial', response.serialNumber);
-    let completionDate = response.completionDate.replace(/\d\d:\d\d:\d\d/, '');
+    let completionDate = response.completionDate;
+    if (completionDate != null && completionDate !== '') {
+        completionDate = completionDate.replace(/\d\d:\d\d:\d\d/, '');
+    } else {
+        completionDate = '';
+    }
     fillCell('.td-completion', completionDate);
-    let issueDate = response.issueDate.replace(/\d\d:\d\d:\d\d/, '');
+    let issueDate = response.issueDate;
+    if (issueDate != null && issueDate !== '') {
+        issueDate = issueDate.replace(/\d\d:\d\d:\d\d/, '');
+    } else {
+        issueDate = '';
+    }
     fillCell('.td-issue', issueDate);
-    fillCell('.td-work', response.workDescription);
-    fillCell('.td-work-cost', response.workPrice.repairCost);
-    if (response.spareParts.length > 0) {
+    fillCell('.td-work', response.workDescription != null ? response.workDescription : '');
+    let workPrice = response.workPrice;
+    let repairCost = '';
+    if (workPrice != null) {
+        repairCost = workPrice.repairCost;
+    }
+    fillCell('.td-work-cost', repairCost);
+    if (response.spareParts != null && response.spareParts.length > 0) {
         response.spareParts.forEach(createPartRow);
     }
     let partsCost = Array.from(document.querySelectorAll('.td-part-cost'))
         .map(item => Number.parseInt(item.innerHTML))
         .reduce((sum, current) => sum + current, 0);
-    fillCell('.td-total-cost', response.workPrice.repairCost + partsCost);
+    fillCell('.td-total-cost', repairCost + partsCost);
 }
 
 //-----function create spare part row element

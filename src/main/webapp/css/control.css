@@ -1,4 +1,13 @@
-main{
+main {
     margin-top: 15vh;
+}
+
+thead, .dropdown-menu {
+    white-space: nowrap;
+}
+
+.order-action {
+    width: 10rem;
+    white-space: nowrap;
 }
 

@@ -1,12 +1,12 @@
 package by.epam.jwdsc.dao.impl;
 
 import by.epam.jwdsc.dao.OrderDao;
+import by.epam.jwdsc.dao.QueryParametersMapper;
 import by.epam.jwdsc.entity.*;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.pool.DbConnectionPool;
 import org.apache.logging.log4j.util.Strings;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -15,23 +15,26 @@ import static by.epam.jwdsc.dao.ColumnName.*;
 import static by.epam.jwdsc.dao.TableAliasName.*;
 
 public class OrderDaoImpl implements OrderDao {
-
+    //
     private static final String SQL_SELECT_ORDERS_TEMPLATE = "SELECT o.order_id,o.order_number,o.order_status, " +
             "o.creation_date,o.client,o.accepted_employee,o.device, o.company,o.model,o.serial_number," +
             "o.completed_employee,o.completion_date,o.issue_date, o.work_description,o.work_price,o.note,c.user_id," +
             "c.discount,u.first_name,u.second_name, u.patronymic,u.address,u.email,a.address_id,a.country,a.postcode," +
             "a.state,a.region,a.city,a.street,a.house_number,a.apartment_number,d.device_name,co.company_id,co.name, " +
-            "co.is_service_contract, GROUP_CONCAT(p.phone_number) AS phone_number FROM orders AS o " +
-            "JOIN clients AS c ON(o.client=c.user_id) JOIN users AS u ON(o.client=u.user_id) " +
+            "co.is_service_contract, GROUP_CONCAT(p.phone_number) AS phone_number, " +
+            "(SELECT concat(ae.first_name,ae.second_name) FROM users AS ae WHERE o.accepted_employee=ae.user_id) AS accepted_names, " +
+            "(SELECT concat(ce.first_name,ce.second_name) FROM users AS ce WHERE o.completed_employee=ce.user_id) AS completed_names, " +
+            "(SELECT pl.repair_level FROM prices AS pl WHERE o.device=pl.device_id) AS repair_level, " +
+            "(SELECT pc.repair_cost FROM prices AS pc WHERE o.device=pc.device_id) AS repair_cost " +
+            "FROM orders AS o JOIN clients AS c ON(o.client=c.user_id) JOIN users AS u ON(o.client=u.user_id) " +
             "JOIN addresses AS a ON(a.address_id = u.address) JOIN devices AS d ON(d.device_id=o.device) " +
-            "JOIN companies AS co ON(co.company_id=o.company) JOIN phone_numbers AS p ON(o.client=p.user_id) " +
-            "%s GROUP BY o.order_id";
-    private static final String SQL_WHERE_ORDERS_PARAM_TEMPLATE = "WHERE %s.%s=?";
+            "JOIN companies AS co ON(co.company_id=o.company) LEFT JOIN phone_numbers AS p ON(o.client=p.user_id) " +
+            "%s GROUP BY o.order_id %s %s";
     private static final String SQL_SELECT_EMPLOYEE_BY_ID = "SELECT e.user_id, e.login, e.password, u.user_role, " +
             "u.first_name, u.second_name, u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, " +
             "a.region, a.city, a.street, a.house_number, a.apartment_number, GROUP_CONCAT(p.phone_number) " +
-            "AS phone_number FROM employees AS e JOIN users AS u USING (user_id) JOIN phone_numbers AS p USING(user_id)" +
-            "JOIN addresses AS a ON (u.address=a.address_id)  WHERE u.user_id=? GROUP BY u.user_id";
+            "AS phone_number FROM employees AS e JOIN users AS u USING (user_id) JOIN addresses AS a ON (u.address=a.address_id) " +
+            "LEFT JOIN phone_numbers AS p ON (u.user_id=p.user_id) WHERE e.user_id=? GROUP BY e.user_id";
     private static final String SQL_SELECT_PRICE_BY_ID = "SELECT pr.id, pr.device_id, pr.repair_level, pr.repair_cost " +
             "FROM prices AS pr WHERE pr.id=? ";
     public static final String SQL_SELECT_PARTS_BY_ORDER_ID = "SELECT s.id, s.part_number, s.name, s.description, s.cost " +
@@ -46,94 +49,82 @@ public class OrderDaoImpl implements OrderDao {
             "o.work_description=?, o.work_price=? WHERE o.order_id=?";
     private static final String SQL_ADD_SPARE_PART = "INSERT INTO orders_spare_parts(order_id, spare_part_id) VALUES(?,?)";
     private static final String SQL_DELETE_SPARE_PART = "DELETE FROM orders_spare_parts WHERE order_id=? AND spare_part_id=?";
-    private static final String INTEGER_TYPE = "Integer";
-    private static final String STRING_TYPE = "String";
-    private static final String BOOLEAN_TYPE = "Boolean";
-    private static final String LONG_TYPE = "Long";
-    private static final String LOCAL_DATE_TIME_TYPE = "LocalDateTime";
-    private static final String BIG_DECIMAL_TYPE = "BigDecimal";
-
 
     @Override
     public List<Order> findAll() throws DaoException {
-        String sqlSelectOrders = String.format(SQL_SELECT_ORDERS_TEMPLATE, Strings.EMPTY);
-        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
-             PreparedStatement orderStatement = connection.prepareStatement(sqlSelectOrders)) {
-            return findOrders(connection, orderStatement);
-        } catch (SQLException e) {
-            log.error("Error executing query findAll from Orders", e);
-            throw new DaoException("Error executing query findAll from Orders", e);
-        }
+        String selectQuery = String.format(SQL_SELECT_ORDERS_TEMPLATE, Strings.EMPTY, Strings.EMPTY, Strings.EMPTY);
+        return findOrders(selectQuery, Collections.EMPTY_LIST);
     }
 
     @Override
     public Optional<Order> findById(long id) throws DaoException {
-        List<Order> orders = findByParam(SC_ORDERS, ORDERS_ID, id);
+        QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
+        LinkedHashMap<String, Object> parameters = queryParametersMapper.mapParameter(SC_ORDERS, ORDERS_ID, id);
+        String whereBlock = prepareWhereBlock(parameters.keySet());
+        String selectQuery = String.format(SQL_SELECT_ORDERS_TEMPLATE, whereBlock, Strings.EMPTY, Strings.EMPTY);
+        List<Order> orders = findOrders(selectQuery, parameters.values());
         return Optional.ofNullable(orders.get(0));
     }
 
     @Override
-    public <T> List<Order> findByParam(String paramTableName, String paramColumnName, T paramValue) throws DaoException {
-        String sqlWhereBlock = String.format(SQL_WHERE_ORDERS_PARAM_TEMPLATE, paramTableName, paramColumnName);
-        String sqlSelectOrdersByParam = String.format(SQL_SELECT_ORDERS_TEMPLATE, sqlWhereBlock);
-        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
-             PreparedStatement orderStatement = connection.prepareStatement(sqlSelectOrdersByParam)) {
-            switch (paramValue.getClass().getSimpleName()) {
-                case STRING_TYPE -> orderStatement.setString(1, (String) paramValue);
-                case LONG_TYPE -> orderStatement.setLong(1, (Long) paramValue);
-                case INTEGER_TYPE -> orderStatement.setInt(1, (Integer) paramValue);
-                case LOCAL_DATE_TIME_TYPE -> orderStatement.setTimestamp(1, Timestamp.valueOf((LocalDateTime) paramValue));
-                case BOOLEAN_TYPE -> orderStatement.setBoolean(1, (Boolean) paramValue);
-                case BIG_DECIMAL_TYPE -> orderStatement.setBigDecimal(1, (BigDecimal) paramValue);
-                default -> {
-                    log.error("Unknown type of search parameter {}", paramValue);
-                    throw new DaoException("Unknown type of search parameter " + paramValue);
-                }
-            }
-            return findOrders(connection, orderStatement);
-        } catch (SQLException e) {
-            log.error("Error executing query find by parameter from Orders", e);
-            throw new DaoException("Error executing query find by parameter from Orders", e);
-        }
+    public List<Order> findByParams(LinkedHashMap<String, Object> parameters) throws DaoException {
+        String whereBlock = prepareWhereBlock(parameters.keySet());
+        String selectQuery = String.format(SQL_SELECT_ORDERS_TEMPLATE, whereBlock, Strings.EMPTY, Strings.EMPTY);
+        return findOrders(selectQuery, parameters.values());
     }
 
-    private List<Order> findOrders(Connection connection, PreparedStatement orderStatement) throws DaoException {
+    @Override
+    public List<Order> findByParamsWithSortAndPage(LinkedHashMap<String, Object> parameters, String sort, int pageNumber) throws DaoException {
+        String whereBlock = prepareWhereBlock(parameters.keySet());
+        String sortBlock = prepareSortBlock(sort);
+        String pageBlock = preparePageBlock(pageNumber);
+        String selectQuery = String.format(SQL_SELECT_ORDERS_TEMPLATE, whereBlock, sortBlock, pageBlock);
+        return findOrders(selectQuery, parameters.values());
+    }
+
+    private List<Order> findOrders(String selectQuery, Collection<Object> parameters) throws DaoException {
         List<Order> orders = new ArrayList<>();
-        try (PreparedStatement employeePreparedStatement = connection.prepareStatement(SQL_SELECT_EMPLOYEE_BY_ID);
-             ResultSet orderResultSet = orderStatement.executeQuery()) {
-            while (orderResultSet.next()) {
-                String orderStatus = orderResultSet.getString(ORDERS_STATUS);
-                long acceptedEmployeeId = orderResultSet.getLong(ORDERS_ACCEPTED_EMPLOYEE);
-                employeePreparedStatement.setLong(1, acceptedEmployeeId);
-                try (ResultSet acceptedEmployeeResultSet = employeePreparedStatement.executeQuery()) {
-                    Employee acceptedEmployee = acceptedEmployeeResultSet.next() ? extractEmployee(acceptedEmployeeResultSet) : null;
-                    Employee completedEmployee = null;
-                    PriceInfo priceInfo = null;
-                    List<SparePart> spareParts = null;
-                    if (OrderStatus.CLOSED.name().equals(orderStatus) || OrderStatus.ISSUED.name().equals(orderStatus)) {
-                        try (PreparedStatement pricePreparedStatement = connection.prepareStatement(SQL_SELECT_PRICE_BY_ID);
-                             PreparedStatement partsPreparedStatement = connection.prepareStatement(SQL_SELECT_PARTS_BY_ORDER_ID)) {
-                            long completedEmployeeId = orderResultSet.getLong(ORDERS_COMPLETED_EMPLOYEE);
-                            employeePreparedStatement.setLong(1, completedEmployeeId);
-                            try (ResultSet completedEmployeeResultSet = employeePreparedStatement.executeQuery()) {
-                                completedEmployee = completedEmployeeResultSet.next() ? extractEmployee(completedEmployeeResultSet) : null;
-                                long workPriceId = orderResultSet.getLong(ORDERS_WORK_PRICE);
-                                pricePreparedStatement.setLong(1, workPriceId);
-                                partsPreparedStatement.setLong(1, orderResultSet.getLong(ORDERS_ID));
-                                try (ResultSet priceResultSet = pricePreparedStatement.executeQuery();
-                                     ResultSet partsResultSet = partsPreparedStatement.executeQuery()) {
-                                    priceInfo = priceResultSet.next() ? extractPrice(priceResultSet) : null;
-                                    spareParts = extractSpareParts(partsResultSet);
+        log.debug("QUERY: {}", selectQuery);
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement orderStatement = connection.prepareStatement(selectQuery)) {
+            prepareStatement(orderStatement, parameters);
+            try (ResultSet orderResultSet = orderStatement.executeQuery()) {
+                while (orderResultSet.next()) {
+                    try (PreparedStatement employeePreparedStatement = connection.prepareStatement(SQL_SELECT_EMPLOYEE_BY_ID)) {
+                        String orderStatus = orderResultSet.getString(ORDERS_STATUS);
+                        long acceptedEmployeeId = orderResultSet.getLong(ORDERS_ACCEPTED_EMPLOYEE);
+                        employeePreparedStatement.setLong(1, acceptedEmployeeId);
+                        try (ResultSet acceptedEmployeeResultSet = employeePreparedStatement.executeQuery()) {
+                            Employee acceptedEmployee = acceptedEmployeeResultSet.next() ? extractEmployee(acceptedEmployeeResultSet) : null;
+                            Employee completedEmployee = null;
+                            PriceInfo priceInfo = null;
+                            List<SparePart> spareParts = null;
+                            if (OrderStatus.CLOSED.name().equals(orderStatus) || OrderStatus.ISSUED.name().equals(orderStatus)) {
+                                try (PreparedStatement pricePreparedStatement = connection.prepareStatement(SQL_SELECT_PRICE_BY_ID);
+                                     PreparedStatement partsPreparedStatement = connection.prepareStatement(SQL_SELECT_PARTS_BY_ORDER_ID)) {
+                                    long completedEmployeeId = orderResultSet.getLong(ORDERS_COMPLETED_EMPLOYEE);
+                                    employeePreparedStatement.setLong(1, completedEmployeeId);
+                                    try (ResultSet completedEmployeeResultSet = employeePreparedStatement.executeQuery()) {
+                                        completedEmployee = completedEmployeeResultSet.next() ? extractEmployee(completedEmployeeResultSet) : null;
+                                        long workPriceId = orderResultSet.getLong(ORDERS_WORK_PRICE);
+                                        pricePreparedStatement.setLong(1, workPriceId);
+                                        partsPreparedStatement.setLong(1, orderResultSet.getLong(ORDERS_ID));
+                                        try (ResultSet priceResultSet = pricePreparedStatement.executeQuery();
+                                             ResultSet partsResultSet = partsPreparedStatement.executeQuery()) {
+                                            priceInfo = priceResultSet.next() ? extractPrice(priceResultSet) : null;
+                                            spareParts = extractSpareParts(partsResultSet);
+                                        }
+                                    }
                                 }
                             }
+                            Order order = extractOrder(orderResultSet, acceptedEmployee)
+                                    .completedEmployee(completedEmployee)
+                                    .workPrice(priceInfo)
+                                    .spareParts(spareParts)
+                                    .build();
+                            orders.add(order);
                         }
                     }
-                    Order order = extractOrder(orderResultSet, acceptedEmployee)
-                            .completedEmployee(completedEmployee)
-                            .workPrice(priceInfo)
-                            .spareParts(spareParts)
-                            .build();
-                    orders.add(order);
                 }
             }
         } catch (SQLException e) {
@@ -232,7 +223,7 @@ public class OrderDaoImpl implements OrderDao {
         String note = resultSet.getString(ORDERS_NOTE);
         boolean isOrderClosed = OrderStatus.CLOSED.name().equals(orderStatus);
         boolean isOrderIssued = OrderStatus.ISSUED.name().equals(orderStatus);
-        LocalDateTime completedDate = isOrderClosed || isOrderIssued? resultSet.getTimestamp(ORDERS_COMPLETION_DATE).toLocalDateTime() : null;
+        LocalDateTime completedDate = isOrderClosed || isOrderIssued ? resultSet.getTimestamp(ORDERS_COMPLETION_DATE).toLocalDateTime() : null;
         String workDescription = isOrderClosed || isOrderIssued ? resultSet.getString(ORDERS_WORK_DESCRIPTION) : null;
         LocalDateTime issueDate = isOrderIssued ? resultSet.getTimestamp(ORDERS_ISSUE_DATE).toLocalDateTime() : null;
         return new Order.Builder(id, orderNumber, creationDate, client, acceptedEmployee, device)

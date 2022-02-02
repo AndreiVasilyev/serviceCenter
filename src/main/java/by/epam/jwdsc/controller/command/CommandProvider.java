@@ -18,7 +18,6 @@ public class CommandProvider {
 
     private CommandProvider() {
         commands = new EnumMap<CommandName, Command>(CommandName.class);
-        commands.put(DEFAULT, new DefaultCommand());
         commands.put(CHANGE_LOCALE, new ChangeLocaleCommand());
         commands.put(GOTO_MAIN_PAGE, new GotoMainPageCommand());
         commands.put(GOTO_CHECK_ORDER_PAGE, new GotoCheckOrderPageCommand());
@@ -29,6 +28,10 @@ public class CommandProvider {
         commands.put(LOGIN, new LoginCommand());
         commands.put(GOTO_REGISTRATION_PAGE, new GotoRegistrationPage());
         commands.put(LOGOUT, new LogoutCommand());
+        commands.put(GOTO_CONTROL_PAGE, new GotoControlPageCommand());
+        commands.put(FIND_ORDERS, new FindOrdersCommand());
+        commands.put(FIND_ALL_COMPANIES_DEVICES, new FindAllCompaniesDevicesCommand());
+        commands.put(FIND_CLIENTS_BY_PHONE, new FindClientsByPhoneCommand());
     }
 
     public static CommandProvider getInstance() {
@@ -42,14 +45,14 @@ public class CommandProvider {
         Command command;
         if (name == null || name.isBlank()) {
             log.error("Command name is null or blank");
-            command = commands.get(CommandName.DEFAULT);
+            command = commands.get(GOTO_ERROR_PAGE);
         } else {
             try {
                 CommandName commandName = CommandName.valueOf(name.toUpperCase());
                 command = commands.get(commandName);
             } catch (IllegalArgumentException e) {
                 log.error("Command {} not found", name, e);
-                command = commands.get(CommandName.DEFAULT);
+                command = commands.get(GOTO_ERROR_PAGE);
             }
         }
         return command;

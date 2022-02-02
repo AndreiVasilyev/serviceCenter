@@ -37,6 +37,7 @@ function createCustomValidation(inputField, fieldChecks) {
 
 function checkInputField(inputField, validatedFormHandler, submitButton) {
     let invalidityMessageElement = inputField.parentElement.nextSibling.nextSibling;
+    console.log('elem:'+invalidityMessageElement);
     inputField.CustomValidation.invalidityMessages = [];
     inputField.CustomValidation.checkValidity(inputField);
     invalidityMessageElement.innerHTML = '';

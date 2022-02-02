@@ -3,6 +3,8 @@
 <!DOCTYPE html>
 <html>
     <body>
-        <c:redirect url="/control?command=goto_main_page"/>
+        <c:set var="role" value="${sessionScope.userRole}"/>
+        <c:set var="page_path" value="${role eq null or role eq 'GUEST' or role eq 'CLIENT'?'/control?command=goto_main_page':'/control?command=goto_control_page'}"/>
+        <c:redirect url="${page_path}"/>
     </body>
 </html>

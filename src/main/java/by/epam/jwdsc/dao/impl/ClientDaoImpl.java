@@ -20,13 +20,19 @@ public class ClientDaoImpl extends UserDao implements ClientDao {
     private static final String SQL_SELECT_ALL_CLIENTS = "SELECT c.user_id, c.discount, u.first_name, u.second_name, " +
             "u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, a.region, a.city, a.street, " +
             "a.house_number, a.apartment_number, GROUP_CONCAT(p.phone_number) AS phone_number FROM clients AS c " +
-            "JOIN users AS u USING (user_id) JOIN addresses AS a ON (u.address=a.address_id) JOIN phone_numbers AS p " +
+            "JOIN users AS u USING (user_id) JOIN addresses AS a ON (u.address=a.address_id) LEFT JOIN phone_numbers AS p " +
             "ON(u.user_id = p.user_id) GROUP BY u.user_id";
     private static final String SQL_SELECT_CLIENT_BY_ID = "SELECT c.user_id, c.discount, u.first_name, u.second_name, " +
             "u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, a.region, a.city, a.street, " +
             "a.house_number, a.apartment_number, GROUP_CONCAT(p.phone_number) AS phone_number FROM clients AS c " +
-            "JOIN users AS u USING (user_id) JOIN addresses AS a ON (u.address=a.address_id) JOIN phone_numbers AS p " +
+            "JOIN users AS u USING (user_id) JOIN addresses AS a ON (u.address=a.address_id) LEFT JOIN phone_numbers AS p " +
             "ON(u.user_id = p.user_id) WHERE u.user_id=? GROUP BY u.user_id";
+    private static final String SQL_SELECT_CLIENTS_BY_PHONE = "SELECT c.user_id, c.discount, u.first_name, u.second_name, " +
+            "u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, a.region, a.city, a.street, " +
+            "a.house_number, a.apartment_number, GROUP_CONCAT(p.phone_number) AS phone_number FROM clients AS c " +
+            "JOIN users AS u USING (user_id) JOIN addresses AS a ON (u.address=a.address_id) LEFT JOIN phone_numbers AS p " +
+            "ON(u.user_id = p.user_id) WHERE u.user_id = ANY (SELECT pn.user_id FROM phone_numbers AS pn " +
+            "WHERE pn.phone_number=?) GROUP BY u.user_id";
     private static final String SQL_DELETE_CLIENT_BY_ID = "DELETE c, u, a, p FROM clients AS c JOIN users AS u " +
             "USING (user_id) JOIN addresses AS a ON (u.address=a.address_id) JOIN phone_numbers AS p " +
             "ON(u.user_id = p.user_id) WHERE u.user_id=?";
@@ -53,6 +59,25 @@ public class ClientDaoImpl extends UserDao implements ClientDao {
         } catch (SQLException e) {
             log.error("Error executing query findAll from Clients", e);
             throw new DaoException("Error executing query findAll from Clients", e);
+        }
+        return clients;
+    }
+
+    @Override
+    public List<Client> findByPhone(String phoneNumber) throws DaoException {
+        List<Client> clients = new ArrayList<>();
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_CLIENTS_BY_PHONE)) {
+            statement.setString(1, phoneNumber);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Client client = extractClient(resultSet);
+                    clients.add(client);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error executing query findByPhone from Clients", e);
+            throw new DaoException("Error executing query findByPhone from Clients", e);
         }
         return clients;
     }

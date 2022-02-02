@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface CodeDao {
+
     Logger log = LogManager.getLogger();
 
     Map<String, String> findAll() throws DaoException;

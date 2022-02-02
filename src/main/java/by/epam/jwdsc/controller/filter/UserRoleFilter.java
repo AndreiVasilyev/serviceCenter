@@ -1,5 +1,6 @@
 package by.epam.jwdsc.controller.filter;
 
+import by.epam.jwdsc.controller.command.PagePath;
 import by.epam.jwdsc.entity.UserRole;
 import by.epam.jwdsc.util.CookieUtil;
 import jakarta.servlet.*;
@@ -20,18 +21,18 @@ import static by.epam.jwdsc.entity.UserRole.*;
 
 @WebFilter(urlPatterns = {"/control"}, servletNames = {"scServlet"})
 public class UserRoleFilter implements Filter {
+
     private static final Logger log = LogManager.getLogger();
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        //define userRole session attribute when start session
-
+        log.debug("Start UserRoleFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession httpSession = httpRequest.getSession(true);
-        Cookie[] cookies = httpRequest.getCookies();
-        CookieUtil cookieUtil = CookieUtil.getInstance();
         if (httpSession.getAttribute(USER_ROLE) == null) {
+            HttpServletResponse httpResponse = (HttpServletResponse) response;
+            Cookie[] cookies = httpRequest.getCookies();
+            CookieUtil cookieUtil = CookieUtil.getInstance();
             if (cookies == null || cookieUtil.getCookie(cookies, USER_ROLE).isEmpty()) {
                 Cookie cookie = new Cookie(USER_ROLE, GUEST.name());
                 cookie.setMaxAge(COOKIE_AGE_MONTH);
@@ -45,9 +46,12 @@ public class UserRoleFilter implements Filter {
                     Cookie cookieLogin = cookieUtil.getCookie(cookies, CLIENT_LOGIN).get();
                     httpSession.setAttribute(CLIENT_LOGIN, cookieLogin.getValue());
                 }
-                if (ADMIN == userRole || INGINEER == userRole || MANAGER == userRole) {
+                if (GUEST != userRole && CLIENT != userRole) {
                     Cookie cookieLogin = cookieUtil.getCookie(cookies, EMPLOYEE_ID).get();
                     httpSession.setAttribute(EMPLOYEE_ID, Long.parseLong(cookieLogin.getValue()));
+                    log.debug("Start redirect to control_page from UserRoleFilter");
+                    httpResponse.sendRedirect(PagePath.CONTROL_PAGE);
+                    return;
                 }
             }
         }

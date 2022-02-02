@@ -9,10 +9,10 @@ import by.epam.jwdsc.exception.ServiceException;
 import by.epam.jwdsc.service.ConfirmationCodeService;
 import by.epam.jwdsc.service.OrderService;
 import by.epam.jwdsc.service.ServiceProvider;
-import by.epam.jwdsc.util.CookieUtil;
 import by.epam.jwdsc.util.GsonUtil;
 import by.epam.jwdsc.validator.Validator;
 import by.epam.jwdsc.validator.impl.ValidatorImpl;
+import com.google.gson.Gson;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,10 +44,11 @@ public class FindOrderByNumberCommand implements Command {
         Validator validator = ValidatorImpl.getInstance();
         String orderNumber = request.getParameter(ORDER_NUMBER_PARAM);
         String responseText;
+        Gson gson = GsonUtil.getInstance().getGson();
         if (!validator.isOrderNumberValid(orderNumber)) {
             String errorMessage = resourceBundle.getString(INVALID_ORDER_NUMBER_LOCAL_KEY);
             responseText = Strings.concat(NEGATIVE_RESPONSE, errorMessage);
-            return new Router(Router.RouterType.RESPONSE_BODY, GsonUtil.getGson().toJson(responseText));
+            return new Router(Router.RouterType.JSON, gson.toJson(responseText));
         }
         ServiceProvider serviceProvider = ServiceProvider.getInstance();
         try {
@@ -57,23 +58,19 @@ public class FindOrderByNumberCommand implements Command {
                 if (!validator.isEmailValid(email) || !validator.isCodeValid(confirmationCode)) {
                     String errorMessage = resourceBundle.getString(INVALID_CODE_EMAIL_LOCAL_KEY);
                     responseText = Strings.concat(NEGATIVE_RESPONSE, errorMessage);
-                    return new Router(Router.RouterType.RESPONSE_BODY, GsonUtil.getGson().toJson(responseText));
+                    return new Router(Router.RouterType.JSON, gson.toJson(responseText));
                 }
                 ConfirmationCodeService confirmationCodeService = serviceProvider.getConfirmationCodeService();
                 boolean isVerifyCode = confirmationCodeService.verifyCode(confirmationCode, email);
                 if (!isVerifyCode) {
                     String errorMessage = resourceBundle.getString(NOT_VERIFIED_CODE_LOCAL_KEY);
                     responseText = Strings.concat(NEGATIVE_RESPONSE, errorMessage);
-                    return new Router(Router.RouterType.RESPONSE_BODY, GsonUtil.getGson().toJson(responseText));
+                    return new Router(Router.RouterType.JSON, gson.toJson(responseText));
                 }
                 session.setAttribute(USER_ROLE, CLIENT);
                 session.setAttribute(CLIENT_LOGIN, email);
-                CookieUtil cookieUtil = CookieUtil.getInstance();
-                Cookie[] cookies = request.getCookies();
-                cookieUtil.setCookie(cookies, USER_ROLE, CLIENT.name())
-                        .ifPresent(response::addCookie);
-                cookieUtil.setCookie(cookies, CLIENT_LOGIN, email)
-                        .ifPresent(response::addCookie);
+                response.addCookie(new Cookie(USER_ROLE, CLIENT.name()));
+                response.addCookie(new Cookie(CLIENT_LOGIN, email));
             }
             OrderService orderService = serviceProvider.getOrderService();
             Optional<Order> order = orderService.findOrderByOrderNumber(orderNumber);
@@ -81,13 +78,14 @@ public class FindOrderByNumberCommand implements Command {
             if (order.isEmpty() || (currentRole == CLIENT && !clientLogin.equals(order.get().getClient().getEmail()))) {
                 String message = resourceBundle.getString(ORDER_NOT_FOUND_LOCAL_KEY);
                 responseText = Strings.concat(POSITIVE_RESPONSE, message);
-                return new Router(Router.RouterType.RESPONSE_BODY, GsonUtil.getGson().toJson(responseText));
+                return new Router(Router.RouterType.JSON, gson.toJson(responseText));
             }
-            responseText = GsonUtil.getGson().toJson(order.get());
-            return new Router(Router.RouterType.RESPONSE_BODY, responseText);
+            responseText = gson.toJson(order.get());
+            return new Router(Router.RouterType.JSON, responseText);
         } catch (ServiceException e) {
             log.error("Error executing command Find order by order number", e);
-            return new Router(ERROR_PAGE, Router.RouterType.FORWARD);
+            session.setAttribute(EXCEPTION, e);
+            return new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
         }
     }
 }

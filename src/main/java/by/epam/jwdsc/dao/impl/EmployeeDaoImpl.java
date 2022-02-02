@@ -22,7 +22,7 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
             "u.first_name, u.second_name, u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, " +
             "a.region, a.city, a.street, a.house_number, a.apartment_number, " +
             "GROUP_CONCAT(p.phone_number) AS phone_number FROM employees AS e JOIN users AS u USING (user_id) " +
-            "JOIN addresses AS a ON (u.address=a.address_id) JOIN phone_numbers AS p ON(u.user_id = p.user_id) " +
+            "JOIN addresses AS a ON (u.address=a.address_id) LEFT JOIN phone_numbers AS p USING(user_id) " +
             "%s GROUP BY u.user_id";
     private static final String SQL_DELETE_EMPLOYEE_BY_ID = "DELETE e, u, a, p FROM employees AS e JOIN users AS u " +
             "USING (user_id) JOIN addresses AS a ON (u.address=a.address_id) JOIN phone_numbers AS p " +
@@ -55,7 +55,7 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
         parameterBuilder.append(EMPLOYEES_USER_ID);
         queryParameters.put(parameterBuilder.toString(), id);
         List<Employee> employees = findByParams(queryParameters);
-        return employees.isEmpty() ? Optional.empty() : Optional.of(employees.get(0));
+        return !employees.isEmpty() ? Optional.of(employees.get(0)) : Optional.empty();
     }
 
     @Override
@@ -150,7 +150,6 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
                 connection.rollback();
             } catch (SQLException ex) {
                 log.error("Transaction to create new Employee not executed. Rollback changes not executed", ex);
-                throw new DaoException("Transaction to create new Employee not executed. Rollback changes not executed", ex);
             }
             log.error("Transaction to create new Employee not executed. All changes canceled", e);
             throw new DaoException("Transaction to create new Employee not executed. All changes canceled", e);

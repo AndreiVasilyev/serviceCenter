@@ -5,12 +5,10 @@ import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.pool.DbConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,6 +18,12 @@ import static by.epam.jwdsc.dao.ColumnName.SPARE_PARTS_COST;
 public interface BaseDao<T extends CommonEntity> {
     Logger log = LogManager.getLogger();
     String PHONES_SEPARATOR = ",";
+    String LOGIC_AND = "AND ";
+    String WHERE_TEMPLATE = "WHERE ";
+    String PAGE_TEMPLATE = "LIMIT 10 OFFSET %d";
+    String SORT_TEMPLATE = "ORDER BY %s";
+    int START_PARAMETER_INDEX = 1;
+    int PAGE_SIZE = 10;
 
     List<T> findAll() throws DaoException;
 
@@ -46,6 +50,45 @@ public interface BaseDao<T extends CommonEntity> {
     default void close(Connection connection) {
         if (connection != null) {
             DbConnectionPool.INSTANCE.releaseConnection(connection);
+        }
+    }
+
+    default String prepareWhereBlock(Set<String> parameterExpression) {
+        String whereBlock = Strings.EMPTY;
+        if (parameterExpression != null && !parameterExpression.isEmpty()) {
+            StringBuilder whereBlockBuilder = new StringBuilder(WHERE_TEMPLATE);
+            for (String parameterName : parameterExpression) {
+                whereBlockBuilder.append(parameterName);
+                whereBlockBuilder.append(LOGIC_AND);
+            }
+            whereBlock = whereBlockBuilder.toString();
+            whereBlock = whereBlock.substring(0, whereBlock.lastIndexOf(LOGIC_AND));
+        }
+        return whereBlock;
+    }
+
+    default String prepareSortBlock(String sort) {
+        String sortBlock = Strings.EMPTY;
+        if (sort != null && !sort.isBlank()) {
+            sortBlock = String.format(SORT_TEMPLATE, sort);
+        }
+        return sortBlock;
+    }
+
+    default String preparePageBlock(int pageNumber) {
+        String pageBlock = Strings.EMPTY;
+        if (pageNumber > 0) {
+            pageBlock = String.format(PAGE_TEMPLATE, (pageNumber - 1) * PAGE_SIZE);
+        }
+        return pageBlock;
+    }
+
+    default void prepareStatement(PreparedStatement preparedStatement, Collection<Object> parameters) throws SQLException {
+        if (parameters != null && !parameters.isEmpty()) {
+            int parameterIndex = START_PARAMETER_INDEX;
+            for (Object parameterValue : parameters) {
+                preparedStatement.setObject(parameterIndex++, parameterValue);
+            }
         }
     }
 
@@ -117,9 +160,12 @@ public interface BaseDao<T extends CommonEntity> {
     }
 
     default List<String> extractPhones(String phoneNumbers) {
-        return Arrays.stream(phoneNumbers.split(PHONES_SEPARATOR))
-                .map(String::trim)
-                .collect(Collectors.toCollection(ArrayList::new));
+        if (phoneNumbers != null && !phoneNumbers.isBlank()) {
+            return Arrays.stream(phoneNumbers.split(PHONES_SEPARATOR))
+                    .map(String::trim)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
+        return new ArrayList<>();
     }
 
     default PriceInfo extractPrice(ResultSet resultSet) throws SQLException {

@@ -11,7 +11,9 @@ public final class ResponseJsonText {
     public static final String INVALID_ORDER_NUMBER_LOCAL_KEY = "checkOrder.main.alert.error.invalid.order.number";
     public static final String NOT_VERIFIED_CODE_LOCAL_KEY = "checkOrder.main.alert.error.not.verified.code";
     public static final String ORDER_NOT_FOUND_LOCAL_KEY = "checkOrder.main.alert.result.not.found";
+    public static final String INVALID_LOGIN_PASSWORD_LOCAL_KEY = "login.main.alert.invalid.login.or.password";
+    public static final String NOMATCH_LOGIN_PASSWORD_LOCAL_KEY = "login.main.alert.match.login.or.password";
 
-
-    private ResponseJsonText(){}
+    private ResponseJsonText() {
+    }
 }

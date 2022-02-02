@@ -20,7 +20,7 @@ import static by.epam.jwdsc.controller.command.RequestParameter.COMMAND_PARAM;
 
 @WebServlet(name = "scServlet", urlPatterns = "/control")
 @MultipartConfig
-public class ScController extends HttpServlet {
+public class ServiceCenterController extends HttpServlet {
 
     private static final Logger log = LogManager.getLogger();
     private static final CommandProvider commandProvider = CommandProvider.getInstance();
@@ -38,18 +38,22 @@ public class ScController extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String commandName = request.getParameter(COMMAND_PARAM);
         Command command = commandProvider.getCommand(commandName);
-        Router router = command.execute(request,response);
+        Router router = command.execute(request, response);
+        log.debug("Command {} executed", commandName);
         switch (router.getRouterType()) {
             case FORWARD -> {
+                log.debug("Execute FORWARD to {}", router.getPagePath());
                 RequestDispatcher requestDispatcher = request.getRequestDispatcher(router.getPagePath());
                 requestDispatcher.forward(request, response);
                 break;
             }
             case REDIRECT -> {
+                log.debug("Execute REDIRECT to {}", router.getPagePath());
                 response.sendRedirect(router.getPagePath());
                 break;
             }
-            case RESPONSE_BODY -> {
+            case JSON -> {
+                log.debug("Execute return JSON", router.getPagePath());
                 response.setContentType("text/plain");
                 response.getWriter().write(router.getJson());
                 break;

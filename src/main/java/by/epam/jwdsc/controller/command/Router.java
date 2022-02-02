@@ -2,7 +2,7 @@ package by.epam.jwdsc.controller.command;
 
 public final class Router {
     public enum RouterType {
-        FORWARD, REDIRECT, RESPONSE_BODY
+        FORWARD, REDIRECT, JSON
     }
 
     private String pagePath;

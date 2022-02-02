@@ -93,14 +93,12 @@
                                     <a href="${registration_page}" class="text-decoration-none">${registration}</a>
                                 </div>
                             </div>
-
-                            <div class="alert alert-warning d-none align-items-center mt-2 p-1" id="alert-block">
+                            <div class="alert alert-warning ${loginFailed==null?'d-none':'d-flex'} align-items-center mt-2 p-1"
+                                 id="alert-block">
                                 <svg class="bi flex-shrink-0 me-2" width="24" height="24">
                                     <use href="#exclamation-triangle-fill"/>
                                 </svg>
-                                <div id="error-send-code" class="d-none alert-block-message"></div>
-                                <div id="note-input-code" class="d-none alert-block-message">${alert_note}</div>
-                                <div id="result-search-order" class="d-none alert-block-message">${alert_result}</div>
+                                <div id="error-send-code" class="alert-block-message">${loginFailed}</div>
                             </div>
                         </form>
                     </div>

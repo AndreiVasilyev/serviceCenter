@@ -26,7 +26,8 @@ import java.util.ResourceBundle;
 
 import static by.epam.jwdsc.controller.command.PagePath.ERROR_PAGE;
 import static by.epam.jwdsc.controller.command.ResponseJsonText.*;
-import static by.epam.jwdsc.controller.command.Router.RouterType.RESPONSE_BODY;
+import static by.epam.jwdsc.controller.command.Router.RouterType.JSON;
+import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
 public class SendCodeCommand implements Command {
 
@@ -60,13 +61,14 @@ public class SendCodeCommand implements Command {
                 }
             } catch (ServiceException e) {
                 log.error("Error executing command Send Code", e);
-                return new Router(ERROR_PAGE, Router.RouterType.FORWARD);
+                session.setAttribute(EXCEPTION, e);
+                return new Router(ERROR_PAGE, Router.RouterType.REDIRECT);
             }
         } else {
             log.error("Error executing command Send Code. Email value {} or order number {} is invalid", toEmail, orderNumber);
             String errorMessage = resourceBundle.getString(INVALID_ORDER_NUMBER_EMAIL_LOCAL_KEY);
             responseText = Strings.concat(NEGATIVE_RESPONSE, errorMessage);
         }
-        return new Router(RESPONSE_BODY, responseText);
+        return new Router(JSON, responseText);
     }
 }

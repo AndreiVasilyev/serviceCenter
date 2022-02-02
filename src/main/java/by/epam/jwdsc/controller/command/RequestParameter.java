@@ -9,6 +9,8 @@ public final class RequestParameter {
     public static final String LOGIN_PARAM = "login";
     public static final String PASSWORD_PARAM = "password";
     public static final String REMEMBER_PARAM = "remember";
+    public static final String LOGIN_FAILED_PARAM = "loginFailed";
+    public static final String FIND_PHONE_NUMBER_PARAM = "findPhoneNumber";
 
     private RequestParameter() {
     }

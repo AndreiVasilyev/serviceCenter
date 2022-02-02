@@ -45,12 +45,14 @@
     <head>
         <link href="../css/bootstrap.css" rel="stylesheet">
         <link href="../css/bootstrap-icons.css" rel="stylesheet">
+        <link href="../css/font-awesome.css" rel="stylesheet">
         <link href="../css/header.css" rel="stylesheet">
         <link href="../css/control.css" rel="stylesheet">
         <title>${control_title}</title>
     </head>
     <body>
         <c:import url="icon_sprite.jsp"/>
+        <c:import url="add_order.jsp"/>
         <c:import url="header.jsp"/>
         <main>
             <div class="d-flex align-items-start">
@@ -78,103 +80,7 @@
                 </div>
                 <div class="tab-content" id="v-pills-tabContent">
                     <div class="tab-pane fade show active" id="orders-content">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-auto ms-auto">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-outline-info">Сбросить фильтр</button>
-                                        <button type="button" class="btn btn-outline-success">Новый заказ</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <table class="table table-hover table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Номер заказа</th>
-                                            <th scope="col">Статус</th>
-                                            <th scope="col">Создан</th>
-                                            <th scope="col">Клиент</th>
-                                            <th scope="col">Устройство</th>
-                                            <th scope="col">Производитель</th>
-                                            <th scope="col">Серийный номер</th>
-                                            <th scope="col">Принял</th>
-                                            <th scope="col">Выполнил</th>
-                                            <th scope="col">Завершен</th>
-                                            <th scope="col">Выдан</th>
-                                            <th scope="col">Работы</th>
-                                            <th scope="col">Сложность</th>
-                                            <th scope="col">Стоимость работы</th>
-                                            <th scope="col">Стоимость деталей</th>
-                                            <th scope="col">Запчасти</th>
-                                            <th scope="col">Заметки</th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="order-filter">
-                                            <th >
-                                                <div class="input-group input-group-sm">
-                                                    <input class="form-control" type="text"/>
-                                                </div>
-                                            </th>
-                                            <th >
-                                                <div class="input-group input-group-sm">
-                                                    <select class="form-select">
-                                                        <option value="0" selected ></option>
-                                                        <option value="1">One</option>
-                                                        <option value="2">Two</option>
-                                                        <option value="3">Three</option>
-                                                    </select>
-                                                </div>
-                                            </th>
-                                            <th >
-                                                <div class="input-group input-group-sm">
-                                                    <input class="form-control" type="text"/>
-                                                </div>
-                                            </th>
-                                            <th >
-                                                <div class="input-group input-group-sm">
-                                                    <input class="form-control" type="text"/>
-                                                </div>
-                                            </th>
-                                            <th >
-                                                <div class="input-group input-group-sm">
-                                                    <input class="form-control" type="text"/>
-                                                </div>
-                                            </th>
-                                            <th >
-                                                <div class="input-group input-group-sm">
-                                                    <input class="form-control" type="text"/>
-                                                </div>
-                                            </th>
-                                            <th >
-                                                <div class="input-group input-group-sm">
-                                                    <input class="form-control" type="text"/>
-                                                </div>
-                                            </th>
-                                            <th >
-                                                <div class="input-group input-group-sm">
-                                                    <input class="form-control" type="text"/>
-                                                </div>
-                                            </th>
-
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>Jacob</td>
-                                            <td>Thornton</td>
-                                            <td>@fat</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td colspan="2">Larry the Bird</td>
-                                            <td>@twitter</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <c:import url="orders_tab.jsp"/>
                     </div>
                     <div class="tab-pane fade" id="employees-content">employees</div>
                     <div class="tab-pane fade" id="parts-content">parts</div>
@@ -190,6 +96,7 @@
         <script src="../js/header.js" type="text/javascript"></script>
         <script src="../js/custom_validation.js" type="text/javascript"></script>
         <script src="../js/control.js" type="text/javascript"></script>
+        <script src="../js/add_order.js" type="text/javascript"></script>
         <script src="../js/ajax_request.js" type="text/javascript"></script>
     </body>
 </html>

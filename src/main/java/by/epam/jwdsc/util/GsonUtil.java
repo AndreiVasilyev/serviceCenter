@@ -9,20 +9,27 @@ import java.util.Locale;
 
 public final class GsonUtil {
 
+    private static GsonUtil instance;
     //private static final String DATE_TIME_FORMAT_PATTERN = "d::MMM::uuuu HH::mm::ss";
     private static final String DATE_TIME_FORMAT_PATTERN = "d MMM uuuu HH:mm:ss";
-    private static Gson gson;
+    private final Gson gson;
 
-    private GsonUtil() {
+    private GsonUtil(Gson gson) {
+        this.gson = gson;
     }
 
-    public static Gson getGson() {
-        if (gson == null) {
+    public static GsonUtil getInstance() {
+        if (instance == null) {
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer());
             gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer());
-            gson = gsonBuilder.setPrettyPrinting().create();
+            Gson gson = gsonBuilder.setPrettyPrinting().create();
+            instance = new GsonUtil(gson);
         }
+        return instance;
+    }
+
+    public Gson getGson() {
         return gson;
     }
 
