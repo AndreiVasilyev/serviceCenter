@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ClientServiceImpl implements ClientService {
 
@@ -24,6 +25,18 @@ public class ClientServiceImpl implements ClientService {
         } catch (DaoException e) {
             log.error("Error executing service find clients by phone number");
             throw new ServiceException("Error executing service find clients by phone number", e);
+        }
+    }
+
+    @Override
+    public Optional<Client> findClientById(long userId) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        ClientDao clientDao = daoProvider.getClientDao();
+        try {
+            return clientDao.findById(userId);
+        } catch (DaoException e) {
+            log.error("Error executing service find client by id");
+            throw new ServiceException("Error executing service find client by id", e);
         }
     }
 }

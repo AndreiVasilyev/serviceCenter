@@ -32,6 +32,7 @@ public class CommandProvider {
         commands.put(FIND_ORDERS, new FindOrdersCommand());
         commands.put(FIND_ALL_COMPANIES_DEVICES, new FindAllCompaniesDevicesCommand());
         commands.put(FIND_CLIENTS_BY_PHONE, new FindClientsByPhoneCommand());
+        commands.put(FIND_CLIENT_BY_ID, new FindClientByIdCommand());
     }
 
     public static CommandProvider getInstance() {

@@ -17,27 +17,32 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
+import java.util.Optional;
 
-import static by.epam.jwdsc.controller.command.RequestParameter.FIND_PHONE_NUMBER_PARAM;
+import static by.epam.jwdsc.controller.command.RequestParameter.USER_ID_PARAM;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
-public class FindClientsByPhoneCommand implements Command {
+public class FindClientByIdCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();
-    private static final String PHONE_DELIMITER = "-";
 
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
-        String phoneNumber = request.getParameter(FIND_PHONE_NUMBER_PARAM);
+        String userId = request.getParameter(USER_ID_PARAM);
+        long id = Long.parseLong(userId);
         ServiceProvider serviceProvider = ServiceProvider.getInstance();
         ClientService clientService = serviceProvider.getClientService();
         HttpSession session=request.getSession();
         Gson gson = GsonUtil.getInstance().getGson();
         try {
-            List<Client> clients = clientService.findClientsByPhone(phoneNumber);
-            return new Router(Router.RouterType.JSON, gson.toJson(clients));
+            Optional<Client> client = clientService.findClientById(id);
+            String gsonResult = Strings.EMPTY;
+            if (client.isPresent()) {
+                gsonResult = gson.toJson(client.get());
+            }
+            return new Router(Router.RouterType.JSON, gsonResult);
         } catch (ServiceException e) {
-            log.error("Error executing command find clients by phone number", e);
+            log.error("Error executing command find client by id", e);
             session.setAttribute(EXCEPTION, e);
             return new Router(PagePath.ERROR_PAGE, Router.RouterType.REDIRECT);
         }

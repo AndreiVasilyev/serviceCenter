@@ -11,3 +11,7 @@ thead, .dropdown-menu {
     white-space: nowrap;
 }
 
+.required-star{
+    color: firebrick;
+    margin-left: 0.5rem;
+}

@@ -11,6 +11,7 @@ public final class RequestParameter {
     public static final String REMEMBER_PARAM = "remember";
     public static final String LOGIN_FAILED_PARAM = "loginFailed";
     public static final String FIND_PHONE_NUMBER_PARAM = "findPhoneNumber";
+    public static final String USER_ID_PARAM = "userId";
 
     private RequestParameter() {
     }

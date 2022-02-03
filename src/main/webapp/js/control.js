@@ -33,8 +33,7 @@ function loadDocumentHandler() {
 
 function getDataFromServer() {
     filterInputAccess(false);
-    let parameters = {};
-    parameters = collectCurrentParametersState(filterInputElements);
+    let parameters = collectCurrentParametersState(filterInputElements);
     let controller = '/control?command=find_orders';
     sendPostJsonQuery(controller, parameters).then(response => findOrdersResponseHandler(response));
 }
@@ -208,8 +207,8 @@ function addNewOrderHandler() {
         element.addEventListener('focus', onFocusInputFieldHandler);
     })
     findPhoneButton.addEventListener('click', findClientsByPhoneHandler);
-
-    //add listeners to button and other elements
+    resetClientButton.addEventListener('click', resetClientInput);
+    saveOrderButton.addEventListener('click', saveNewOrderHandler);
 }
 
 //-----input field OnBlur event handler

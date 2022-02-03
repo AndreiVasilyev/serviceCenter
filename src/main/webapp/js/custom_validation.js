@@ -63,3 +63,9 @@ function isFieldValid(inputField) {
     return inputField.classList.contains('is-valid');
 }
 
+//----- function check if field invalid
+
+function isFieldInvalid(inputField) {
+    return inputField.classList.contains('is-invalid');
+}
+
