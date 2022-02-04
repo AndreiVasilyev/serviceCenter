@@ -85,7 +85,7 @@
                     <div class="row mb-3">
                         <div class="col-12 my-2">
                             <label class="form-label">Данные клиента:</label>
-                            <input id="client-id" class="d-none">
+                            <input id="client-id" class="d-none" value="">
                         </div>
                         <div class="col-8">
                             <label for="find-phone" class="form-label">Найти клиента:</label>

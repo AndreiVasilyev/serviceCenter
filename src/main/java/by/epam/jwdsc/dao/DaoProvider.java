@@ -15,6 +15,7 @@ public class DaoProvider {
     private CompanyDao companyDao;
     private OrderDao orderDao;
     private CodeDao codeDao;
+    private AddressDao addressDao;
 
     private DaoProvider() {
         this.clientDao = new ClientDaoImpl();
@@ -25,6 +26,7 @@ public class DaoProvider {
         this.companyDao = new CompanyDapImpl();
         this.orderDao = new OrderDaoImpl();
         this.codeDao = new CodeDaoImpl();
+        this.addressDao = new AddressDaoImpl();
     }
 
     public static DaoProvider getInstance() {
@@ -61,5 +63,9 @@ public class DaoProvider {
 
     public CodeDao getCodeDao() {
         return codeDao;
+    }
+
+    public AddressDao getAddressDao() {
+        return addressDao;
     }
 }

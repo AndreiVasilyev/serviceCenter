@@ -8,4 +8,8 @@ import java.util.List;
 public interface ClientDao extends BaseDao<Client> {
 
     List<Client> findByPhone(String phoneNumber) throws DaoException;
+
+    boolean createWithNewAddress(Client client) throws DaoException;
+
+    long createClient(Client client) throws DaoException;
 }

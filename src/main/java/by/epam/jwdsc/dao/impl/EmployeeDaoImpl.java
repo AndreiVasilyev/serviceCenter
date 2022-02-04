@@ -137,7 +137,7 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
                     if (employee.getPhones() != null && !employee.getPhones().isEmpty()) {
                         for (String phoneNumber : employee.getPhones()) {
                             statementNewPhones.setLong(1, employee.getId());
-                            statementNewClient.setString(2, phoneNumber);
+                            statementNewPhones.setString(2, phoneNumber);
                             statementNewPhones.executeUpdate();
                         }
                     }

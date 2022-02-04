@@ -26,4 +26,16 @@ public class CompanyServiceImpl implements CompanyService {
             throw new ServiceException("Error in service find all companies", e);
         }
     }
+
+    @Override
+    public long createCompany(String name, boolean isContract) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        CompanyDao companyDao = daoProvider.getCompanyDao();
+        try {
+            return companyDao.createCompany(new Company(name, isContract));
+        } catch (DaoException e) {
+            log.error("Error executing service create company", e);
+            throw new ServiceException("Error executing service create company", e);
+        }
+    }
 }

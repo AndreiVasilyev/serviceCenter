@@ -1,6 +1,6 @@
 package by.epam.jwdsc.entity;
 
-public class Address {
+public class Address extends CommonEntity {
     private long id;
     private String country;
     private int postcode;

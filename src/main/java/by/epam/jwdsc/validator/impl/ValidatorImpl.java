@@ -68,7 +68,7 @@ public class ValidatorImpl implements Validator {
     public boolean isNewOrderNumberValid(String orderNumber) {
         boolean result = false;
         if (orderNumber != null && !orderNumber.isBlank()) {
-            result = orderNumber.matches(NEW_ORDER_NUMBER_REGEX);
+            result = !orderNumber.matches(NEW_ORDER_NUMBER_REGEX);
         }
         return result;
     }

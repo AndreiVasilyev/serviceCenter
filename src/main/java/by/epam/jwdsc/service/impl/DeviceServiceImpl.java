@@ -26,4 +26,16 @@ public class DeviceServiceImpl implements DeviceService {
             throw new ServiceException("Error executing service find all devices", e);
         }
     }
+
+    @Override
+    public long createDevice(String name) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        DeviceDao deviceDao = daoProvider.getDeviceDao();
+        try {
+            return deviceDao.createDevice(new Device(name));
+        } catch (DaoException e) {
+            log.error("Error executing service create devices", e);
+            throw new ServiceException("Error executing service create devices", e);
+        }
+    }
 }

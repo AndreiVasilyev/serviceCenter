@@ -1,18 +1,14 @@
 package by.epam.jwdsc.dao.impl;
 
 import by.epam.jwdsc.dao.UserDao;
-import by.epam.jwdsc.entity.Address;
 import by.epam.jwdsc.entity.Client;
 import by.epam.jwdsc.dao.ClientDao;
-import by.epam.jwdsc.entity.UserBuilders;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.pool.DbConnectionPool;
 
 import java.sql.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static by.epam.jwdsc.dao.ColumnName.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class ClientDaoImpl extends UserDao implements ClientDao {
@@ -124,6 +120,62 @@ public class ClientDaoImpl extends UserDao implements ClientDao {
 
     @Override
     public boolean create(Client client) throws DaoException {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statementNewUser = connection.prepareStatement(SQL_CREATE_USER, RETURN_GENERATED_KEYS);
+             PreparedStatement statementNewClient = connection.prepareStatement(SQL_CREATE_CLIENT);
+             PreparedStatement statementNewPhones = connection.prepareStatement(SQL_CREATE_PHONE_NUMBER)) {
+            collectCreateUserQuery(statementNewUser, client);
+            statementNewUser.executeUpdate();
+            try (ResultSet generatedUserKey = statementNewUser.getGeneratedKeys()) {
+                client.setId(generatedUserKey.getLong(1));
+                collectCreateClientQuery(statementNewClient, client);
+                statementNewClient.executeUpdate();
+                if (client.getPhones() != null && !client.getPhones().isEmpty()) {
+                    for (String phoneNumber : client.getPhones()) {
+                        statementNewPhones.setLong(1, client.getId());
+                        statementNewPhones.setString(2, phoneNumber);
+                        statementNewPhones.executeUpdate();
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error creating new Client", e);
+            throw new DaoException("Error creating new Client", e);
+        }
+        return true;
+    }
+
+    @Override
+    public long createClient(Client client) throws DaoException {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statementNewUser = connection.prepareStatement(SQL_CREATE_USER, RETURN_GENERATED_KEYS);
+             PreparedStatement statementNewClient = connection.prepareStatement(SQL_CREATE_CLIENT);
+             PreparedStatement statementNewPhones = connection.prepareStatement(SQL_CREATE_PHONE_NUMBER)) {
+            collectCreateUserQuery(statementNewUser, client);
+            statementNewUser.executeUpdate();
+            try (ResultSet generatedUserKey = statementNewUser.getGeneratedKeys()) {
+                long createdUserId = generatedUserKey.getLong(1);
+                client.setId(createdUserId);
+                collectCreateClientQuery(statementNewClient, client);
+                statementNewClient.executeUpdate();
+                if (client.getPhones() != null && !client.getPhones().isEmpty()) {
+                    for (String phoneNumber : client.getPhones()) {
+                        statementNewPhones.setLong(1, client.getId());
+                        statementNewPhones.setString(2, phoneNumber);
+                        statementNewPhones.executeUpdate();
+                    }
+                }
+                return createdUserId;
+            }
+        } catch (SQLException e) {
+            log.error("Error creating new Client", e);
+            throw new DaoException("Error creating new Client", e);
+        }
+    }
+
+
+    @Override
+    public boolean createWithNewAddress(Client client) throws DaoException {
         Connection connection = DbConnectionPool.INSTANCE.getConnection();
         try (PreparedStatement statementNewAddress = connection.prepareStatement(SQL_CREATE_ADDRESS, RETURN_GENERATED_KEYS);
              PreparedStatement statementNewUser = connection.prepareStatement(SQL_CREATE_USER, RETURN_GENERATED_KEYS);
@@ -143,7 +195,7 @@ public class ClientDaoImpl extends UserDao implements ClientDao {
                     if (client.getPhones() != null && !client.getPhones().isEmpty()) {
                         for (String phoneNumber : client.getPhones()) {
                             statementNewPhones.setLong(1, client.getId());
-                            statementNewClient.setString(2, phoneNumber);
+                            statementNewPhones.setString(2, phoneNumber);
                             statementNewPhones.executeUpdate();
                         }
                     }

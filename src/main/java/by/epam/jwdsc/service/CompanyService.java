@@ -8,4 +8,6 @@ import java.util.List;
 public interface CompanyService {
 
     List<Company> findAll() throws ServiceException;
+
+    long createCompany(String name, boolean isContract) throws ServiceException;
 }

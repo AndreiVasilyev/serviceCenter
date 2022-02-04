@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static by.epam.jwdsc.dao.ColumnName.*;
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class DeviceDaoImpl implements DeviceDao {
 
@@ -89,6 +90,21 @@ public class DeviceDaoImpl implements DeviceDao {
             throw new DaoException("Error executing query create new Device", e);
         }
         return true;
+    }
+
+    @Override
+    public long createDevice(Device device) throws DaoException {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_DEVICE, RETURN_GENERATED_KEYS)) {
+            statement.setString(1, device.getName());
+            statement.executeUpdate();
+            try (ResultSet generatedDeviceKey = statement.getGeneratedKeys()) {
+                return generatedDeviceKey.getLong(1);
+            }
+        } catch (SQLException e) {
+            log.error("Error executing query create new Device", e);
+            throw new DaoException("Error executing query create new Device", e);
+        }
     }
 
     @Override

@@ -95,6 +95,22 @@ public class CompanyDapImpl implements CompanyDao {
     }
 
     @Override
+    public long createCompany(Company company) throws DaoException {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_COMPANY, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, company.getName());
+            statement.setBoolean(2, company.isContract());
+            statement.executeUpdate();
+            try (ResultSet generatedCompanyKey = statement.getGeneratedKeys()) {
+                return generatedCompanyKey.getLong(1);
+            }
+        } catch (SQLException e) {
+            log.error("Error executing query create new Company", e);
+            throw new DaoException("Error executing query create new Company", e);
+        }
+    }
+
+    @Override
     public Optional<Company> update(Company company) throws DaoException {
         Optional<Company> oldCompanyFound = findById(company.getId());
         if (oldCompanyFound.isPresent()) {
