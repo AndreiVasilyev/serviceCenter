@@ -29,6 +29,15 @@ public class ValidatorImpl implements Validator {
     }
 
     @Override
+    public boolean isUnrequitedEmailValid(String email) {
+        boolean result = false;
+        if (email != null) {
+            result = email.matches(EMAIL_REGEX);
+        }
+        return result;
+    }
+
+    @Override
     public boolean isOrderNumberValid(String orderNumber) {
         boolean result = false;
         if (orderNumber != null && !orderNumber.isBlank()) {
@@ -246,11 +255,11 @@ public class ValidatorImpl implements Validator {
 
     @Override
     public boolean isNewOrderDataValid(NewOrderData newOrderData) {
-        return (isOrderNumberValid(newOrderData.getOrderNumber()) && isDeviceNameValid(newOrderData.getDeviceName())
+        return (isNewOrderNumberValid(newOrderData.getOrderNumber()) && isDeviceNameValid(newOrderData.getDeviceName())
                 && isIdValid(newOrderData.getDeviceId()) && isCompanyNameValid(newOrderData.getCompanyName())
                 && isIdValid(newOrderData.getCompanyId()) && isModelValid(newOrderData.getModel())
                 && isSerialValid(newOrderData.getSerial()) && isIdValid(newOrderData.getClientId())
-                && isEmailValid(newOrderData.getEmail()) && isFirstNameValid(newOrderData.getFirstName())
+                && isUnrequitedEmailValid(newOrderData.getEmail()) && isFirstNameValid(newOrderData.getFirstName())
                 && isSecondNameValid(newOrderData.getSecondName()) && isPatronymicValid(newOrderData.getPatronymic())
                 && isRequiredPhoneNumberValid(newOrderData.getPhoneFirst()) && isPhoneNumberValid(newOrderData.getPhoneSecond())
                 && isPhoneNumberValid(newOrderData.getPhoneThird()) && isCountryValid(newOrderData.getCountry())

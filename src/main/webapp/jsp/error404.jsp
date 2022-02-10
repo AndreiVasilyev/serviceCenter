@@ -15,7 +15,7 @@
         <link href="../css/header.css" rel="stylesheet">
         <title>${error_title}</title>
     </head>
-    <body>
+    <body class="min-vh-100">
         <c:import url="header.jsp"/>
         <div style="margin-top: 10rem;margin-left: 10rem">
             <h1 class="mt-5">Resource no exist!</h1>

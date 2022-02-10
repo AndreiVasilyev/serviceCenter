@@ -4,7 +4,6 @@ import by.epam.jwdsc.controller.command.Command;
 import by.epam.jwdsc.controller.command.PagePath;
 import by.epam.jwdsc.controller.command.Router;
 import by.epam.jwdsc.entity.Address;
-import by.epam.jwdsc.entity.Client;
 import by.epam.jwdsc.entity.dto.NewOrderData;
 import by.epam.jwdsc.exception.ServiceException;
 import by.epam.jwdsc.service.*;
@@ -21,9 +20,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
+import static by.epam.jwdsc.controller.command.SessionAttribute.*;
 
 public class SaveNewOrderCommand implements Command {
 
@@ -35,13 +33,11 @@ public class SaveNewOrderCommand implements Command {
         Gson gson = GsonUtil.getInstance().getGson();
         ServiceProvider serviceProvider = ServiceProvider.getInstance();
         OrderService orderService = serviceProvider.getOrderService();
-
         HttpSession session = request.getSession();
         try {
             NewOrderData newOrderData = gson.fromJson(request.getReader(), NewOrderData.class);
             Validator validator = ValidatorImpl.getInstance();
             if (validator.isNewOrderDataValid(newOrderData)) {
-                log.debug("Order data validated");
                 List<String> phones = new ArrayList<>();
                 phones.add(newOrderData.getPhoneFirst());
                 if (!newOrderData.getPhoneSecond().isBlank()) {
@@ -78,14 +74,11 @@ public class SaveNewOrderCommand implements Command {
                     long companyId = companyService.createCompany(newOrderData.getCompanyName(), false);
                     newOrderData.setCompanyId(String.valueOf(companyId));
                 }
-                //call service to save data
-                //List<Order> orders = orderService.findOrdersByParameters(orderParameters);
-                //return new Router(Router.RouterType.JSON, gson.toJson(orders));
+                orderService.createNewOrder(newOrderData, (long) session.getAttribute(EMPLOYEE_ID));
+                return new Router(Router.RouterType.JSON, gson.toJson("ok:order was created"));
             } else {
-                // return message about invalid data
-                // return new Router(Router.RouterType.JSON, gson.toJson(orders));
+                return new Router(Router.RouterType.JSON, gson.toJson("error: invalid order parameters"));
             }
-
         } catch (IOException e) {
             log.error("Error reading JSON string from request");
             session.setAttribute(EXCEPTION, e);
@@ -95,7 +88,5 @@ public class SaveNewOrderCommand implements Command {
             session.setAttribute(EXCEPTION, e);
             return new Router(PagePath.ERROR_PAGE, Router.RouterType.REDIRECT);
         }
-
-        return null;
     }
 }

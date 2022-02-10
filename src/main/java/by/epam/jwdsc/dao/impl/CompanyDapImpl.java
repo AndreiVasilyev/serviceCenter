@@ -102,6 +102,7 @@ public class CompanyDapImpl implements CompanyDao {
             statement.setBoolean(2, company.isContract());
             statement.executeUpdate();
             try (ResultSet generatedCompanyKey = statement.getGeneratedKeys()) {
+                generatedCompanyKey.next();
                 return generatedCompanyKey.getLong(1);
             }
         } catch (SQLException e) {

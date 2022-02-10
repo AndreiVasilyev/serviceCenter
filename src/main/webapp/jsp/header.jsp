@@ -10,6 +10,7 @@
 <c:url value="/control?command=goto_login_page" var="login_page"/>
 <c:url value="/control?command=logout" var="logout_command"/>
 <c:url value="/control?command=goto_registration_page" var="registration_page"/>
+<c:url value="/control?command=goto_control_page" var="control_page"/>
 
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="locale"/>
@@ -26,8 +27,9 @@
 <fmt:message var="request" key="header.nav.services.request"/>
 <fmt:message var="blog" key="header.nav.blog"/>
 <fmt:message var="contacts" key="header.nav.contacts"/>
+<fmt:message var="control" key="header.nav.control"/>
 
-<header class="fixed-top">
+<header class="sticky-top">
     <div class="container-fluid bg-secondary text-light px-5">
         <div class="row ">
             <div class="col-12 col-lg-auto order-lg-4 ">
@@ -100,6 +102,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#">${contacts}</a>
+                            </li>
+                            <li class="nav-item ${role eq 'GUEST' or role eq 'CLIENT'?'d-none':''}">
+                                <a class="nav-link menu-link" href="${control_page}">${control}</a>
                             </li>
                         </ul>
                     </div>

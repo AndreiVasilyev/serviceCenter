@@ -49,6 +49,8 @@ public class OrderDaoImpl implements OrderDao {
             "o.work_description=?, o.work_price=? WHERE o.order_id=?";
     private static final String SQL_ADD_SPARE_PART = "INSERT INTO orders_spare_parts(order_id, spare_part_id) VALUES(?,?)";
     private static final String SQL_DELETE_SPARE_PART = "DELETE FROM orders_spare_parts WHERE order_id=? AND spare_part_id=?";
+    private static final String SQL_SELECT_LAST_ORDER_BY_TYPE = "SELECT MAX(SUBSTR(order_number,2)) FROM orders WHERE order_number LIKE '%s'";
+    private static final String ANY_SYMBOLS_WILDCARD = "%";
 
     @Override
     public List<Order> findAll() throws DaoException {
@@ -82,9 +84,23 @@ public class OrderDaoImpl implements OrderDao {
         return findOrders(selectQuery, parameters.values());
     }
 
+    @Override
+    public String findLastOrderNumber(String orderType) throws DaoException {
+        String sqlParameter = Strings.concat(orderType, ANY_SYMBOLS_WILDCARD);
+        String sqlQuery = String.format(SQL_SELECT_LAST_ORDER_BY_TYPE, sqlParameter);
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sqlQuery)) {
+            resultSet.next();
+            return resultSet.getString(1);
+        } catch (SQLException e) {
+            log.error("Error executing query find last orderNumber", e);
+            throw new DaoException("Error executing query find last orderNumber", e);
+        }
+    }
+
     private List<Order> findOrders(String selectQuery, Collection<Object> parameters) throws DaoException {
         List<Order> orders = new ArrayList<>();
-        log.debug("QUERY: {}", selectQuery);
         try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
              PreparedStatement orderStatement = connection.prepareStatement(selectQuery)) {
             prepareStatement(orderStatement, parameters);

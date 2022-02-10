@@ -5,6 +5,8 @@ import by.epam.jwdsc.entity.dto.NewOrderData;
 public interface Validator {
     boolean isEmailValid(String email);
 
+    boolean isUnrequitedEmailValid(String email);
+
     boolean isOrderNumberValid(String orderNumber);
 
     boolean isCodeValid(String code);

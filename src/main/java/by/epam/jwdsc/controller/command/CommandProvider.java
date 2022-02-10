@@ -33,6 +33,10 @@ public class CommandProvider {
         commands.put(FIND_ALL_COMPANIES_DEVICES, new FindAllCompaniesDevicesCommand());
         commands.put(FIND_CLIENTS_BY_PHONE, new FindClientsByPhoneCommand());
         commands.put(FIND_CLIENT_BY_ID, new FindClientByIdCommand());
+        commands.put(SAVE_NEW_ORDER, new SaveNewOrderCommand());
+        commands.put(FIND_ORDER_BY_ID, new FindOrderByIdCommand());
+        commands.put(FIND_ALL_SELECTABLE_ITEMS, new FindAllSelectableItemsCommand());
+        commands.put(FIND_PARTS_BY_PARAM, new FindPartsByParamCommand());
     }
 
     public static CommandProvider getInstance() {

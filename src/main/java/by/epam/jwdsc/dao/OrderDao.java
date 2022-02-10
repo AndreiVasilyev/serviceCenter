@@ -11,4 +11,6 @@ public interface OrderDao extends BaseDao<Order> {
     List<Order> findByParams(LinkedHashMap<String, Object> parameters) throws DaoException;
 
     List<Order> findByParamsWithSortAndPage(LinkedHashMap<String, Object> parameters, String sort, int pageNumber) throws DaoException;
+
+    String findLastOrderNumber(String orderType) throws DaoException;
 }

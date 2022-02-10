@@ -154,6 +154,7 @@ public class ClientDaoImpl extends UserDao implements ClientDao {
             collectCreateUserQuery(statementNewUser, client);
             statementNewUser.executeUpdate();
             try (ResultSet generatedUserKey = statementNewUser.getGeneratedKeys()) {
+                generatedUserKey.next();
                 long createdUserId = generatedUserKey.getLong(1);
                 client.setId(createdUserId);
                 collectCreateClientQuery(statementNewClient, client);

@@ -50,11 +50,12 @@
         <link href="../css/control.css" rel="stylesheet">
         <title>${control_title}</title>
     </head>
-    <body>
+    <body class="min-vh-100">
         <c:import url="icon_sprite.jsp"/>
         <c:import url="add_order.jsp"/>
+        <c:import url="edit_order.jsp"/>
         <c:import url="header.jsp"/>
-        <main>
+        <main class="my-5">
             <div class="d-flex align-items-start">
                 <div class="nav flex-column nav-pills mx-3" id="v-pills-tab">
                     <button class="nav-link active" id="orders-tab" data-bs-toggle="pill"
@@ -89,7 +90,6 @@
                     <div class="tab-pane fade" id="prices-content">prices</div>
                 </div>
             </div>
-
         </main>
         <c:import url="footer.jsp"/>
         <script src="../js/bootstrap.bundle.js" type="text/javascript"></script>
@@ -97,6 +97,7 @@
         <script src="../js/custom_validation.js" type="text/javascript"></script>
         <script src="../js/control.js" type="text/javascript"></script>
         <script src="../js/add_order.js" type="text/javascript"></script>
+        <script src="../js/edit_order.js" type="text/javascript"></script>
         <script src="../js/ajax_request.js" type="text/javascript"></script>
     </body>
 </html>

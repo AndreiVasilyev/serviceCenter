@@ -50,10 +50,10 @@
         <link href="../css/check_order.css" rel="stylesheet">
         <title>${check_order_title}</title>
     </head>
-    <body>
+    <body class="min-vh-100">
         <c:import url="icon_sprite.jsp"/>
         <c:import url="header.jsp"/>
-        <main class="mb-5">
+        <main class="mt-5">
             <div class="container">
                 <div class="row">
                     <div class="col-12 text-center fw-bolder text-secondary">

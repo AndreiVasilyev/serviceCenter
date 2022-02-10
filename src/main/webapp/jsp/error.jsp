@@ -15,7 +15,7 @@
         <link href="../css/header.css" rel="stylesheet">
         <title>${error_title}</title>
     </head>
-    <body>
+    <body class="min-vh-100">
         <c:import url="header.jsp"/>
         <div class="mt-5">
             <c:if test="${not empty pageContext.exception}">

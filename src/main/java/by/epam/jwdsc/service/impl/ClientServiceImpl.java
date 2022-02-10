@@ -65,9 +65,9 @@ public class ClientServiceImpl implements ClientService {
         long clientId = Long.parseLong(newOrderData.getClientId());
         try {
             Client oldClient = findClientById(clientId).get();
-            Address newAddress = entityMapper.mapAddress(newOrderData);
-            newAddress.setId(oldClient.getAddress().getId());
-            Client newClient = entityMapper.mapClient(newOrderData, newAddress, phones);
+            Address address = entityMapper.mapAddress(newOrderData);
+            address.setId(oldClient.getAddress().getId());
+            Client newClient = entityMapper.mapClient(newOrderData, address, phones);
             return clientDao.update(newClient);
         } catch (DaoException e) {
             log.error("Error executing service update client");

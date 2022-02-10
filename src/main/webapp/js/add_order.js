@@ -28,6 +28,8 @@ let noteInput = document.getElementById('order-note');
 let saveOrderButton = document.getElementById('save-button');
 let findPhoneButton = document.getElementById('find-phone-button');
 let resetClientButton = document.getElementById('reset-client-button');
+let inputElements = document.querySelectorAll('.add-order');
+
 //----- prepare validity checks for form fields
 
 let orderTypeValidityChecks = [
@@ -56,7 +58,7 @@ let deviceValidityChecks = [
 let companyValidityChecks = [
     {
         isInvalid: function (inputField) {
-            let isInputFieldMatches = inputField.value.match(/^(([a-zA-zа-яА-Я]{3,20})( [a-zA-zа-яА-Я]{1,20}){0,2})?$/);
+            let isInputFieldMatches = inputField.value.match(/^([a-zA-zа-яА-Я]{1,20}( [a-zA-zа-яА-Я]{1,20}){0,3})?$/);
             return !isInputFieldMatches;
         },
         invalidityMessage: function () {
@@ -283,7 +285,6 @@ let noteValidityChecks = [
 //----- prepare function to handle form when all fields validated
 
 let validatedNewOrderFormHandler = function () {
-    let inputElements = document.querySelectorAll('.form-control,.form-select');
     if (isFieldValid(findPhoneInput)) {
         findPhoneButton.removeAttribute('disabled');
     }
@@ -378,23 +379,43 @@ function findClientsByPhoneHandler() {
 }
 
 function findClientsByPhoneResponseHandler(response) {
-    if (response != null && typeof response === 'object') {
-        let clientsUlElement = document.querySelector('.clients');
-        clientsUlElement.innerHTML = '';
-        for (const client of response) {
-            let liElement = document.createElement('li');
-            liElement.classList.add('client');
-            let clientLinkElement = document.createElement('a');
-            clientLinkElement.classList.add('dropdown-item');
-            clientLinkElement.setAttribute('href', '');
-            clientLinkElement.setAttribute('data-id', client.id);
-            clientLinkElement.innerHTML = client.firstName + ' ' + client.secondName;
-            clientLinkElement.addEventListener('click', dropDownMenuClientClickHandler);
-            liElement.append(clientLinkElement);
-            clientsUlElement.append(liElement);
+    let clientsUlElement = document.querySelector('.clients');
+    clientsUlElement.innerHTML = '';
+    if (response != null && !isEmpty(response)) {
+        if (typeof response == 'object') {
+            for (const client of response) {
+                console.log('client: ' + client);
+                let liElement = document.createElement('li');
+                liElement.classList.add('client');
+                let clientLinkElement = document.createElement('a');
+                clientLinkElement.classList.add('dropdown-item');
+                clientLinkElement.setAttribute('href', '');
+                clientLinkElement.setAttribute('data-id', client.id);
+                clientLinkElement.innerHTML = client.firstName + ' ' + client.secondName;
+                clientLinkElement.addEventListener('click', dropDownMenuClientClickHandler);
+                liElement.append(clientLinkElement);
+                clientsUlElement.append(liElement);
+            }
+        } else {
+            findPhoneInput.classList.add('is-invalid');
+            let spanElement = document.createElement('span');
+            spanElement.innerHTML = '-- invalid value --';
+            spanElement.classList.add('ms-4');
+            clientsUlElement.append(spanElement);
         }
+    } else {
+        let spanElement = document.createElement('span');
+        spanElement.innerHTML = '-- not found --';
+        spanElement.classList.add('ms-4');
+        clientsUlElement.append(spanElement);
     }
-    console.log('response received:' + response);
+}
+
+function isEmpty(object) {
+    for (let key in object) {
+        return false;
+    }
+    return true;
 }
 
 function dropDownMenuClientClickHandler(event) {
@@ -442,8 +463,8 @@ function findClientByIdResponseHandler(response) {
         if (response.address.region != null && response.address.region !== '') {
             fillClientCell(regionInput, response.address.region);
         }
-        if (response.address.apartment != null && response.address.apartment !== '') {
-            fillClientCell(apartmentInput, response.address.apartment);
+        if (response.address.apartmentNumber != null && response.address.apartmentNumber !== '') {
+            fillClientCell(apartmentInput, response.address.apartmentNumber);
         }
     }
 }
@@ -502,6 +523,22 @@ function collectnNewOrderData() {
 
 function saveNewOrderResponseHandler(response) {
     console.log('saved: ' + response);
-    //clear form
-    //print result message
+    if (response != null && typeof response == 'string') {
+        let resultOperation = response.split(':')[0];
+        let resultElement = document.querySelector('.save-order-result');
+        let resultMessageElement = document.querySelector('.save-order-message');
+        resultElement.classList.remove('d-none');
+        resultElement.classList.add('d-flex');
+        if (resultOperation == 'ok') {
+            clearAddOrderInputElements();
+        }
+        resultMessageElement.innerHTML = response.split(':')[1];
+    }
+}
+
+function clearAddOrderInputElements() {
+    Array.from(inputElements).forEach(element => {
+        element.value = '';
+        element.classList.remove('is-valid');
+    });
 }

@@ -5,6 +5,7 @@ let clearFilterButton = document.querySelector('.clear-filter');
 let newOrderButton = document.querySelector('.new-order');
 let filterInputElements = document.querySelectorAll('.filter-input');
 let sortLinkElements = document.querySelectorAll('.sort-link');
+let editModalElement = document.getElementById('editOrderModal');
 
 
 //Set listeners after page load/unload
@@ -28,6 +29,8 @@ function loadDocumentHandler() {
     clearFilterButton.addEventListener('click', clearFilterInputHandler);
     //create new order button listener
     newOrderButton.addEventListener('click', addNewOrderHandler);
+    //close edit modal window listener
+    editModalElement.addEventListener('hidden.bs.modal', closeEditModalHandler);
     getDataFromServer();
 }
 
@@ -78,6 +81,8 @@ function findOrdersResponseHandler(response) {
         for (const orderObject of response) {
             let rowElement = document.createElement('tr');
             rowElement.classList.add('order-row');
+            let model = orderObject.model != null ? orderObject.model : '';
+            let serial = orderObject.serialNumber != null ? orderObject.serialNumber : '';
             let clientValue = orderObject.client.firstName + ' ' + orderObject.client.secondName;
             let acceptedEmployeeValue = orderObject.acceptedEmployee.firstName + ' ' + orderObject.acceptedEmployee.secondName;
             let completedEmployee = orderObject.completedEmployee != null ? orderObject.completedEmployee : '';
@@ -88,14 +93,16 @@ function findOrdersResponseHandler(response) {
             let repairLevel = orderObject.workPrice != null ? orderObject.workPrice.repairLevel : '';
             let repairCost = orderObject.workPrice != null ? orderObject.workPrice.repairCost : '';
             let note = orderObject.note != null ? orderObject.note : '';
+            let orderActionElement = createOrderActionCell(orderObject.id);
+            rowElement.append(orderActionElement);
             rowElement = appendTableCell(orderObject.orderNumber, rowElement);
             rowElement = appendTableCell(orderObject.orderStatus, rowElement);
             rowElement = appendTableCell(orderObject.creationDate, rowElement);
             rowElement = appendTableCell(clientValue, rowElement);
             rowElement = appendTableCell(orderObject.device.name, rowElement);
             rowElement = appendTableCell(orderObject.company.name, rowElement);
-            rowElement = appendTableCell(orderObject.model, rowElement);
-            rowElement = appendTableCell(orderObject.serialNumber, rowElement);
+            rowElement = appendTableCell(model, rowElement);
+            rowElement = appendTableCell(serial, rowElement);
             rowElement = appendTableCell(acceptedEmployeeValue, rowElement);
             rowElement = appendTableCell(completedEmployeeValue, rowElement);
             rowElement = appendTableCell(completionDate, rowElement);
@@ -110,27 +117,30 @@ function findOrdersResponseHandler(response) {
                 rowElement = appendTableCell(partsSum, rowElement);
                 let partsElement = createDropdownPartsList(orderObject.spareParts);
                 let cellElement = document.createElement('td');
-                cellElement.classList.add('mx-2');
+                cellElement.classList.add('px-3', 'align-middle');
                 cellElement.append(partsElement);
                 rowElement.append(cellElement);
             } else {
                 rowElement = appendTableCell('', rowElement);
                 rowElement = appendTableCell('', rowElement);
             }
-            let orderActionElement = createOrderActionCell()
-            rowElement.append(orderActionElement);
             tableBodyElement.append(rowElement);
         }
+        let editLinkElements = document.querySelectorAll('.order-edit');
+        Array.from(editLinkElements).forEach(element => element.addEventListener('click', editOrderClickHandler));
     }
     filterInputAccess(true);
 }
 
-function createOrderActionCell() {
+function createOrderActionCell(id) {
     let tdElement = document.createElement('td');
-    tdElement.classList.add('order-action');
+    tdElement.classList.add('order-action', 'px-3', 'align-middle');
     let editLink = document.createElement('a');
     editLink.classList.add('text-warning', 'me-2', 'order-edit');
     editLink.setAttribute('href', '');
+    editLink.setAttribute('data-bs-toggle', 'modal');
+    editLink.setAttribute('data-bs-target', '#editOrderModal');
+    editLink.setAttribute('data-id', id);
     let removeLink = document.createElement('a');
     removeLink.classList.add('text-danger', 'me-2', 'order-remove');
     removeLink.setAttribute('href', '');
@@ -149,7 +159,7 @@ function createDropdownPartsList(spareParts) {
     let divElement = document.createElement('div');
     divElement.classList.add('btn-group', 'dropstart');
     let buttonElement = document.createElement('button');
-    buttonElement.classList.add('btn', 'btn-success', 'dropdown-toggle');
+    buttonElement.classList.add('btn', 'btn-success', 'dropdown-toggle', 'btn-sm');
     buttonElement.setAttribute('type', 'button');
     buttonElement.setAttribute('data-bs-toggle', 'dropdown');
     buttonElement.innerHTML = 'Запчасти';
@@ -182,6 +192,7 @@ function createDropdownPartsList(spareParts) {
 
 function appendTableCell(cellValue, rowElement) {
     let cellElement = document.createElement('td');
+    cellElement.classList.add('text-center', 'align-middle');
     cellElement.innerHTML = cellValue;
     rowElement.append(cellElement);
     return rowElement;
@@ -201,7 +212,7 @@ function addNewOrderHandler() {
     Array.from(dropdownInputElements).forEach(element => element.addEventListener('input', () => element.dataset.id = '0'));
     let controller = '/control?command=find_all_companies_devices';
     sendPostJsonQuery(controller, {}).then(response => findCompaniesDevicesResponseHandler(response));
-    let inputElements = document.querySelectorAll('.form-control,.form-select');
+    let inputElements = document.querySelectorAll('.add-order');
     Array.from(inputElements).forEach(element => {
         element.addEventListener('blur', onBlurInputFieldHandler);
         element.addEventListener('focus', onFocusInputFieldHandler);
@@ -209,6 +220,15 @@ function addNewOrderHandler() {
     findPhoneButton.addEventListener('click', findClientsByPhoneHandler);
     resetClientButton.addEventListener('click', resetClientInput);
     saveOrderButton.addEventListener('click', saveNewOrderHandler);
+    let closeButtons = document.querySelectorAll('.close-save-order');
+    Array.from(closeButtons).forEach(element => element.addEventListener('click', closeButtonClickHandler));
+}
+
+//-----close add new order modal window event handler
+
+function closeButtonClickHandler() {
+    clearAddOrderInputElements();
+    getDataFromServer();
 }
 
 //-----input field OnBlur event handler
@@ -223,6 +243,9 @@ function onFocusInputFieldHandler() {
     saveOrderButton.setAttribute('disabled', 'disabled');
     this.classList.remove('is-invalid');
     this.classList.remove('is-valid');
+    let resultElement = document.querySelector('.save-order-result');
+    resultElement.classList.add('d-none');
+    resultElement.classList.remove('d-flex');
 }
 
 function changeSortOrderHandler(event) {

@@ -16,11 +16,8 @@
         <link href="../css/header.css" rel="stylesheet">
         <title>${main_title}</title>
     </head>
-    <body>
+    <body class="min-vh-100">
         <c:import url="header.jsp"/>
-        <div>
-            <a href="#">link</a>
-        </div>
         <main>
         </main>
         <c:import url="footer.jsp"/>

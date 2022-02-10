@@ -19,7 +19,7 @@ public class AddressDaoImpl implements AddressDao {
     private static final String SQL_SELECT_ADDRESS_BY_ID = "SELECT a.address_id, a.country, a.postcode, a.state, " +
             "a.region, a.city, a.street, a.house_number, a.apartment_number FROM addresses AS a WHERE a.address_id=?";
     private static final String SQL_SELECT_ADDRESSES_BY_PARAMS = "SELECT a.address_id, a.country, a.postcode, a.state, " +
-            "a.region, a.city, a.street, a.house_number, a,apartment_number FROM addresses AS a WHERE a.country=? AND " +
+            "a.region, a.city, a.street, a.house_number, a.apartment_number FROM addresses AS a WHERE a.country=? AND " +
             "a.postcode=? AND a.state=? AND a.region=? AND a.city=? AND a.street=? AND a.house_number=? AND " +
             "a.apartment_number=?";
     private static final String SQL_DELETE_ADDRESS_BY_ID = "DELETE a FROM addresses AS a WHERE a.address_id=?";
@@ -125,6 +125,7 @@ public class AddressDaoImpl implements AddressDao {
             collectAddressQuery(statement, address);
             statement.executeUpdate();
             try (ResultSet generatedAddressKey = statement.getGeneratedKeys()) {
+                generatedAddressKey.next();
                 return generatedAddressKey.getLong(1);
             }
 

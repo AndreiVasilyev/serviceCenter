@@ -33,15 +33,21 @@ public class EntityMapper {
     }
 
     public Address mapAddress(NewOrderData newOrderData) {
+
         int houseNumber = Integer.parseInt(newOrderData.getHouseNumber());
-        int postcode = Integer.parseInt(newOrderData.getPostcode());
-        int apartmentNumber = Integer.parseInt(newOrderData.getApartmentNumber());
-        return new Address.Builder(newOrderData.getCity(), newOrderData.getStreet(), houseNumber)
+        Address address = new Address.Builder(newOrderData.getCity(), newOrderData.getStreet(), houseNumber)
                 .country(newOrderData.getCountry())
-                .postcode(postcode)
                 .state(newOrderData.getState())
                 .region(newOrderData.getRegion())
-                .apartmentNumber(apartmentNumber)
                 .build();
+        if (!newOrderData.getPostcode().isBlank()) {
+            int postcode = Integer.parseInt(newOrderData.getPostcode());
+            address.setPostcode(postcode);
+        }
+        if (!newOrderData.getApartmentNumber().isBlank()) {
+            int apartmentNumber = Integer.parseInt(newOrderData.getApartmentNumber());
+            address.setApartmentNumber(apartmentNumber);
+        }
+        return address;
     }
 }

@@ -1,6 +1,5 @@
 package by.epam.jwdsc.service.impl;
 
-import by.epam.jwdsc.dao.ColumnName;
 import by.epam.jwdsc.dao.DaoProvider;
 import by.epam.jwdsc.dao.EmployeeDao;
 import by.epam.jwdsc.entity.Employee;
@@ -22,6 +21,18 @@ import static by.epam.jwdsc.dao.TableAliasName.*;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private static final Logger log = LogManager.getLogger();
+
+    @Override
+    public List<Employee> findAll() throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
+        try {
+            return employeeDao.findAll();
+        } catch (DaoException e) {
+            log.error("Error executing service find all employees", e);
+            throw new ServiceException("Error executing service find all employees", e);
+        }
+    }
 
     @Override
     public Optional<Employee> authorize(String login, String password) throws ServiceException {

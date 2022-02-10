@@ -15,6 +15,7 @@ public class ServiceProvider {
     private final DeviceService deviceService = new DeviceServiceImpl();
     private final ClientService clientService = new ClientServiceImpl();
     private final AddressService addressService = new AddressServiceImpl();
+    private final SparePartService sparePartService = new SparePartServiceImpl();
 
     private ServiceProvider() {
     }
@@ -56,5 +57,9 @@ public class ServiceProvider {
 
     public AddressService getAddressService() {
         return addressService;
+    }
+
+    public SparePartService getSparePartService() {
+        return sparePartService;
     }
 }

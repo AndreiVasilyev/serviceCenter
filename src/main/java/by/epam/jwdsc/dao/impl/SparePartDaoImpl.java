@@ -4,14 +4,11 @@ import by.epam.jwdsc.dao.SparePartDao;
 import by.epam.jwdsc.entity.*;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.pool.DbConnectionPool;
+import org.apache.logging.log4j.util.Strings;
 
-import java.math.BigDecimal;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static by.epam.jwdsc.dao.ColumnName.*;
 
 public class SparePartDaoImpl implements SparePartDao {
 
@@ -19,11 +16,14 @@ public class SparePartDaoImpl implements SparePartDao {
             "s.cost FROM spare_parts AS s";
     private static final String SQL_SELECT_SPARE_PART_BY_ID = "SELECT s.id, s.part_number, s.name, s.description, " +
             "s.cost FROM spare_parts AS s WHERE s.id=?";
+    private static final String SQL_SELECT_SPARE_PARTS_BY_PARAM = "SELECT s.id, s.part_number, s.name, s.description, " +
+            "s.cost FROM spare_parts AS s WHERE s.part_number LIKE ? OR s.name LIKE ? OR s.description LIKE ?";
     private static final String SQL_DELETE_SPARE_PART_BY_ID = "DELETE s FROM spare_parts AS s WHERE s.id=?";
     private static final String SQL_CREATE_SPARE_PART = "INSERT INTO spare_parts(part_number, name, description, cost) " +
             "VALUES(?,?,?,?)";
     private static final String SQL_UPDATE_SPARE_PART = "UPDATE spare_parts AS s SET s.part_number=?, s.name=?, " +
             "s.description=?, s.cost=? WHERE s.id=?";
+    private static final String ANY_SYMBOL_WILDCARD = "%";
 
     @Override
     public List<SparePart> findAll() throws DaoException {
@@ -51,6 +51,23 @@ public class SparePartDaoImpl implements SparePartDao {
             throw new DaoException("Error executing query findById from SpareParts", e);
         }
 
+    }
+
+    @Override
+    public List<SparePart> findByParam(String param) throws DaoException {
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_SPARE_PARTS_BY_PARAM)) {
+            String queryParam = Strings.concat(ANY_SYMBOL_WILDCARD, param).concat(ANY_SYMBOL_WILDCARD);
+            statement.setString(1, queryParam);
+            statement.setString(2, queryParam);
+            statement.setString(3, queryParam);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return extractSpareParts(resultSet);
+            }
+        } catch (SQLException e) {
+            log.error("Error executing query findByParam from SpareParts", e);
+            throw new DaoException("Error executing query findByParam from SpareParts", e);
+        }
     }
 
     @Override

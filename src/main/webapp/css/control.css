@@ -1,7 +1,3 @@
-main {
-    margin-top: 15vh;
-}
-
 thead, .dropdown-menu {
     white-space: nowrap;
 }
@@ -14,4 +10,19 @@ thead, .dropdown-menu {
 .required-star{
     color: firebrick;
     margin-left: 0.5rem;
+}
+
+html{
+    overflow: hidden;
+}
+
+.table-container{
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.table-container thead{
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }

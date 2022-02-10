@@ -14,10 +14,11 @@
             </div>
         </div>
     </div>
-    <div class="row table-responsive mt-3">
+    <div class="row mt-3 table-container">
         <table class="table table-hover table-sm">
             <thead>
-                <tr class="table-info">
+                <tr class="table-info text-center">
+                    <th scope="col" class="order-action"></th>
                     <th scope="col">
                         <span>Номер&nbspзаказа</span>
                         <a class="sort-link" >
@@ -111,11 +112,9 @@
                     <th scope="col">Заметки</th>
                     <th scope="col">Стоимость&nbspдеталей</th>
                     <th scope="col">Запчасти</th>
-                    <th scope="col" class="order-action"></th>
                 </tr>
-            </thead>
-            <tbody>
                 <tr class="order-filter table-secondary">
+                    <th></th>
                     <th>
                         <div class="input-group input-group-sm">
                             <input class="form-control filter-input" type="text"/>
@@ -207,10 +206,11 @@
                         </div>
                     </th>
                     <th></th>
-                    <th>
-                    </th>
                     <th></th>
                 </tr>
+            </thead>
+            <tbody>
+
             </tbody>
         </table>
     </div>

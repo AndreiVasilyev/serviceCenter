@@ -99,6 +99,7 @@ public class DeviceDaoImpl implements DeviceDao {
             statement.setString(1, device.getName());
             statement.executeUpdate();
             try (ResultSet generatedDeviceKey = statement.getGeneratedKeys()) {
+                generatedDeviceKey.next();
                 return generatedDeviceKey.getLong(1);
             }
         } catch (SQLException e) {

@@ -41,16 +41,16 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="../css/bootstrap.css" rel="stylesheet">
         <link href="../css/bootstrap-icons.css" rel="stylesheet">
         <link href="../css/header.css" rel="stylesheet">
-        <link href="../css/login.css" rel="stylesheet">
         <title>${login_title}</title>
     </head>
-    <body>
+    <body class="min-vh-100">
         <c:import url="icon_sprite.jsp"/>
         <c:import url="header.jsp"/>
-        <main class="mb-5">
+        <main class="mt-5">
             <div class="container">
                 <div class="row">
                     <div class="col-12 text-center fw-bolder text-secondary">
