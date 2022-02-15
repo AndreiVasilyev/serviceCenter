@@ -37,6 +37,8 @@ public class CommandProvider {
         commands.put(FIND_ORDER_BY_ID, new FindOrderByIdCommand());
         commands.put(FIND_ALL_SELECTABLE_ITEMS, new FindAllSelectableItemsCommand());
         commands.put(FIND_PARTS_BY_PARAM, new FindPartsByParamCommand());
+        commands.put(FIND_WORK_COST, new FindWorkCostCommand());
+        commands.put(UPDATE_ORDER, new UpdateOrderCommand());
     }
 
     public static CommandProvider getInstance() {

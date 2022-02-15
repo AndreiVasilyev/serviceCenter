@@ -4,6 +4,7 @@ import by.epam.jwdsc.dao.AddressDao;
 import by.epam.jwdsc.dao.DaoProvider;
 import by.epam.jwdsc.entity.Address;
 import by.epam.jwdsc.entity.dto.NewOrderData;
+import by.epam.jwdsc.entity.dto.OrderData;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.exception.ServiceException;
 import by.epam.jwdsc.service.AddressService;
@@ -55,6 +56,20 @@ public class AddressServiceImpl implements AddressService {
         } catch (DaoException e) {
             log.error("Error executing service find address by id", e);
             throw new ServiceException("Error executing service find address by id", e);
+        }
+    }
+
+    @Override
+    public Optional<Address> updateAddress(OrderData orderData) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        AddressDao addressDao = daoProvider.getAddressDao();
+        EntityMapper entityMapper = EntityMapper.getInstance();
+        Address address = entityMapper.mapAddress(orderData);
+        try {
+            return addressDao.update(address);
+        } catch (DaoException e) {
+            log.error("Error executing service update address", e);
+            throw new ServiceException("Error executing service update address", e);
         }
     }
 

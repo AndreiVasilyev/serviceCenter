@@ -1,7 +1,12 @@
 package by.epam.jwdsc.validator.impl;
 
+import by.epam.jwdsc.entity.OrderStatus;
+import by.epam.jwdsc.entity.RepairLevel;
 import by.epam.jwdsc.entity.dto.NewOrderData;
+import by.epam.jwdsc.entity.dto.OrderData;
 import by.epam.jwdsc.validator.Validator;
+
+import java.util.Arrays;
 
 import static by.epam.jwdsc.validator.ValidatorTemplates.*;
 
@@ -34,6 +39,7 @@ public class ValidatorImpl implements Validator {
         if (email != null) {
             result = email.matches(EMAIL_REGEX);
         }
+        System.out.println("unreq email:"+result);
         return result;
     }
 
@@ -43,6 +49,7 @@ public class ValidatorImpl implements Validator {
         if (orderNumber != null && !orderNumber.isBlank()) {
             result = orderNumber.matches(ORDER_NUMBER_REGEX);
         }
+        System.out.println("ord num:"+result);
         return result;
     }
 
@@ -79,6 +86,7 @@ public class ValidatorImpl implements Validator {
         if (orderNumber != null && !orderNumber.isBlank()) {
             result = !orderNumber.matches(NEW_ORDER_NUMBER_REGEX);
         }
+        System.out.println(" nwe orde num:"+result);
         return result;
     }
 
@@ -88,6 +96,7 @@ public class ValidatorImpl implements Validator {
         if (deviceName != null && !deviceName.isBlank()) {
             result = deviceName.matches(DEVICE_NAME_REGEX);
         }
+        System.out.println("devi:"+result);
         return result;
     }
 
@@ -97,6 +106,7 @@ public class ValidatorImpl implements Validator {
         if (companyName != null) {
             result = companyName.matches(COMPANY_NAME_REGEX);
         }
+        System.out.println("comp:"+result);
         return result;
     }
 
@@ -106,6 +116,7 @@ public class ValidatorImpl implements Validator {
         if (id != null) {
             result = id.matches(ID_REGEX);
         }
+        System.out.println("id:"+result);
         return result;
     }
 
@@ -115,6 +126,7 @@ public class ValidatorImpl implements Validator {
         if (model != null) {
             result = model.matches(MODEL_REGEX);
         }
+        System.out.println("model:"+result);
         return result;
     }
 
@@ -124,6 +136,7 @@ public class ValidatorImpl implements Validator {
         if (serial != null) {
             result = serial.matches(SERIAL_REGEX);
         }
+        System.out.println("seri:"+result);
         return result;
     }
 
@@ -133,6 +146,7 @@ public class ValidatorImpl implements Validator {
         if (firstName != null && !firstName.isBlank()) {
             result = firstName.matches(FIRST_NAME_REGEX);
         }
+        System.out.println("name:"+result);
         return result;
     }
 
@@ -142,6 +156,7 @@ public class ValidatorImpl implements Validator {
         if (secondName != null && !secondName.isBlank()) {
             result = secondName.matches(SECOND_NAME_REGEX);
         }
+        System.out.println("secna:"+result);
         return result;
     }
 
@@ -151,6 +166,7 @@ public class ValidatorImpl implements Validator {
         if (patronymic != null) {
             result = patronymic.matches(PATRONYMIC_REGEX);
         }
+        System.out.println("patr:"+result);
         return result;
     }
 
@@ -160,6 +176,7 @@ public class ValidatorImpl implements Validator {
         if (phoneNumber != null) {
             result = phoneNumber.matches(PHONE_NUMBER_REGEX);
         }
+        System.out.println("phone:"+result);
         return result;
     }
 
@@ -169,6 +186,7 @@ public class ValidatorImpl implements Validator {
         if (phoneNumber != null && !phoneNumber.isBlank()) {
             result = phoneNumber.matches(PHONE_NUMBER_REGEX);
         }
+        System.out.println("phone req:"+result);
         return result;
     }
 
@@ -178,6 +196,7 @@ public class ValidatorImpl implements Validator {
         if (country != null) {
             result = country.matches(COUNTRY_REGEX);
         }
+        System.out.println("country:"+result);
         return result;
     }
 
@@ -187,6 +206,7 @@ public class ValidatorImpl implements Validator {
         if (postcode != null) {
             result = postcode.matches(POSTCODE_REGEX);
         }
+        System.out.println("postcode:"+result);
         return result;
     }
 
@@ -196,6 +216,7 @@ public class ValidatorImpl implements Validator {
         if (state != null) {
             result = state.matches(STATE_REGEX);
         }
+        System.out.println("stat:"+result);
         return result;
     }
 
@@ -205,6 +226,7 @@ public class ValidatorImpl implements Validator {
         if (region != null) {
             result = region.matches(REGION_REGEX);
         }
+        System.out.println("reg:"+result);
         return result;
     }
 
@@ -214,6 +236,7 @@ public class ValidatorImpl implements Validator {
         if (city != null && !city.isBlank()) {
             result = city.matches(CITY_REGEX);
         }
+        System.out.println("city:"+result);
         return result;
     }
 
@@ -223,6 +246,7 @@ public class ValidatorImpl implements Validator {
         if (street != null && !street.isBlank()) {
             result = street.matches(STREET_REGEX);
         }
+        System.out.println("str:"+result);
         return result;
     }
 
@@ -232,6 +256,7 @@ public class ValidatorImpl implements Validator {
         if (houseNumber != null && !houseNumber.isBlank()) {
             result = houseNumber.matches(HOUSE_NUMBER_REGEX);
         }
+        System.out.println("hous:"+result);
         return result;
     }
 
@@ -241,6 +266,7 @@ public class ValidatorImpl implements Validator {
         if (apartmentNumber != null) {
             result = apartmentNumber.matches(APARTMENT_NUMBER_REGEX);
         }
+        System.out.println("apart:"+result);
         return result;
     }
 
@@ -250,6 +276,59 @@ public class ValidatorImpl implements Validator {
         if (note != null) {
             result = note.matches(NOTE_REGEX);
         }
+        System.out.println("note:"+result);
+        return result;
+    }
+
+    @Override
+    public boolean isDateValid(String date) {
+        boolean result = false;
+        if (date != null) {
+            result = date.matches(DATE_REGEX);
+        }
+        System.out.println("date:"+result);
+        return result;
+    }
+
+    @Override
+    public boolean isOrderStatusValid(String orderStatus) {
+        boolean result = false;
+        if (orderStatus != null) {
+            result = Arrays.stream(OrderStatus.values())
+                    .anyMatch(t -> t.name().equals(orderStatus.toUpperCase()));
+        }
+        System.out.println("status:"+result);
+        return result;
+    }
+
+    @Override
+    public boolean isRepairLevelValid(String repairLevel) {
+        boolean result = true;
+        if (repairLevel != null && !repairLevel.isBlank()) {
+            result = Arrays.stream(RepairLevel.values())
+                    .anyMatch(t -> t.name().equals(repairLevel.toUpperCase()));
+        }
+        System.out.println("rep lev:"+result);
+        return result;
+    }
+
+    @Override
+    public boolean isWorkDescriptionValid(String workDescription) {
+        boolean result = false;
+        if (workDescription != null) {
+            result = workDescription.matches(WORK_DESCRIPTION_REGEX);
+        }
+        System.out.println("work descr:"+result);
+        return result;
+    }
+
+    @Override
+    public boolean isSparePartsValid(String spareParts) {
+        boolean result = false;
+        if (spareParts != null) {
+            result = spareParts.matches(SPARE_PARTS_REGEX);
+        }
+        System.out.println("spare part:"+result);
         return result;
     }
 
@@ -268,4 +347,27 @@ public class ValidatorImpl implements Validator {
                 && isStreetValid(newOrderData.getStreet()) && isHouseNumberValid(newOrderData.getHouseNumber())
                 && isApartmentNumberValid(newOrderData.getApartmentNumber()) && isNoteValid(newOrderData.getNote()));
     }
+
+    @Override
+    public boolean isOrderDataValid(OrderData orderData) {
+        return (isOrderNumberValid(orderData.getOrderNumber()) && isDeviceNameValid(orderData.getDeviceName())
+                && isIdValid(orderData.getDeviceId()) && isCompanyNameValid(orderData.getCompanyName())
+                && isIdValid(orderData.getCompanyId()) && isModelValid(orderData.getModel()) && isIdValid(orderData.getId())
+                && isSerialValid(orderData.getSerial()) && isIdValid(orderData.getClientId())
+                && isUnrequitedEmailValid(orderData.getEmail()) && isFirstNameValid(orderData.getFirstName())
+                && isSecondNameValid(orderData.getSecondName()) && isPatronymicValid(orderData.getPatronymic())
+                && isRequiredPhoneNumberValid(orderData.getPhoneFirst()) && isPhoneNumberValid(orderData.getPhoneSecond())
+                && isPhoneNumberValid(orderData.getPhoneThird()) && isCountryValid(orderData.getCountry())
+                && isPostcodeValid(orderData.getPostcode()) && isStateValid(orderData.getState())
+                && isRegionValid(orderData.getRegion()) && isCityValid(orderData.getCity())
+                && isStreetValid(orderData.getStreet()) && isHouseNumberValid(orderData.getHouseNumber())
+                && isApartmentNumberValid(orderData.getApartmentNumber()) && isNoteValid(orderData.getNote())
+                && isIdValid(orderData.getAcceptedEmployeeId()) && isIdValid(orderData.getCompletedEmployeeId())
+                && isIdValid(orderData.getWorkPriceId()) && isDateValid(orderData.getCreationDate())
+                && isDateValid(orderData.getCompletionDate()) && isDateValid(orderData.getIssueDate())
+                && isOrderStatusValid(orderData.getOrderStatus()) && isRepairLevelValid(orderData.getRepairLevel())
+                && isWorkDescriptionValid(orderData.getWorkDescription()) && isSparePartsValid(orderData.getSpareParts()));
+    }
 }
+
+

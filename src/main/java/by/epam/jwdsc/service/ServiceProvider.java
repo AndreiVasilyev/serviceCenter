@@ -16,6 +16,7 @@ public class ServiceProvider {
     private final ClientService clientService = new ClientServiceImpl();
     private final AddressService addressService = new AddressServiceImpl();
     private final SparePartService sparePartService = new SparePartServiceImpl();
+    private final PriceService priceService = new PriceServiceImpl();
 
     private ServiceProvider() {
     }
@@ -61,5 +62,9 @@ public class ServiceProvider {
 
     public SparePartService getSparePartService() {
         return sparePartService;
+    }
+
+    public PriceService getPriceService() {
+        return priceService;
     }
 }

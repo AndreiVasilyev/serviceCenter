@@ -46,7 +46,7 @@ let orderTypeValidityChecks = [
 let deviceValidityChecks = [
     {
         isInvalid: function (inputField) {
-            let isInputFieldMatches = inputField.value.match(/^([a-zA-zа-яА-Я]{3,20})( [a-zA-zа-яА-Я]{1,20}){0,4}$/);
+            let isInputFieldMatches = inputField.value.match(/^([a-zA-zа-яА-Я]{3,20})([ -][a-zA-zа-яА-Я]{1,20}){0,4}$/);
             return !isInputFieldMatches;
         },
         invalidityMessage: function () {
@@ -70,7 +70,7 @@ let companyValidityChecks = [
 let modelValidityChecks = [
     {
         isInvalid: function (inputField) {
-            let isInputFieldMatches = inputField.value.match(/^([\wа-яА-Я -]{3,20})?$/);
+            let isInputFieldMatches = inputField.value.match(/^([\wа-яА-Я \-\+]{3,20})?$/);
             return !isInputFieldMatches;
         },
         invalidityMessage: function () {
@@ -368,6 +368,11 @@ function dropDownMenuElementClickHandler(event) {
     inputElement.value = currentElement.innerHTML;
     inputElement.dataset.id = currentElement.dataset.id;
     checkInputField(inputElement, validatedNewOrderFormHandler, saveOrderButton);
+    if (currentElement.parentElement.classList.contains('edit-device')) {
+        if (repairLevelEditInput.value != '') {
+            updateWorkPriceInput();
+        }
+    }
 }
 
 function findClientsByPhoneHandler() {
@@ -384,7 +389,6 @@ function findClientsByPhoneResponseHandler(response) {
     if (response != null && !isEmpty(response)) {
         if (typeof response == 'object') {
             for (const client of response) {
-                console.log('client: ' + client);
                 let liElement = document.createElement('li');
                 liElement.classList.add('client');
                 let clientLinkElement = document.createElement('a');
@@ -522,7 +526,6 @@ function collectnNewOrderData() {
 }
 
 function saveNewOrderResponseHandler(response) {
-    console.log('saved: ' + response);
     if (response != null && typeof response == 'string') {
         let resultOperation = response.split(':')[0];
         let resultElement = document.querySelector('.save-order-result');

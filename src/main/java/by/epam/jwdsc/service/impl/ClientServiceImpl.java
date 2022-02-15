@@ -5,6 +5,7 @@ import by.epam.jwdsc.dao.DaoProvider;
 import by.epam.jwdsc.entity.Address;
 import by.epam.jwdsc.entity.Client;
 import by.epam.jwdsc.entity.dto.NewOrderData;
+import by.epam.jwdsc.entity.dto.OrderData;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.exception.ServiceException;
 import by.epam.jwdsc.service.ClientService;
@@ -69,6 +70,21 @@ public class ClientServiceImpl implements ClientService {
             address.setId(oldClient.getAddress().getId());
             Client newClient = entityMapper.mapClient(newOrderData, address, phones);
             return clientDao.update(newClient);
+        } catch (DaoException e) {
+            log.error("Error executing service update client");
+            throw new ServiceException("Error executing service update client", e);
+        }
+    }
+
+    @Override
+    public Optional<Client> updateClient(OrderData orderData, List<String> phones) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        ClientDao clientDao = daoProvider.getClientDao();
+        EntityMapper entityMapper = EntityMapper.getInstance();
+        try {
+            Address address = entityMapper.mapAddress(orderData);
+            Client client = entityMapper.mapClient(orderData, address, phones);
+            return clientDao.update(client);
         } catch (DaoException e) {
             log.error("Error executing service update client");
             throw new ServiceException("Error executing service update client", e);

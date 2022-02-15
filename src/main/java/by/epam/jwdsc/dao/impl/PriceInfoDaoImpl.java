@@ -1,9 +1,7 @@
 package by.epam.jwdsc.dao.impl;
 
 import by.epam.jwdsc.dao.PriceInfoDao;
-import by.epam.jwdsc.entity.Device;
 import by.epam.jwdsc.entity.PriceInfo;
-import by.epam.jwdsc.entity.RepairLevel;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.pool.DbConnectionPool;
 
@@ -21,6 +19,10 @@ public class PriceInfoDaoImpl implements PriceInfoDao {
             "d.device_name FROM prices AS p JOIN devices AS d USING (device_id)";
     private static final String SQL_SELECT_PRICE_BY_ID = "SELECT p.id, p.device_id, p.repair_level, p.repair_cost, " +
             "d.device_name FROM prices AS p JOIN devices AS d USING (device_id) WHERE p.id=?";
+    private static final String SQL_SELECT_COST_BY_DEVICE_AND_LEVEL = "SELECT p.repair_cost FROM prices AS p " +
+            "WHERE p.device_id=? AND p.repair_level=?";
+    private static final String SQL_SELECT_PRICE_BY_DEVICE_AND_LEVEL = "SELECT p.id, p.device_id, p.repair_level, " +
+            "p.repair_cost FROM prices AS p WHERE p.device_id=? AND p.repair_level=?";
     private static final String SQL_DELETE_PRICE_BY_ID = "DELETE p FROM prices AS p WHERE p.id=?";
     private static final String SQL_CREATE_PRICE = "INSERT INTO prices(device_id, repair_level, repair_cost) " +
             "VALUES(?,?,?)";
@@ -60,6 +62,44 @@ public class PriceInfoDaoImpl implements PriceInfoDao {
             throw new DaoException("Error executing query findById from Prices", e);
         }
         return price;
+    }
+
+    @Override
+    public Optional<BigDecimal> findCostByDeviceAndLevel(long deviceId, String repairLevel) throws DaoException {
+        Optional<BigDecimal> cost = Optional.empty();
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_COST_BY_DEVICE_AND_LEVEL)) {
+            statement.setLong(1, deviceId);
+            statement.setString(2, repairLevel);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    cost = Optional.of(resultSet.getBigDecimal(PRICES_REPAIR_COST));
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error executing query find work cost by device id and repair level", e);
+            throw new DaoException("Error executing query find work cost by device id and repair level", e);
+        }
+        return cost;
+    }
+
+    @Override
+    public Optional<PriceInfo> findByDeviceAndLevel(long deviceId, String repairLevel) throws DaoException {
+        Optional<PriceInfo> priceInfo = Optional.empty();
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_PRICE_BY_DEVICE_AND_LEVEL)) {
+            statement.setLong(1, deviceId);
+            statement.setString(2, repairLevel);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    priceInfo = Optional.of(extractPrice(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error executing query find priceInfo by device id and repair level", e);
+            throw new DaoException("Error executing query find priceInfo by device id and repair level", e);
+        }
+        return priceInfo;
     }
 
     @Override

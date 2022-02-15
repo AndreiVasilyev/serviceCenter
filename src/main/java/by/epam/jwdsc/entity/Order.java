@@ -118,6 +118,34 @@ public class Order extends CommonEntity {
         return note;
     }
 
+    public void setCompletedEmployee(Employee completedEmployee) {
+        this.completedEmployee = completedEmployee;
+    }
+
+    public void setCompletionDate(LocalDateTime completionDate) {
+        this.completionDate = completionDate;
+    }
+
+    public void setIssueDate(LocalDateTime issueDate) {
+        this.issueDate = issueDate;
+    }
+
+    public void setWorkDescription(String workDescription) {
+        this.workDescription = workDescription;
+    }
+
+    public void setWorkPrice(PriceInfo workPrice) {
+        this.workPrice = workPrice;
+    }
+
+    public void setSpareParts(List<SparePart> spareParts) {
+        this.spareParts = spareParts;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

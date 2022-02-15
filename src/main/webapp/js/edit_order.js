@@ -6,7 +6,7 @@ let orderIdEditInput = document.getElementById('edit-id');
 let orderNumberEditInput = document.getElementById('edit-number');
 let statusEditInput = document.getElementById('edit-status');
 let creationDateEditInput = document.getElementById('edit-creation-date');
-let acceptedImployeeEditInput = document.getElementById('edit-accepted-employee');
+let acceptedEmployeeEditInput = document.getElementById('edit-accepted-employee');
 let deviceEditInput = document.getElementById('edit-device');
 let companyEditInput = document.getElementById('edit-company');
 let modelEditInput = document.getElementById('edit-model');
@@ -29,7 +29,7 @@ let cityEditInput = document.getElementById('edit-city');
 let streetEditInput = document.getElementById('edit-street');
 let houseEditInput = document.getElementById('edit-house');
 let apartmentEditInput = document.getElementById('edit-apartment');
-let completedImployeeEditInput = document.getElementById('edit-completed-employee');
+let completedEmployeeEditInput = document.getElementById('edit-completed-employee');
 let completionDateEditInput = document.getElementById('edit-completion-date');
 let issueDateEditInput = document.getElementById('edit-issue-date');
 let priceInfoIdEditInput = document.getElementById('edit-price-info-id');
@@ -47,6 +47,7 @@ let saveOrderEditButton = document.getElementById('edit-save-button');
 let findPhoneEditButton = document.getElementById('edit-find-phone-button');
 let resetClientEditButton = document.getElementById('edit-reset-client-button');
 let inputEditElements = document.querySelectorAll('.edit-order');
+let errorMessageElements = document.querySelectorAll('div[data-error-match]');
 
 //----- prepare validity checks for form fields
 
@@ -75,7 +76,7 @@ let acceptedEmployeeValidityChecks = [
 let deviceEditValidityChecks = [
     {
         isInvalid: function (inputField) {
-            let isInputFieldMatches = inputField.value.match(/^([a-zA-zа-яА-Я]{3,20})( [a-zA-zа-яА-Я]{1,20}){0,4}$/);
+            let isInputFieldMatches = inputField.value.match(/^([a-zA-zа-яА-Я]{3,20})([ -][a-zA-zа-яА-Я]{1,20}){0,4}$/);
             return !isInputFieldMatches;
         },
         invalidityMessage: function () {
@@ -99,7 +100,7 @@ let companyEditValidityChecks = [
 let modelEditValidityChecks = [
     {
         isInvalid: function (inputField) {
-            let isInputFieldMatches = inputField.value.match(/^([\wа-яА-Я -]{3,20})?$/);
+            let isInputFieldMatches = inputField.value.match(/^([\wа-яА-Я \-\+]{3,20})?$/);
             return !isInputFieldMatches;
         },
         invalidityMessage: function () {
@@ -373,9 +374,7 @@ let workDescriptionValidityChecks = [
 //----- prepare function to handle form when all fields validated
 
 let validatedEditOrderFormHandler = function () {
-    console.log('check validities');
     if (isFieldValid(findPhoneEditInput)) {
-        console.log('remove disable');
         findPhoneEditButton.removeAttribute('disabled');
     }
     let isFormValid = true;
@@ -395,7 +394,7 @@ let validatedEditOrderFormHandler = function () {
 //----- creating custom validation for form fields
 
 createCustomValidation(creationDateEditInput, creationDateValidityChecks);
-createCustomValidation(acceptedImployeeEditInput, acceptedEmployeeValidityChecks);
+createCustomValidation(acceptedEmployeeEditInput, acceptedEmployeeValidityChecks);
 createCustomValidation(deviceEditInput, deviceEditValidityChecks);
 createCustomValidation(companyEditInput, companyEditValidityChecks);
 createCustomValidation(modelEditInput, modelEditValidityChecks);
@@ -417,27 +416,30 @@ createCustomValidation(streetEditInput, streetEditValidityChecks);
 createCustomValidation(houseEditInput, houseEditValidityChecks);
 createCustomValidation(apartmentEditInput, apartmentEditValidityChecks);
 createCustomValidation(noteEditInput, noteEditValidityChecks);
-createCustomValidation(completedImployeeEditInput, completedEmployeeValidityChecks);
+createCustomValidation(completedEmployeeEditInput, completedEmployeeValidityChecks);
 createCustomValidation(completionDateEditInput, completionDateValidityChecks);
 createCustomValidation(issueDateEditInput, issueDateValidityChecks);
 createCustomValidation(repairLevelEditInput, repairLevelValidityChecks);
 createCustomValidation(workDescriptionEditInput, workDescriptionValidityChecks);
 
 function closeEditModalHandler() {
-    console.log('close event');
-    Array.from(inputEditElements).forEach(element => element.value = '');
+    Array.from(inputEditElements).forEach(element => {
+        element.value = '';
+        element.classList.remove('is-valid');
+        element.classList.remove('is-invalid');
+    });
+    Array.from(errorMessageElements).forEach(element => element.innerHTML = '');
+    let resultElement = document.querySelector('.update-order-result');
+    resultElement.classList.add('d-none');
+    resultElement.classList.remove('d-flex');
+    getDataFromServer();
 }
 
 function editOrderClickHandler(event) {
     let currentLinkElement = event.currentTarget;
     let currentOrderId = currentLinkElement.dataset.id;
     let controllerWithParam = '/control?command=find_all_selectable_items';
-    sendPostJsonQuery(controllerWithParam, {}).then(response => findSelectableItemsResponseHandler(response));
-    let controller = '/control';
-    let searchParams = new URLSearchParams();
-    searchParams.append('command', 'find_order_by_id');
-    searchParams.append('orderId', currentOrderId);
-    sendPostFormQuery(controller, searchParams).then(response => findOrderByIdResponseHandler(response));
+    sendPostJsonQuery(controllerWithParam, {}).then(response => findSelectableItemsResponseHandler(response, currentOrderId));
     findPhoneEditButton.addEventListener('click', findEditClientsByPhoneHandler);
     resetClientEditButton.addEventListener('click', resetEditClientInput);
     saveOrderEditButton.addEventListener('click', saveChangedOrderHandler);
@@ -448,10 +450,101 @@ function editOrderClickHandler(event) {
         element.addEventListener('blur', onBlurEditInputFieldHandler);
         element.addEventListener('focus', onFocusEditInputFieldHandler);
     })
-    //let selectableElements = document.querySelectorAll('.dropdown-input');
-    //Array.from(dropdownInputElements).forEach(element => element.addEventListener('input', () => element.dataset.id = '0'));
-
+    completedEmployeeEditInput.addEventListener('change', changeCompletedEmployeeHandler);
+    repairLevelEditInput.addEventListener('change', changeRepairLevelHandler);
+    completionDateEditInput.addEventListener('change', changeCompletionDateHandler);
+    issueDateEditInput.addEventListener('change', changeIssueDateHandler);
 }
+
+function changeIssueDateHandler() {
+    if (issueDateEditInput.value == '') {
+        statusEditInput.value = 'CLOSED';
+    } else {
+        statusEditInput.value = 'ISSUED';
+    }
+}
+
+function changeCompletionDateHandler() {
+    if (completionDateEditInput.value == '') {
+        issueDateEditInput.value = '';
+        issueDateEditInput.setAttribute('disabled', 'disabled');
+        statusEditInput.value = 'IN_PROGRESS';
+    } else {
+        let currentRole = document.getElementById('current-role').dataset.role;
+        if (currentRole == 'ADMIN') {
+            issueDateEditInput.removeAttribute('disabled');
+        }
+        statusEditInput.value = 'CLOSED';
+    }
+}
+
+function changeRepairLevelHandler() {
+    if (repairLevelEditInput.value == '') {
+        completionDateEditInput.value = '';
+        completionDateEditInput.setAttribute('disabled', 'disabled');
+        issueDateEditInput.value = '';
+        issueDateEditInput.setAttribute('disabled', 'disabled');
+        workPriceEditInput.value = '';
+        priceInfoIdEditInput.value = '';
+        statusEditInput.value = 'IN_PROGRESS';
+        calculatePartsCost();
+    } else {
+        completionDateEditInput.removeAttribute('disabled');
+    }
+}
+
+function changeCompletedEmployeeHandler() {
+    if (completedEmployeeEditInput.value == '') {
+        repairLevelEditInput.value = '';
+        repairLevelEditInput.setAttribute('disabled', 'disabled');
+        completionDateEditInput.value = '';
+        completionDateEditInput.setAttribute('disabled', 'disabled');
+        issueDateEditInput.value = '';
+        issueDateEditInput.setAttribute('disabled', 'disabled');
+        workPriceEditInput.value = '';
+        workDescriptionEditInput.value = '';
+        workDescriptionEditInput.setAttribute('disabled', 'disabled');
+        priceInfoIdEditInput.value = '';
+        statusEditInput.value = 'ACCEPTED';
+        sparePartsEditInput.innerHTML = '';
+        sparePartsEditInput.setAttribute('disabled', 'disabled');
+        findPartEditInput.setAttribute('disabled', 'disabled');
+        findPartEditButton.setAttribute('disabled', 'disabled');
+        removePartEditButton.setAttribute('disabled', 'disabled');
+        calculatePartsCost();
+    } else {
+        repairLevelEditInput.removeAttribute('disabled');
+        workDescriptionEditInput.removeAttribute('disabled');
+        sparePartsEditInput.removeAttribute('disabled');
+        findPartEditInput.removeAttribute('disabled');
+        findPartEditButton.removeAttribute('disabled');
+        removePartEditButton.removeAttribute('disabled');
+        if (statusEditInput.value == 'ACCEPTED') {
+            statusEditInput.value = 'IN_PROGRESS';
+        }
+    }
+}
+
+
+function findSelectableItemsResponseHandler(response, currentOrderId) {
+    let oldSelectbleItemElements = document.querySelectorAll('.edit-device,.edit-company,.edit-employee,.edit-level,.edit-part');
+    Array.from(oldSelectbleItemElements).forEach(element => element.remove());
+    if (response != null && typeof response === 'object') {
+        let devicesUlElement = document.querySelector('.edit-devices');
+        createDropDownMenuElements(devicesUlElement, response.devices, 'edit-device');
+        let companyUlElement = document.querySelector('.edit-companies');
+        createDropDownMenuElements(companyUlElement, response.companies, 'edit-company');
+        createEmployeeOptionElements(acceptedEmployeeEditInput, response.employees, 'edit-employee');
+        createEmployeeOptionElements(completedEmployeeEditInput, response.employees, 'edit-employee');
+        createLevelOptionElements(repairLevelEditInput, response.levels, 'edit-level');
+    }
+    let controller = '/control';
+    let searchParams = new URLSearchParams();
+    searchParams.append('command', 'find_order_by_id');
+    searchParams.append('orderId', currentOrderId);
+    sendPostFormQuery(controller, searchParams).then(response => findOrderByIdResponseHandler(response));
+}
+
 
 //-----input field OnBlur event handler
 
@@ -464,9 +557,11 @@ function onBlurEditInputFieldHandler() {
 //-----input field OnFocus event handler
 
 function onFocusEditInputFieldHandler() {
-    saveOrderEditButton.setAttribute('disabled', 'disabled');
-    this.classList.remove('is-invalid');
-    this.classList.remove('is-valid');
+    if (!this.classList.contains('no-validate')) {
+        saveOrderEditButton.setAttribute('disabled', 'disabled');
+        this.classList.remove('is-invalid');
+        this.classList.remove('is-valid');
+    }
     let resultElement = document.querySelector('.update-order-result');
     resultElement.classList.add('d-none');
     resultElement.classList.remove('d-flex');
@@ -645,25 +740,11 @@ function foundPartClickHandler(event) {
     }
 }
 
-function findSelectableItemsResponseHandler(response) {
-    let oldSelectbleItemElements = document.querySelectorAll('.edit-device,.edit-company,.edit-employee,.edit-level,.edit-part');
-    Array.from(oldSelectbleItemElements).forEach(element => element.remove());
-    if (response != null && typeof response === 'object') {
-        let devicesUlElement = document.querySelector('.edit-devices');
-        createDropDownMenuElements(devicesUlElement, response.devices, 'edit-device');
-        let companyUlElement = document.querySelector('.edit-companies');
-        createDropDownMenuElements(companyUlElement, response.companies, 'edit-company');
-        createEmployeeOptionElements(acceptedImployeeEditInput, response.employees, 'edit-employee');
-        createEmployeeOptionElements(completedImployeeEditInput, response.employees, 'edit-employee');
-        createLevelOptionElements(repairLevelEditInput, response.levels, 'edit-level');
-    }
-}
-
 function createEmployeeOptionElements(selectElement, values, className) {
     for (const value of values) {
         let optionElement = document.createElement('option');
         optionElement.classList.add(className);
-        optionElement.value = value.id;
+        optionElement.value = value.id.toString();
         optionElement.innerHTML = value.firstName + ' ' + value.secondName;
         selectElement.append(optionElement);
     }
@@ -703,7 +784,7 @@ function findOrderByIdResponseHandler(response) {
     orderNumberEditInput.value = response.orderNumber;
     statusEditInput.value = response.orderStatus;
     creationDateEditInput.value = serverDateToBrowserDate(response.creationDate, creationDateEditInput);
-    acceptedImployeeEditInput.value = response.acceptedEmployee.id.toString();
+    acceptedEmployeeEditInput.value = response.acceptedEmployee.id.toString();
     deviceEditInput.value = response.device.name;
     deviceEditInput.dataset.id = response.device.id;
     companyEditInput.value = companyEdit;
@@ -744,18 +825,26 @@ function findOrderByIdResponseHandler(response) {
     houseEditInput.dataset.oldValue = response.client.address.houseNumber;
     apartmentEditInput.value = apartmentEdit;
     apartmentEditInput.dataset.oldValue = apartmentEdit;
-    completedImployeeEditInput.value = completedEmployee;
+    completedEmployeeEditInput.value = completedEmployee;
     completionDateEditInput.value = completionDate;
     issueDateEditInput.value = issueDate;
     repairLevelEditInput.value = repairLevel;
+    repairLevelEditInput.addEventListener('change', updateWorkPriceInput);
     workPriceEditInput.value = repairCost;
     calculateTotalCost();
     workDescriptionEditInput.value = workDescription;
     noteEditInput.value = note;
     if (response.spareParts != null) {
-        removePartEditButton.removeAttribute('disabled');
+        if (!sparePartsEditInput.hasAttribute('disabled')) {
+            removePartEditButton.removeAttribute('disabled');
+        }
         createPartOptionElements(sparePartsEditInput, response.spareParts, 'edit-part');
         calculatePartsCost();
+    }
+    if (completedEmployee == '') {
+        changeCompletedEmployeeHandler();
+    } else if (repairLevel = '') {
+        changeRepairLevelHandler();
     }
 }
 
@@ -772,7 +861,13 @@ function createPartOptionElements(selectElement, parts, className) {
 
 function calculateTotalCost() {
     if (partsCostEditInput.value != '' || workPriceEditInput.value != '') {
-        totalCostEditInput.value = Number.parseInt(partsCostEditInput.value) + Number.parseInt(workPriceEditInput.value);
+        if (partsCostEditInput.value == '') {
+            totalCostEditInput.value = Number.parseInt(workPriceEditInput.value);
+        } else if (workPriceEditInput.value == '') {
+            totalCostEditInput.value = Number.parseInt(partsCostEditInput.value);
+        } else {
+            totalCostEditInput.value = Number.parseInt(partsCostEditInput.value) + Number.parseInt(workPriceEditInput.value);
+        }
     } else {
         totalCostEditInput.value = '';
     }
@@ -782,7 +877,11 @@ function calculatePartsCost() {
     let partElements = document.querySelectorAll('.edit-part');
     let partsCost = Array.from(partElements).reduce((sum, elem) => sum + Number.parseInt(elem.dataset.cost), 0);
     partsCostEditInput.value = partsCost;
-    totalCostEditInput.value = partsCost + Number.parseInt(workPriceEditInput.value);
+    if (workPriceEditInput.value != '') {
+        totalCostEditInput.value = partsCost + Number.parseInt(workPriceEditInput.value);
+    } else {
+        totalCostEditInput.value = partsCost;
+    }
 }
 
 function serverDateToBrowserDate(serverDate, inputElement) {
@@ -792,17 +891,94 @@ function serverDateToBrowserDate(serverDate, inputElement) {
     return browserDate;
 }
 
-function browserDateToserverDate(browserDate, seconds) {
+function browserDateToServerDate(browserDate, seconds) {
     let splitedBrowserDate = browserDate.split(/[-T:]+/);
-    let serverDate = splitedServerDate[2].concat(' ', splitedServerDate[1], ' ', splitedServerDate[0], ' ', splitedServerDate[3], ':', splitedServerDate[4], ':', seconds);
+    if (seconds == '') {
+        seconds = '00';
+    }
+    let serverDate = splitedBrowserDate[2].concat(' ', splitedBrowserDate[1], ' ', splitedBrowserDate[0], ' ', splitedBrowserDate[3], ':', splitedBrowserDate[4], ':', seconds);
     return serverDate;
-    //d MM uuuu HH:mm:ss
-    //yyyy-MM-ddThh:mm
+}
+
+function updateWorkPriceInput() {
+    let currentDeviceId = deviceEditInput.dataset.id;
+    let currentRepairLevel = repairLevelEditInput.value;
+    let controller = '/control';
+    let searchParams = new URLSearchParams();
+    searchParams.append('command', 'find_work_cost');
+    searchParams.append('deviceIdParam', currentDeviceId);
+    searchParams.append('repairLevelParam', currentRepairLevel);
+    sendPostFormQuery(controller, searchParams).then(response => {
+        workPriceEditInput.value = response;
+        calculateTotalCost();
+    });
+
+
 }
 
 function saveChangedOrderHandler() {
-    //collect data and send query to update
-    console.log('XXXXX');
+    saveOrderEditButton.setAttribute('disabled', 'disabled');
+    let parameters = collectEditedOrderData();
+    let controller = '/control?command=update_order';
+    sendPostJsonQuery(controller, parameters).then(response => updateOrderResponseHandler(response));
 }
 
-//events on change device and rep level - get new work cost and recalculate value
+function collectEditedOrderData() {
+    let parameters = {};
+    parameters['id'] = orderIdEditInput.value;
+    parameters['orderNumber'] = orderNumberEditInput.value;
+    parameters['orderStatus'] = statusEditInput.value;
+    parameters['creationDate'] = browserDateToServerDate(creationDateEditInput.value, creationDateEditInput.dataset.sec);
+    parameters['acceptedEmployeeId'] = acceptedEmployeeEditInput.value;
+    parameters['deviceName'] = deviceEditInput.value;
+    parameters['deviceId'] = deviceEditInput.dataset.id;
+    parameters['companyName'] = companyEditInput.value;
+    parameters['companyId'] = companyEditInput.dataset.id;
+    parameters['model'] = modelEditInput.value;
+    parameters['serial'] = serialEditInput.value;
+    parameters['clientId'] = clientIdEditInput.value;
+    parameters['addressId'] = addressIdEditInput.value;
+    parameters['email'] = emailEditInput.value;
+    parameters['firstName'] = firstNameEditInput.value;
+    parameters['secondName'] = secondNameEditInput.value;
+    parameters['patronymic'] = patronymicEditInput.value;
+    parameters['phoneFirst'] = phone1EditInput.value;
+    parameters['phoneSecond'] = phone2EditInput.value;
+    parameters['phoneThird'] = phone3EditInput.value;
+    parameters['country'] = countryEditInput.value;
+    parameters['postcode'] = postcodeEditInput.value;
+    parameters['state'] = stateEditInput.value;
+    parameters['region'] = regionEditInput.value;
+    parameters['city'] = cityEditInput.value;
+    parameters['street'] = streetEditInput.value;
+    parameters['houseNumber'] = houseEditInput.value;
+    parameters['apartmentNumber'] = apartmentEditInput.value;
+    parameters['note'] = noteEditInput.value;
+    parameters['completedEmployeeId'] = completedEmployeeEditInput.value;
+    parameters['completionDate'] = completionDateEditInput.value != '' ? browserDateToServerDate(completionDateEditInput.value, completionDateEditInput.dataset.sec) : '';
+    parameters['issueDate'] = issueDateEditInput.value != '' ? browserDateToServerDate(issueDateEditInput.value, issueDateEditInput.dataset.sec) : '';
+    parameters['workPriceId'] = priceInfoIdEditInput.value;
+    parameters['repairLevel'] = repairLevelEditInput.value;
+    parameters['workDescription'] = workDescriptionEditInput.value;
+    if (sparePartsEditInput.options.length > 0) {
+        parameters['spareParts'] = '';
+        for (var i = 0; i < sparePartsEditInput.options.length; i++) {
+            parameters['spareParts'] += sparePartsEditInput.options[i].value + ' ';
+        }
+    } else {
+        parameters['spareParts'] = '';
+    }
+    return parameters;
+}
+
+function updateOrderResponseHandler(response) {
+    if (response != null && typeof response == 'string') {
+        let resultOperation = response.split(':')[0];
+        let resultElement = document.querySelector('.update-order-result');
+        let resultMessageElement = document.querySelector('.update-order-message');
+        resultElement.classList.remove('d-none');
+        resultElement.classList.add('d-flex');
+        resultMessageElement.innerHTML = response.split(':')[1];
+    }
+    console.log('updated: ' + response);
+}

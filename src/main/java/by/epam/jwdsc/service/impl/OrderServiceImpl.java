@@ -3,6 +3,7 @@ package by.epam.jwdsc.service.impl;
 import by.epam.jwdsc.dao.*;
 import by.epam.jwdsc.entity.*;
 import by.epam.jwdsc.entity.dto.NewOrderData;
+import by.epam.jwdsc.entity.dto.OrderData;
 import by.epam.jwdsc.entity.dto.OrderParameters;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.exception.ServiceException;
@@ -12,9 +13,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 import static by.epam.jwdsc.dao.ColumnName.*;
 import static by.epam.jwdsc.dao.TableAliasName.*;
@@ -22,14 +22,14 @@ import static by.epam.jwdsc.dao.TableAliasName.*;
 public class OrderServiceImpl implements OrderService {
 
     private static final Logger log = LogManager.getLogger();
+    private static final String PARTS_SEPARATOR = " ";
 
     @Override
     public Optional<Order> findOrderById(long id) throws ServiceException {
         DaoProvider daoProvider = DaoProvider.getInstance();
         OrderDao orderDao = daoProvider.getOrderDao();
         try {
-            Optional<Order> order = orderDao.findById(id);
-            return order;
+            return orderDao.findById(id);
         } catch (DaoException e) {
             log.error("Error when find order by id in DB", e);
             throw new ServiceException("Error when find order by id in DB", e);
@@ -109,6 +109,88 @@ public class OrderServiceImpl implements OrderService {
         } catch (DaoException e) {
             log.error("Error in service when creating new order in DB", e);
             throw new ServiceException("Error in service when creating new order in DB", e);
+        }
+    }
+
+    @Override
+    public Optional<Order> updateOrder(OrderData orderData, long employeeId) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        OrderDao orderDao = daoProvider.getOrderDao();
+        ClientDao clientDao = daoProvider.getClientDao();
+        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
+        DeviceDao deviceDao = daoProvider.getDeviceDao();
+        CompanyDao companyDao = daoProvider.getCompanyDao();
+        try {
+            log.debug("start service  order");
+            log.debug("data: {}", orderData);
+            long id = Long.parseLong(orderData.getId());
+            log.debug("id created");
+            Client client = clientDao.findById(Long.parseLong(orderData.getClientId())).get();
+            log.debug("client created");
+            Employee acceptedEmployee = employeeDao.findById(Long.parseLong(orderData.getAcceptedEmployeeId())).get();
+            log.debug("employee created");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy HH:mm:ss");
+            LocalDateTime creationDate = LocalDateTime.parse(orderData.getCreationDate(), formatter);
+            log.debug("date created");
+            Device device = deviceDao.findById(Long.parseLong(orderData.getDeviceId())).get();
+            log.debug("start service company order");
+            Company company = companyDao.findById(Long.parseLong(orderData.getCompanyId())).get();
+            OrderStatus orderStatus = OrderStatus.valueOf(orderData.getOrderStatus());
+            log.debug("start service create order");
+            Order order = new Order.Builder(id, orderData.getOrderNumber(), creationDate, client, acceptedEmployee, device)
+                    .company(company)
+                    .model(orderData.getModel())
+                    .serialNumber(orderData.getSerial())
+                    .note(orderData.getNote())
+                    .orderStatus(orderStatus)
+                    .build();
+            if (orderStatus != OrderStatus.ACCEPTED) {
+                String completedEmployeeId = orderData.getCompletedEmployeeId();
+                System.out.println("compl empl in service from front="+completedEmployeeId);
+                if (!completedEmployeeId.isBlank()) {
+                    Employee completedEmployee = employeeDao.findById(Long.parseLong(completedEmployeeId)).get();
+                    order.setCompletedEmployee(completedEmployee);
+                    System.out.println("compl empl in service from db="+completedEmployee);
+                }
+                String repairLevel = orderData.getRepairLevel();
+                if (!repairLevel.isBlank()) {
+                    PriceInfoDao priceInfoDao = daoProvider.getPriceInfoDao();
+                    PriceInfo priceInfo = priceInfoDao.findByDeviceAndLevel(device.getId(), repairLevel).get();
+                    order.setWorkPrice(priceInfo);
+                }
+                String workDescription = orderData.getWorkDescription();
+                if (!workDescription.isBlank()) {
+                    order.setWorkDescription(workDescription);
+                }
+                String spareParts = orderData.getSpareParts();
+                if (!spareParts.isBlank()) {
+                    SparePartDao sparePartDao = daoProvider.getSparePartDao();
+                    List<SparePart> parts = new ArrayList<>();
+                    String[] partsId = spareParts.split(PARTS_SEPARATOR);
+                    for (String part : partsId) {
+                        long partId = Long.parseLong(part);
+                        SparePart sparePart = sparePartDao.findById(partId).get();
+                        parts.add(sparePart);
+                    }
+                    log.debug("parts parsed: {}", parts);
+                    order.setSpareParts(parts);
+                }
+                String completionDate = orderData.getCompletionDate();
+                if (!completionDate.isBlank()) {
+                    LocalDateTime completionDateParsed = LocalDateTime.parse(completionDate, formatter);
+                    order.setCompletionDate(completionDateParsed);
+                }
+                String issueDate = orderData.getIssueDate();
+                if (!issueDate.isBlank()) {
+                    LocalDateTime issueDateParsed = LocalDateTime.parse(issueDate, formatter);
+                    order.setIssueDate(issueDateParsed);
+                }
+            }
+            log.debug("start service update order");
+            return orderDao.update(order);
+        } catch (DaoException e) {
+            log.error("Error in service when updating order in DB", e);
+            throw new ServiceException("Error in service when updating order in DB", e);
         }
     }
 }

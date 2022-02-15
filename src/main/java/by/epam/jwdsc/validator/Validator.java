@@ -1,6 +1,7 @@
 package by.epam.jwdsc.validator;
 
 import by.epam.jwdsc.entity.dto.NewOrderData;
+import by.epam.jwdsc.entity.dto.OrderData;
 
 public interface Validator {
     boolean isEmailValid(String email);
@@ -55,5 +56,17 @@ public interface Validator {
 
     boolean isNoteValid(String note);
 
+    boolean isDateValid(String date);
+
+    boolean isOrderStatusValid(String orderStatus);
+
+    boolean isRepairLevelValid(String repairLevel);
+
+    boolean isWorkDescriptionValid(String workDescription);
+
+    boolean isSparePartsValid(String spareParts);
+
     boolean isNewOrderDataValid(NewOrderData newOrderData);
+
+    boolean isOrderDataValid(OrderData orderData);
 }

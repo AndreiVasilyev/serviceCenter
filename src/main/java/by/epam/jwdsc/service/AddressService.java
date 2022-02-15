@@ -2,6 +2,7 @@ package by.epam.jwdsc.service;
 
 import by.epam.jwdsc.entity.Address;
 import by.epam.jwdsc.entity.dto.NewOrderData;
+import by.epam.jwdsc.entity.dto.OrderData;
 import by.epam.jwdsc.exception.ServiceException;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface AddressService {
     long createAddress(NewOrderData newOrderData) throws ServiceException;
 
     Optional<Address> findById(long id) throws ServiceException;
+
+    Optional<Address> updateAddress(OrderData orderData) throws ServiceException;
 }

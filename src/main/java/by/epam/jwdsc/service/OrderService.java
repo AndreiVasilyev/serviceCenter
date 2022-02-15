@@ -2,6 +2,7 @@ package by.epam.jwdsc.service;
 
 import by.epam.jwdsc.entity.Order;
 import by.epam.jwdsc.entity.dto.NewOrderData;
+import by.epam.jwdsc.entity.dto.OrderData;
 import by.epam.jwdsc.entity.dto.OrderParameters;
 import by.epam.jwdsc.exception.ServiceException;
 
@@ -19,4 +20,6 @@ public interface OrderService {
     List<Order> findOrdersByParameters(OrderParameters orderParameters) throws ServiceException;
 
     boolean createNewOrder(NewOrderData newOrderData, long attribute) throws ServiceException;
+
+    Optional<Order> updateOrder(OrderData orderData, long employeeId) throws ServiceException;
 }

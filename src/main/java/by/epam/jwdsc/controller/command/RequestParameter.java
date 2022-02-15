@@ -14,6 +14,9 @@ public final class RequestParameter {
     public static final String FIND_PHONE_NUMBER_PARAM = "findPhoneNumber";
     public static final String USER_ID_PARAM = "userId";
     public static final String FIND_PART_PARAM = "findPartParam";
+    public static final String DEVICE_ID_PARAM = "deviceIdParam";
+    public static final String REPAIR_LEVEL_PARAM = "repairLevelParam";
+
 
     private RequestParameter() {
     }

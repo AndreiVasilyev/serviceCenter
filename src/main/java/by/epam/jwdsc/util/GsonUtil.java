@@ -12,7 +12,7 @@ public final class GsonUtil {
     private static GsonUtil instance;
 
     private static final String DATE_TIME_FORMAT_PATTERN = "dd MM uuuu HH:mm:ss";
-    //private static final String DATE_TIME_FORMAT_PATTERN = "uuuu MM d HH:mm";
+
     private final Gson gson;
 
     private GsonUtil(Gson gson) {

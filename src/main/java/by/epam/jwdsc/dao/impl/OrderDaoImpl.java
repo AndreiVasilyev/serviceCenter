@@ -15,7 +15,7 @@ import static by.epam.jwdsc.dao.ColumnName.*;
 import static by.epam.jwdsc.dao.TableAliasName.*;
 
 public class OrderDaoImpl implements OrderDao {
-    //
+
     private static final String SQL_SELECT_ORDERS_TEMPLATE = "SELECT o.order_id,o.order_number,o.order_status, " +
             "o.creation_date,o.client,o.accepted_employee,o.device, o.company,o.model,o.serial_number," +
             "o.completed_employee,o.completion_date,o.issue_date, o.work_description,o.work_price,o.note,c.user_id," +
@@ -24,8 +24,8 @@ public class OrderDaoImpl implements OrderDao {
             "co.is_service_contract, GROUP_CONCAT(p.phone_number) AS phone_number, " +
             "(SELECT concat(ae.first_name,ae.second_name) FROM users AS ae WHERE o.accepted_employee=ae.user_id) AS accepted_names, " +
             "(SELECT concat(ce.first_name,ce.second_name) FROM users AS ce WHERE o.completed_employee=ce.user_id) AS completed_names, " +
-            "(SELECT pl.repair_level FROM prices AS pl WHERE o.device=pl.device_id) AS repair_level, " +
-            "(SELECT pc.repair_cost FROM prices AS pc WHERE o.device=pc.device_id) AS repair_cost " +
+            "(SELECT pl.repair_level FROM prices AS pl WHERE o.work_price=pl.id) AS repair_level, " +
+            "(SELECT pc.repair_cost FROM prices AS pc WHERE o.work_price=pc.id) AS repair_cost " +
             "FROM orders AS o JOIN clients AS c ON(o.client=c.user_id) JOIN users AS u ON(o.client=u.user_id) " +
             "JOIN addresses AS a ON(a.address_id = u.address) JOIN devices AS d ON(d.device_id=o.device) " +
             "JOIN companies AS co ON(co.company_id=o.company) LEFT JOIN phone_numbers AS p ON(o.client=p.user_id) " +
@@ -55,7 +55,7 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public List<Order> findAll() throws DaoException {
         String selectQuery = String.format(SQL_SELECT_ORDERS_TEMPLATE, Strings.EMPTY, Strings.EMPTY, Strings.EMPTY);
-        return findOrders(selectQuery, Collections.EMPTY_LIST);
+        return findOrders(selectQuery, Collections.emptyList());
     }
 
     @Override
@@ -107,7 +107,7 @@ public class OrderDaoImpl implements OrderDao {
             try (ResultSet orderResultSet = orderStatement.executeQuery()) {
                 while (orderResultSet.next()) {
                     try (PreparedStatement employeePreparedStatement = connection.prepareStatement(SQL_SELECT_EMPLOYEE_BY_ID)) {
-                        String orderStatus = orderResultSet.getString(ORDERS_STATUS);
+                        OrderStatus orderStatus = OrderStatus.valueOf(orderResultSet.getString(ORDERS_STATUS));
                         long acceptedEmployeeId = orderResultSet.getLong(ORDERS_ACCEPTED_EMPLOYEE);
                         employeePreparedStatement.setLong(1, acceptedEmployeeId);
                         try (ResultSet acceptedEmployeeResultSet = employeePreparedStatement.executeQuery()) {
@@ -115,7 +115,8 @@ public class OrderDaoImpl implements OrderDao {
                             Employee completedEmployee = null;
                             PriceInfo priceInfo = null;
                             List<SparePart> spareParts = null;
-                            if (OrderStatus.CLOSED.name().equals(orderStatus) || OrderStatus.ISSUED.name().equals(orderStatus)) {
+                            if (orderStatus != OrderStatus.ACCEPTED) {
+                                // if (OrderStatus.CLOSED.name().equals(orderStatus) || OrderStatus.ISSUED.name().equals(orderStatus)) {
                                 try (PreparedStatement pricePreparedStatement = connection.prepareStatement(SQL_SELECT_PRICE_BY_ID);
                                      PreparedStatement partsPreparedStatement = connection.prepareStatement(SQL_SELECT_PARTS_BY_ORDER_ID)) {
                                     long completedEmployeeId = orderResultSet.getLong(ORDERS_COMPLETED_EMPLOYEE);
@@ -187,15 +188,20 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Optional<Order> update(Order order) throws DaoException {
+        log.debug("start update dao");
         Optional<Order> oldOrderFound = findById(order.getId());
         if (oldOrderFound.isPresent()) {
+            log.debug("old order found");
             Order oldOrder = oldOrderFound.get();
-            try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_ORDER)) {
+            Connection connection = DbConnectionPool.INSTANCE.getConnection();
+            try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_ORDER)) {
+                connection.setAutoCommit(false);
                 collectCreateOrderQuery(preparedStatement, order);
                 collectUpdateOrderQuery(preparedStatement, order);
                 preparedStatement.executeUpdate();
-                if (!oldOrder.getSpareParts().isEmpty()) {
+                log.debug("update query executed");
+                if (oldOrder.getSpareParts() != null && !oldOrder.getSpareParts().isEmpty()) {
+                    log.debug("start delete old parts");
                     try (PreparedStatement statementDeletePartFromOrder = connection.prepareStatement(SQL_DELETE_SPARE_PART)) {
                         for (SparePart sparePart : oldOrder.getSpareParts()) {
                             statementDeletePartFromOrder.setLong(1, oldOrder.getId());
@@ -205,6 +211,7 @@ public class OrderDaoImpl implements OrderDao {
                     }
                 }
                 if (order.getSpareParts() != null && !order.getSpareParts().isEmpty()) {
+                    log.debug("start add new parts");
                     try (PreparedStatement statementAddPartToOrder = connection.prepareStatement(SQL_ADD_SPARE_PART)) {
                         for (SparePart sparePart : order.getSpareParts()) {
                             statementAddPartToOrder.setLong(1, order.getId());
@@ -213,9 +220,18 @@ public class OrderDaoImpl implements OrderDao {
                         }
                     }
                 }
+                connection.commit();
+                connection.setAutoCommit(true);
             } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    log.error("Transaction to update order not executed. Rollback changes not executed", ex);
+                }
                 log.error("Error executing query update Order", e);
                 throw new DaoException("Error executing query update Order", e);
+            } finally {
+                close(connection);
             }
         }
         return oldOrderFound;
@@ -283,23 +299,29 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     private void collectUpdateOrderQuery(PreparedStatement statement, Order order) throws SQLException {
-        boolean isOrderClosed = OrderStatus.CLOSED.equals(order.getOrderStatus());
-        boolean isOrderIssued = OrderStatus.ISSUED.equals(order.getOrderStatus());
-        if (isOrderClosed || isOrderIssued) {
+        if (order.getCompletedEmployee() != null) {
             statement.setLong(11, order.getCompletedEmployee().getId());
-            statement.setTimestamp(12, Timestamp.valueOf(order.getCompletionDate()));
-            if (isOrderIssued) {
-                statement.setTimestamp(13, Timestamp.valueOf(order.getIssueDate()));
-            } else {
-                statement.setNull(13, Types.DATE);
-            }
-            statement.setString(14, order.getWorkDescription());
-            statement.setLong(15, order.getWorkPrice().getId());
         } else {
             statement.setNull(11, Types.BIGINT);
+        }
+        if (order.getCompletionDate() != null) {
+            statement.setTimestamp(12, Timestamp.valueOf(order.getCompletionDate()));
+        } else {
             statement.setNull(12, Types.DATE);
+        }
+        if (order.getIssueDate() != null) {
+            statement.setTimestamp(13, Timestamp.valueOf(order.getIssueDate()));
+        } else {
             statement.setNull(13, Types.DATE);
+        }
+        if (order.getWorkDescription() != null && !order.getWorkDescription().isBlank()) {
+            statement.setString(14, order.getWorkDescription());
+        } else {
             statement.setNull(14, Types.VARCHAR);
+        }
+        if (order.getWorkPrice() != null) {
+            statement.setLong(15, order.getWorkPrice().getId());
+        } else {
             statement.setNull(15, Types.BIGINT);
         }
         statement.setLong(16, order.getId());
