@@ -2,12 +2,14 @@ package by.epam.jwdsc.controller.command;
 
 import by.epam.jwdsc.controller.command.impl.*;
 import by.epam.jwdsc.controller.command.impl.gotocommand.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.EnumMap;
 
 import static by.epam.jwdsc.controller.command.CommandName.*;
+import static by.epam.jwdsc.controller.command.RequestParameter.COMMAND_PARAM;
 
 
 public class CommandProvider {
@@ -39,6 +41,8 @@ public class CommandProvider {
         commands.put(FIND_PARTS_BY_PARAM, new FindPartsByParamCommand());
         commands.put(FIND_WORK_COST, new FindWorkCostCommand());
         commands.put(UPDATE_ORDER, new UpdateOrderCommand());
+        commands.put(REMOVE_ORDER_BY_ID, new RemoveOrderByIdCommand());
+        commands.put(TAKE_ORDER_TO_WORK, new TakeOrderToWorkCommand());
     }
 
     public static CommandProvider getInstance() {
@@ -48,19 +52,21 @@ public class CommandProvider {
         return instance;
     }
 
-    public Command getCommand(String name) {
+    public Command getCommand(HttpServletRequest request) {
+        String name = request.getParameter(COMMAND_PARAM);
         Command command;
-        if (name == null || name.isBlank()) {
-            log.error("Command name is null or blank");
-            command = commands.get(GOTO_ERROR_PAGE);
-        } else {
-            try {
+        try {
+            if (name == null || name.isBlank()) {
+                log.error("Command name is null or blank");
+                throw new IllegalArgumentException("Command name is null or blank");
+            } else {
                 CommandName commandName = CommandName.valueOf(name.toUpperCase());
                 command = commands.get(commandName);
-            } catch (IllegalArgumentException e) {
-                log.error("Command {} not found", name, e);
-                command = commands.get(GOTO_ERROR_PAGE);
             }
+        } catch (IllegalArgumentException e) {
+            log.error("Command {} not found", name, e);
+            request.getSession().setAttribute(SessionAttribute.EXCEPTION, e);
+            command = commands.get(GOTO_ERROR_PAGE);
         }
         return command;
     }

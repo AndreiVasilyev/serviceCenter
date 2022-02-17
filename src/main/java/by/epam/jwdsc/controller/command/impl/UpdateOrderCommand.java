@@ -34,7 +34,6 @@ public class UpdateOrderCommand implements Command {
         HttpSession session = request.getSession();
         try {
             OrderData orderData = gson.fromJson(request.getReader(), OrderData.class);
-            log.debug("created orderData class");
             Validator validator = ValidatorImpl.getInstance();
             if (validator.isOrderDataValid(orderData)) {
                 List<String> phones = new ArrayList<>();
@@ -45,15 +44,11 @@ public class UpdateOrderCommand implements Command {
                 if (!orderData.getPhoneThird().isBlank()) {
                     phones.add(orderData.getPhoneThird());
                 }
-                log.debug("created phones list");
                 AddressService addressService = serviceProvider.getAddressService();
                 addressService.updateAddress(orderData);
-                log.debug("address updated");
                 ClientService clientService = serviceProvider.getClientService();
                 clientService.updateClient(orderData, phones);
-                log.debug("client updated");
                 orderService.updateOrder(orderData, (long) session.getAttribute(EMPLOYEE_ID));
-                log.debug("order updated");
                 return new Router(Router.RouterType.JSON, gson.toJson("ok:order was updated"));
             } else {
                 return new Router(Router.RouterType.JSON, gson.toJson("error: invalid order parameters"));

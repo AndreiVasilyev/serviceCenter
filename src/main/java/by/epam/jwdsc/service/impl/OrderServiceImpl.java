@@ -121,22 +121,14 @@ public class OrderServiceImpl implements OrderService {
         DeviceDao deviceDao = daoProvider.getDeviceDao();
         CompanyDao companyDao = daoProvider.getCompanyDao();
         try {
-            log.debug("start service  order");
-            log.debug("data: {}", orderData);
             long id = Long.parseLong(orderData.getId());
-            log.debug("id created");
             Client client = clientDao.findById(Long.parseLong(orderData.getClientId())).get();
-            log.debug("client created");
             Employee acceptedEmployee = employeeDao.findById(Long.parseLong(orderData.getAcceptedEmployeeId())).get();
-            log.debug("employee created");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy HH:mm:ss");
             LocalDateTime creationDate = LocalDateTime.parse(orderData.getCreationDate(), formatter);
-            log.debug("date created");
             Device device = deviceDao.findById(Long.parseLong(orderData.getDeviceId())).get();
-            log.debug("start service company order");
             Company company = companyDao.findById(Long.parseLong(orderData.getCompanyId())).get();
             OrderStatus orderStatus = OrderStatus.valueOf(orderData.getOrderStatus());
-            log.debug("start service create order");
             Order order = new Order.Builder(id, orderData.getOrderNumber(), creationDate, client, acceptedEmployee, device)
                     .company(company)
                     .model(orderData.getModel())
@@ -146,11 +138,9 @@ public class OrderServiceImpl implements OrderService {
                     .build();
             if (orderStatus != OrderStatus.ACCEPTED) {
                 String completedEmployeeId = orderData.getCompletedEmployeeId();
-                System.out.println("compl empl in service from front="+completedEmployeeId);
                 if (!completedEmployeeId.isBlank()) {
                     Employee completedEmployee = employeeDao.findById(Long.parseLong(completedEmployeeId)).get();
                     order.setCompletedEmployee(completedEmployee);
-                    System.out.println("compl empl in service from db="+completedEmployee);
                 }
                 String repairLevel = orderData.getRepairLevel();
                 if (!repairLevel.isBlank()) {
@@ -172,7 +162,6 @@ public class OrderServiceImpl implements OrderService {
                         SparePart sparePart = sparePartDao.findById(partId).get();
                         parts.add(sparePart);
                     }
-                    log.debug("parts parsed: {}", parts);
                     order.setSpareParts(parts);
                 }
                 String completionDate = orderData.getCompletionDate();
@@ -186,11 +175,34 @@ public class OrderServiceImpl implements OrderService {
                     order.setIssueDate(issueDateParsed);
                 }
             }
-            log.debug("start service update order");
             return orderDao.update(order);
         } catch (DaoException e) {
             log.error("Error in service when updating order in DB", e);
             throw new ServiceException("Error in service when updating order in DB", e);
+        }
+    }
+
+    @Override
+    public Optional<Order> updateOrder(Order order) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        OrderDao orderDao = daoProvider.getOrderDao();
+        try {
+            return orderDao.update(order);
+        } catch (DaoException e) {
+            log.error("Error in service when updating order in DB", e);
+            throw new ServiceException("Error in service when updating order in DB", e);
+        }
+    }
+
+    @Override
+    public boolean removeOrderById(long id) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        OrderDao orderDao = daoProvider.getOrderDao();
+        try {
+            return orderDao.deleteById(id);
+        } catch (DaoException e) {
+            log.error("Error executing service to remove order by id", e);
+            throw new ServiceException("Error executing service to remove order by id", e);
         }
     }
 }

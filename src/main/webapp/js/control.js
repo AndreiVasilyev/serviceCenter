@@ -93,10 +93,12 @@ function findOrdersResponseHandler(response) {
             let repairLevel = orderObject.workPrice != null ? orderObject.workPrice.repairLevel : '';
             let repairCost = orderObject.workPrice != null ? orderObject.workPrice.repairCost : '';
             let note = orderObject.note != null ? orderObject.note : '';
-            let orderActionElement = createOrderActionCell(orderObject.id);
+            let orderStatus = orderObject.orderStatus;
+            let currentRole = document.getElementById('current-role').dataset.role;
+            let orderActionElement = createOrderActionCell(orderObject.id, orderStatus, currentRole);
             rowElement.append(orderActionElement);
             rowElement = appendTableCell(orderObject.orderNumber, rowElement);
-            rowElement = appendTableCell(orderObject.orderStatus, rowElement);
+            rowElement = appendTableCell(orderStatus, rowElement);
             rowElement = appendTableCell(orderObject.creationDate, rowElement);
             rowElement = appendTableCell(clientValue, rowElement);
             rowElement = appendTableCell(orderObject.device.name, rowElement);
@@ -126,32 +128,110 @@ function findOrdersResponseHandler(response) {
             }
             tableBodyElement.append(rowElement);
         }
+        let tooltipElements = document.querySelectorAll('[data-toggle="tooltip"]');
+        Array.from(tooltipElements).map(function (tooltipElements) {
+            return new bootstrap.Tooltip(tooltipElements)
+        })
         let editLinkElements = document.querySelectorAll('.order-edit');
         Array.from(editLinkElements).forEach(element => element.addEventListener('click', editOrderClickHandler));
+        let removeLinkElements = document.querySelectorAll('.order-remove');
+        Array.from(removeLinkElements).forEach(element => element.addEventListener('click', removeOrderClickHandler));
+        let takeToWorkLinkElements = document.querySelectorAll('.order-take-to-work');
+        Array.from(takeToWorkLinkElements).forEach(element => element.addEventListener('click', takeToWorkOrderClickHandler));
     }
     filterInputAccess(true);
 }
 
-function createOrderActionCell(id) {
+function takeToWorkOrderClickHandler(event) {
+    event.preventDefault();
+    let currentLinkElement = event.currentTarget;
+    let currentOrderId = currentLinkElement.dataset.id;
+    let controller = '/control';
+    let searchParams = new URLSearchParams();
+    searchParams.append('command', 'take_order_to_work');
+    searchParams.append('orderId', currentOrderId);
+    sendPostFormQuery(controller, searchParams).then(response => takeToWorkOrderResponseHandler(response));
+}
+
+function takeToWorkOrderResponseHandler(response) {
+    if (response != null && typeof response == 'string') {
+        getDataFromServer();
+    }
+}
+
+function removeOrderClickHandler(event) {
+    event.preventDefault();
+    let currentLinkElement = event.currentTarget;
+    let currentOrderId = currentLinkElement.dataset.id;
+    let controller = '/control';
+    let searchParams = new URLSearchParams();
+    searchParams.append('command', 'remove_order_by_id');
+    searchParams.append('orderId', currentOrderId);
+    sendPostFormQuery(controller, searchParams).then(response => removeOrderByIdResponseHandler(response));
+}
+
+function removeOrderByIdResponseHandler(response) {
+    if (response != null && typeof response == 'string') {
+        getDataFromServer();
+    }
+}
+
+
+function createOrderActionCell(id, status, role) {
     let tdElement = document.createElement('td');
     tdElement.classList.add('order-action', 'px-3', 'align-middle');
+    if (role == 'ENGINEER' && status == 'ACCEPTED') {
+        let takeToWorkLink = document.createElement('a');
+        takeToWorkLink.classList.add('text-warning', 'me-2', 'order-take-to-work');
+        takeToWorkLink.setAttribute('href', '');
+        takeToWorkLink.setAttribute('data-id', id);
+        takeToWorkLink.setAttribute('data-toggle', 'tooltip');
+        takeToWorkLink.setAttribute('data-placement', 'top');
+        takeToWorkLink.setAttribute('title', 'взять в работу');
+        let handElement = document.createElement('i');
+        handElement.classList.add('fa', 'fa-hand-lizard-o');
+        takeToWorkLink.append(handElement);
+        tdElement.append(takeToWorkLink);
+    }
     let editLink = document.createElement('a');
     editLink.classList.add('text-warning', 'me-2', 'order-edit');
     editLink.setAttribute('href', '');
     editLink.setAttribute('data-bs-toggle', 'modal');
     editLink.setAttribute('data-bs-target', '#editOrderModal');
     editLink.setAttribute('data-id', id);
-    let removeLink = document.createElement('a');
-    removeLink.classList.add('text-danger', 'me-2', 'order-remove');
-    removeLink.setAttribute('href', '');
+    editLink.setAttribute('data-toggle', 'tooltip');
+    editLink.setAttribute('data-placement', 'top');
+    editLink.setAttribute('title', 'изменить');
     let pencilElement = document.createElement('i');
     pencilElement.classList.add('fa', 'fa-pencil');
-    let trashElement = document.createElement('i');
-    trashElement.classList.add('fa', 'fa-trash-o');
     editLink.append(pencilElement);
-    removeLink.append(trashElement);
     tdElement.append(editLink);
-    tdElement.append(removeLink);
+    if (role != 'ENGINEER' && status == 'CLOSED') {
+        let issueOrderLink = document.createElement('a');
+        issueOrderLink.classList.add('text-success', 'me-2', 'order-issue');
+        issueOrderLink.setAttribute('href', '');
+        issueOrderLink.setAttribute('data-id', id);
+        issueOrderLink.setAttribute('data-toggle', 'tooltip');
+        issueOrderLink.setAttribute('data-placement', 'top');
+        issueOrderLink.setAttribute('title', 'выдать');
+        let outdoorElement = document.createElement('i');
+        outdoorElement.classList.add('fa', 'fa-sign-out');
+        issueOrderLink.append(outdoorElement);
+        tdElement.append(issueOrderLink);
+    }
+    if (role = 'ADMIN') {
+        let removeLink = document.createElement('a');
+        removeLink.classList.add('text-danger', 'me-2', 'order-remove');
+        removeLink.setAttribute('href', '');
+        removeLink.setAttribute('data-id', id);
+        removeLink.setAttribute('data-toggle', 'tooltip');
+        removeLink.setAttribute('data-placement', 'top');
+        removeLink.setAttribute('title', 'удалить');
+        let trashElement = document.createElement('i');
+        trashElement.classList.add('fa', 'fa-trash-o');
+        removeLink.append(trashElement);
+        tdElement.append(removeLink);
+    }
     return tdElement;
 }
 

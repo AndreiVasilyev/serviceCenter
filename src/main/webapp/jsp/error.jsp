@@ -17,7 +17,7 @@
     </head>
     <body class="min-vh-100">
         <c:import url="header.jsp"/>
-        <div class="mt-5">
+        <div class="mt-3">
             <c:if test="${not empty pageContext.exception}">
                 <c:set var="exception" value="${pageContext.exception}"/>
                 <div class="container mb-5 pt-3 pb-5">
@@ -26,9 +26,22 @@
                         <h3>${error_head} ${exception} </h3>
                         <h3> Stack trace:</h3>
                         <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 9pt;">
-                            <c:forEach var="element" items="${exception.stackTrace}">
-                                ${element}
-                                <br/>
+                            <c:forEach begin="0" end="10" varStatus="loop">
+                                <c:if test="${!loop.first and exception!=null}">
+                                    Caused By:<br/>
+                                </c:if>
+                                <c:if test="${exception != null}">
+                                    <span class="ms-2 fw-bold">Message: ${exception.message}</span>
+                                    <br/>
+                                    <c:forEach items="${exception.stackTrace}" var="trace">
+                                        <span class="ms-3">${trace}</span>
+                                        <br/>
+                                    </c:forEach>
+                                </c:if>
+                                <c:if test="${loop.last && exception != null}">
+                                    More causes not listed...
+                                </c:if>
+                                <c:set var="exception" value="${exception.cause}"/>
                             </c:forEach>
                         </p>
                     </div>
@@ -43,9 +56,22 @@
                         <h3> Stack trace:</h3>
                         <p style="font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 9pt;">
-                            <c:forEach var="element" items="${exception.stackTrace}">
-                                ${element}
-                                <br/>
+                            <c:forEach begin="0" end="10" varStatus="loop">
+                                <c:if test="${!loop.first and exception!=null}">
+                                    Caused By:<br/>
+                                </c:if>
+                                <c:if test="${exception != null}">
+                                    <span class="ms-2 fw-bold">Message: ${exception.message}</span>
+                                    <br/>
+                                    <c:forEach items="${exception.stackTrace}" var="trace">
+                                        <span class="ms-3">${trace}</span>
+                                        <br/>
+                                    </c:forEach>
+                                </c:if>
+                                <c:if test="${loop.last && exception != null}">
+                                    More causes not listed...
+                                </c:if>
+                                <c:set var="exception" value="${exception.cause}"/>
                             </c:forEach>
                         </p>
                     </div>
@@ -54,15 +80,28 @@
             <c:if test="${not empty sessionScope.exception}">
                 <c:set var="exception" value="${sessionScope.exception}"/>
                 <div class="container mb-5 pt-3 pb-5">
-                    <div class="container mt-5">
+                    <div class="container">
                         <h1 class="ml-5">${head}</h1>
-                        <h3>${error_head} ${exception} </h3>
+                        <h3>${error_head}${exception}</h3>
                         <h3> Stack trace:</h3>
                         <p style="font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 9pt;">
-                            <c:forEach var="element" items="${exception.stackTrace}">
-                                ${element}
-                                <br/>
+                            <c:forEach begin="0" end="10" varStatus="loop">
+                                <c:if test="${!loop.first and exception!=null}">
+                                    Caused By:<br/>
+                                </c:if>
+                                <c:if test="${exception != null}">
+                                    <span class="ms-2 fw-bold">Message: ${exception.message}</span>
+                                    <br/>
+                                    <c:forEach items="${exception.stackTrace}" var="trace">
+                                        <span class="ms-3">${trace}</span>
+                                        <br/>
+                                    </c:forEach>
+                                </c:if>
+                                <c:if test="${loop.last && exception != null}">
+                                    More causes not listed...
+                                </c:if>
+                                <c:set var="exception" value="${exception.cause}"/>
                             </c:forEach>
                         </p>
                     </div>

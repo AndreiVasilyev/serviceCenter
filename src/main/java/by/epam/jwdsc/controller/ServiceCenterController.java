@@ -2,6 +2,7 @@ package by.epam.jwdsc.controller;
 
 import by.epam.jwdsc.controller.command.Command;
 import by.epam.jwdsc.controller.command.CommandProvider;
+import by.epam.jwdsc.controller.command.PagePath;
 import by.epam.jwdsc.controller.command.Router;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -14,6 +15,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 
 import static by.epam.jwdsc.controller.command.RequestParameter.COMMAND_PARAM;
@@ -36,10 +39,8 @@ public class ServiceCenterController extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String commandName = request.getParameter(COMMAND_PARAM);
-        Command command = commandProvider.getCommand(commandName);
+        Command command = commandProvider.getCommand(request);
         Router router = command.execute(request, response);
-        log.debug("Command {} executed", commandName);
         switch (router.getRouterType()) {
             case FORWARD -> {
                 log.debug("Execute FORWARD to {}", router.getPagePath());

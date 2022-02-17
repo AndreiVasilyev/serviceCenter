@@ -30,6 +30,7 @@ public class UserRoleFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpSession httpSession = httpRequest.getSession(true);
         if (httpSession.getAttribute(USER_ROLE) == null) {
+            log.debug("Start define user role");
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             Cookie[] cookies = httpRequest.getCookies();
             CookieUtil cookieUtil = CookieUtil.getInstance();
@@ -55,6 +56,7 @@ public class UserRoleFilter implements Filter {
                 }
             }
         }
+        log.debug("UserRoleFilterExecuted");
         chain.doFilter(request, response);
     }
 }

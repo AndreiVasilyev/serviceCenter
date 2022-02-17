@@ -29,7 +29,8 @@ function sendPostJsonQuery(url, data) {
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        redirect: 'manual'
     }
     return sendQuery(url, init);
 }
@@ -43,6 +44,7 @@ function sendPostFormQuery(url, data) {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: data
+        , redirect: 'manual'
     }
     return sendQuery(url, init);
 }
@@ -53,13 +55,19 @@ async function sendQuery(url, init) {
     try {
         response = await fetch(url, init);
         if (!response.ok) {
+            console.log('response is not OK');
+            console.log('response status:' + response.status);
             throw Error('Error sending query');
         }
         result = await response.json();
     } catch (error) {
-        console.log('error when sending json query to server:' + url);
-        console.log('response status:' + response.status)
-        //location.href = '/control?command=goto_error_page';
+        console.log('Error when sending json query to server:' + url);
+        console.log('Error: ' + error);
+        console.log('is redirected: ' + response.redirected);
+        if (response != null && !response.redirected) {
+            location.href = '/control?command=goto_error_page';
+        }
     }
     return result;
 }
+

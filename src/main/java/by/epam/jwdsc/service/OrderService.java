@@ -22,4 +22,8 @@ public interface OrderService {
     boolean createNewOrder(NewOrderData newOrderData, long attribute) throws ServiceException;
 
     Optional<Order> updateOrder(OrderData orderData, long employeeId) throws ServiceException;
+
+    Optional<Order> updateOrder(Order order) throws ServiceException;
+
+    boolean removeOrderById(long id) throws ServiceException;
 }

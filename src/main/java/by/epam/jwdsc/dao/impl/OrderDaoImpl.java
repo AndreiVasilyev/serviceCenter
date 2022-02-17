@@ -39,7 +39,7 @@ public class OrderDaoImpl implements OrderDao {
             "FROM prices AS pr WHERE pr.id=? ";
     public static final String SQL_SELECT_PARTS_BY_ORDER_ID = "SELECT s.id, s.part_number, s.name, s.description, s.cost " +
             "FROM spare_parts AS s JOIN orders_spare_parts AS os ON (s.id=os.spare_part_id) WHERE os.order_id=?";
-    private static final String SQL_DELETE_ORDER_BY_ID = "DELETE o, os FROM orders AS o JOIN orders_spare_parts AS os " +
+    private static final String SQL_DELETE_ORDER_BY_ID = "DELETE o, os FROM orders AS o LEFT JOIN orders_spare_parts AS os " +
             "USING(order_id) WHERE o.order_id=?";
     private static final String SQL_CREATE_ORDER = "INSERT INTO orders(order_number, creation_date, client, " +
             "accepted_employee, device, company, model, serial_number, order_status, note)  VALUES(?,?,?,?,?,?,?,?,?,?)";
@@ -116,7 +116,6 @@ public class OrderDaoImpl implements OrderDao {
                             PriceInfo priceInfo = null;
                             List<SparePart> spareParts = null;
                             if (orderStatus != OrderStatus.ACCEPTED) {
-                                // if (OrderStatus.CLOSED.name().equals(orderStatus) || OrderStatus.ISSUED.name().equals(orderStatus)) {
                                 try (PreparedStatement pricePreparedStatement = connection.prepareStatement(SQL_SELECT_PRICE_BY_ID);
                                      PreparedStatement partsPreparedStatement = connection.prepareStatement(SQL_SELECT_PARTS_BY_ORDER_ID)) {
                                     long completedEmployeeId = orderResultSet.getLong(ORDERS_COMPLETED_EMPLOYEE);
@@ -188,10 +187,8 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Optional<Order> update(Order order) throws DaoException {
-        log.debug("start update dao");
         Optional<Order> oldOrderFound = findById(order.getId());
         if (oldOrderFound.isPresent()) {
-            log.debug("old order found");
             Order oldOrder = oldOrderFound.get();
             Connection connection = DbConnectionPool.INSTANCE.getConnection();
             try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_ORDER)) {
@@ -199,9 +196,7 @@ public class OrderDaoImpl implements OrderDao {
                 collectCreateOrderQuery(preparedStatement, order);
                 collectUpdateOrderQuery(preparedStatement, order);
                 preparedStatement.executeUpdate();
-                log.debug("update query executed");
                 if (oldOrder.getSpareParts() != null && !oldOrder.getSpareParts().isEmpty()) {
-                    log.debug("start delete old parts");
                     try (PreparedStatement statementDeletePartFromOrder = connection.prepareStatement(SQL_DELETE_SPARE_PART)) {
                         for (SparePart sparePart : oldOrder.getSpareParts()) {
                             statementDeletePartFromOrder.setLong(1, oldOrder.getId());
@@ -211,7 +206,6 @@ public class OrderDaoImpl implements OrderDao {
                     }
                 }
                 if (order.getSpareParts() != null && !order.getSpareParts().isEmpty()) {
-                    log.debug("start add new parts");
                     try (PreparedStatement statementAddPartToOrder = connection.prepareStatement(SQL_ADD_SPARE_PART)) {
                         for (SparePart sparePart : order.getSpareParts()) {
                             statementAddPartToOrder.setLong(1, order.getId());

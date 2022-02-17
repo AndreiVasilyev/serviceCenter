@@ -436,6 +436,7 @@ function closeEditModalHandler() {
 }
 
 function editOrderClickHandler(event) {
+    event.preventDefault();
     let currentLinkElement = event.currentTarget;
     let currentOrderId = currentLinkElement.dataset.id;
     let controllerWithParam = '/control?command=find_all_selectable_items';
@@ -980,5 +981,4 @@ function updateOrderResponseHandler(response) {
         resultElement.classList.add('d-flex');
         resultMessageElement.innerHTML = response.split(':')[1];
     }
-    console.log('updated: ' + response);
 }

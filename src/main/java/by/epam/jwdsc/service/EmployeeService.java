@@ -10,5 +10,7 @@ public interface EmployeeService {
 
     List<Employee> findAll() throws ServiceException;
 
+    Optional<Employee> findById(long id) throws ServiceException;
+
     Optional<Employee> authorize(String login, String password) throws ServiceException;
 }

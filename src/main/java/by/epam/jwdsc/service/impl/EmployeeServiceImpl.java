@@ -35,6 +35,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Optional<Employee> findById(long id) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
+        try {
+            return employeeDao.findById(id);
+        } catch (DaoException e) {
+            log.error("Error executing service find by Id employee", e);
+            throw new ServiceException("Error executing service find by Id employee", e);
+        }
+    }
+
+    @Override
     public Optional<Employee> authorize(String login, String password) throws ServiceException {
         DaoProvider daoProvider = DaoProvider.getInstance();
         EmployeeDao employeeDao = daoProvider.getEmployeeDao();

@@ -64,12 +64,10 @@ public final class QueryParametersMapper {
         String sort = Strings.EMPTY;
         if (orderParameters.getSortByName() != null && !orderParameters.getSortByName().isBlank()) {
             sort = orderParameters.getSortByName();
-            System.out.println("direction="+orderParameters.getSortDirection());
             if (REVERSE_SORT.trim().equalsIgnoreCase(orderParameters.getSortDirection())) {
                 sort = sort.replace(SORT_SEPARATOR,MULTI_REVERSE_SORT).concat(REVERSE_SORT);
             }
         }
-        System.out.println("sort str="+sort);
         return sort;
     }
 

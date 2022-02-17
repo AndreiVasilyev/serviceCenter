@@ -35,7 +35,6 @@ public class DirectJspAccessFilter implements Filter {
         log.debug("Current request URI {}",httpRequest.getRequestURI());
         if (!httpRequest.getRequestURI().equals(PagePath.ERROR_PAGE)) {
             httpResponse.sendRedirect(httpRequest.getContextPath() + indexPath);
-
         }
         chain.doFilter(request, response);
     }
