@@ -30,6 +30,11 @@ public class OrderDaoImpl implements OrderDao {
             "JOIN addresses AS a ON(a.address_id = u.address) JOIN devices AS d ON(d.device_id=o.device) " +
             "JOIN companies AS co ON(co.company_id=o.company) LEFT JOIN phone_numbers AS p ON(o.client=p.user_id) " +
             "%s GROUP BY o.order_id %s %s";
+    private static final String SQL_COUNT_ORDERS_TEMPLATE = "SELECT COUNT(*) AS count FROM (SELECT COUNT(o.order_id) " +
+            "FROM orders AS o JOIN clients AS c ON(o.client=c.user_id) JOIN users AS u ON(o.client=u.user_id) " +
+            "JOIN addresses AS a ON(a.address_id = u.address) JOIN devices AS d ON(d.device_id=o.device) " +
+            "JOIN companies AS co ON(co.company_id=o.company) LEFT JOIN phone_numbers AS p ON(o.client=p.user_id) " +
+            "%s GROUP BY o.order_id) records";
     private static final String SQL_SELECT_EMPLOYEE_BY_ID = "SELECT e.user_id, e.login, e.password, u.user_role, " +
             "u.first_name, u.second_name, u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, " +
             "a.region, a.city, a.street, a.house_number, a.apartment_number, GROUP_CONCAT(p.phone_number) " +
@@ -67,6 +72,24 @@ public class OrderDaoImpl implements OrderDao {
         List<Order> orders = findOrders(selectQuery, parameters.values());
         return Optional.ofNullable(orders.get(0));
     }
+
+    @Override
+    public long countOrdersByParams(LinkedHashMap<String, Object> parameters) throws DaoException {
+        String whereBlock = prepareWhereBlock(parameters.keySet());
+        String countQuery = String.format(SQL_COUNT_ORDERS_TEMPLATE, whereBlock);
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(countQuery)) {
+            prepareStatement(preparedStatement, parameters.values());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                resultSet.next();
+                return resultSet.getLong(1);
+            }
+        } catch (SQLException e) {
+            log.error("Error executing query count all orders by params", e);
+            throw new DaoException("Error executing query count all orders by params", e);
+        }
+    }
+
 
     @Override
     public List<Order> findByParams(LinkedHashMap<String, Object> parameters) throws DaoException {

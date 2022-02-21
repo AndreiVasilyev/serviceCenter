@@ -43,6 +43,7 @@ public class CommandProvider {
         commands.put(UPDATE_ORDER, new UpdateOrderCommand());
         commands.put(REMOVE_ORDER_BY_ID, new RemoveOrderByIdCommand());
         commands.put(TAKE_ORDER_TO_WORK, new TakeOrderToWorkCommand());
+        commands.put(ISSUE_ORDER, new IssueOrderCommand());
     }
 
     public static CommandProvider getInstance() {

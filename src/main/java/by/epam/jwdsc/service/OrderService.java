@@ -4,6 +4,7 @@ import by.epam.jwdsc.entity.Order;
 import by.epam.jwdsc.entity.dto.NewOrderData;
 import by.epam.jwdsc.entity.dto.OrderData;
 import by.epam.jwdsc.entity.dto.OrderParameters;
+import by.epam.jwdsc.entity.dto.OrdersWithPagination;
 import by.epam.jwdsc.exception.ServiceException;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface OrderService {
 
     List<Order> findOrdersByClientEmail(String email) throws ServiceException;
 
-    List<Order> findOrdersByParameters(OrderParameters orderParameters) throws ServiceException;
+    OrdersWithPagination findOrdersByParameters(OrderParameters orderParameters) throws ServiceException;
 
     boolean createNewOrder(NewOrderData newOrderData, long attribute) throws ServiceException;
 

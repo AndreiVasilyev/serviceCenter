@@ -5,6 +5,7 @@ import by.epam.jwdsc.entity.*;
 import by.epam.jwdsc.entity.dto.NewOrderData;
 import by.epam.jwdsc.entity.dto.OrderData;
 import by.epam.jwdsc.entity.dto.OrderParameters;
+import by.epam.jwdsc.entity.dto.OrdersWithPagination;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.exception.ServiceException;
 import by.epam.jwdsc.service.OrderService;
@@ -66,15 +67,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findOrdersByParameters(OrderParameters orderParameters) throws ServiceException {
+    public OrdersWithPagination findOrdersByParameters(OrderParameters orderParameters) throws ServiceException {
         DaoProvider daoProvider = DaoProvider.getInstance();
         OrderDao orderDao = daoProvider.getOrderDao();
+        OrdersWithPagination ordersWithPagination = new OrdersWithPagination();
         QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
         LinkedHashMap<String, Object> parameters = queryParametersMapper.mapOrderParameters(orderParameters);
         String sort = queryParametersMapper.mapOrderSort(orderParameters);
         int pageNumber = Integer.parseInt(orderParameters.getPageNumber());
         try {
-            return orderDao.findByParamsWithSortAndPage(parameters, sort, pageNumber);
+            long totalOrdersQuantity = orderDao.countOrdersByParams(parameters);
+            List<Order> orders = orderDao.findByParamsWithSortAndPage(parameters, sort, pageNumber);
+            ordersWithPagination.setOrders(orders);
+            ordersWithPagination.setTotalOrdersQuantity(totalOrdersQuantity);
+            ordersWithPagination.setCurrentPage(pageNumber);
+            return ordersWithPagination;
         } catch (DaoException e) {
             log.error("Error when find orders by parameters in DB", e);
             throw new ServiceException("Error when find orders by parameters in DB", e);

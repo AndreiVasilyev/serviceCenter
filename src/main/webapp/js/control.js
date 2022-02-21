@@ -6,7 +6,12 @@ let newOrderButton = document.querySelector('.new-order');
 let filterInputElements = document.querySelectorAll('.filter-input');
 let sortLinkElements = document.querySelectorAll('.sort-link');
 let editModalElement = document.getElementById('editOrderModal');
-
+let pagination = document.querySelector('.pagination');
+let paginationBlock = document.querySelector('.pagination-block');
+let firstPage = document.querySelector('.first');
+let previousPage = document.querySelector('.previous');
+let nextPage = document.querySelector('.next');
+let lastPage = document.querySelector('.last');
 
 //Set listeners after page load/unload
 
@@ -31,6 +36,40 @@ function loadDocumentHandler() {
     newOrderButton.addEventListener('click', addNewOrderHandler);
     //close edit modal window listener
     editModalElement.addEventListener('hidden.bs.modal', closeEditModalHandler);
+    //pagination click listeners
+    firstPage.addEventListener('click', firstPageClickHandler);
+    previousPage.addEventListener('click', previousPageClickHandler);
+    nextPage.addEventListener('click', nextPageClickHandler);
+    lastPage.addEventListener('click', lastPageClickHandler);
+    //get init data from server
+    getDataFromServer();
+}
+
+function firstPageClickHandler(event) {
+    event.preventDefault();
+    pagination.dataset.isPaginate = 'true';
+    pagination.dataset.currentPage = 1;
+    getDataFromServer();
+}
+
+function previousPageClickHandler(event) {
+    event.preventDefault();
+    pagination.dataset.isPaginate = 'true';
+    pagination.dataset.currentPage = +pagination.dataset.currentPage - 1;
+    getDataFromServer();
+}
+
+function nextPageClickHandler(event) {
+    event.preventDefault();
+    pagination.dataset.isPaginate = 'true';
+    pagination.dataset.currentPage = +pagination.dataset.currentPage + 1;
+    getDataFromServer();
+}
+
+function lastPageClickHandler(event) {
+    event.preventDefault();
+    pagination.dataset.isPaginate = 'true';
+    pagination.dataset.currentPage = Math.ceil(+pagination.dataset.totalOrders / 10);
     getDataFromServer();
 }
 
@@ -69,7 +108,12 @@ function collectCurrentParametersState(elements) {
         parameters['sortByName'] = '';
         parameters['sortDirection'] = '';
     }
-    parameters['pageNumber'] = '1';
+    if (pagination.dataset.isPaginate == 'true') {
+        pagination.dataset.isPaginate = '';
+    } else {
+        pagination.dataset.currentPage = 1;
+    }
+    parameters['pageNumber'] = pagination.dataset.currentPage;
     return parameters;
 }
 
@@ -78,7 +122,7 @@ function findOrdersResponseHandler(response) {
     Array.from(oldRowElements).forEach(element => element.remove());
     if (response != null && typeof response === 'object') {
         let tableBodyElement = document.querySelector('tbody');
-        for (const orderObject of response) {
+        for (const orderObject of response.orders) {
             let rowElement = document.createElement('tr');
             rowElement.classList.add('order-row');
             let model = orderObject.model != null ? orderObject.model : '';
@@ -128,6 +172,26 @@ function findOrdersResponseHandler(response) {
             }
             tableBodyElement.append(rowElement);
         }
+        paginationBlock.classList.remove('d-none');
+        pagination.dataset.totalOrders = response.totalOrdersQuantity;
+        pagination.dataset.currentPage = response.currentPage;
+        if (response.totalOrdersQuantity < 11) {
+            paginationBlock.classList.add('d-none');
+        } else {
+            let totalPages = Math.ceil(+response.totalOrdersQuantity / 10);
+            document.querySelector('.current-page').innerHTML = response.currentPage;
+            document.querySelector('.total-pages').innerHTML = totalPages;
+            let pageLinkElements = document.querySelectorAll('.page-link');
+            Array.from(pageLinkElements).forEach(element => element.parentElement.classList.remove('disabled'));
+            if (+response.currentPage == 1) {
+                firstPage.parentElement.classList.add('disabled');
+                previousPage.parentElement.classList.add('disabled');
+            }
+            if (+response.currentPage == totalPages) {
+                lastPage.parentElement.classList.add('disabled');
+                nextPage.parentElement.classList.add('disabled');
+            }
+        }
         let tooltipElements = document.querySelectorAll('[data-toggle="tooltip"]');
         Array.from(tooltipElements).map(function (tooltipElements) {
             return new bootstrap.Tooltip(tooltipElements)
@@ -138,8 +202,22 @@ function findOrdersResponseHandler(response) {
         Array.from(removeLinkElements).forEach(element => element.addEventListener('click', removeOrderClickHandler));
         let takeToWorkLinkElements = document.querySelectorAll('.order-take-to-work');
         Array.from(takeToWorkLinkElements).forEach(element => element.addEventListener('click', takeToWorkOrderClickHandler));
+        let issueLinkElements = document.querySelectorAll('.order-issue');
+        Array.from(issueLinkElements).forEach(element => element.addEventListener('click', issueOrderClickHandler));
+
     }
     filterInputAccess(true);
+}
+
+function issueOrderClickHandler(event) {
+    event.preventDefault();
+    let currentLinkElement = event.currentTarget;
+    let currentOrderId = currentLinkElement.dataset.id;
+    let controller = '/control';
+    let searchParams = new URLSearchParams();
+    searchParams.append('command', 'issue_order');
+    searchParams.append('orderId', currentOrderId);
+    sendPostFormQuery(controller, searchParams).then(response => issueOrderResponseHandler(response));
 }
 
 function takeToWorkOrderClickHandler(event) {
@@ -151,6 +229,12 @@ function takeToWorkOrderClickHandler(event) {
     searchParams.append('command', 'take_order_to_work');
     searchParams.append('orderId', currentOrderId);
     sendPostFormQuery(controller, searchParams).then(response => takeToWorkOrderResponseHandler(response));
+}
+
+function issueOrderResponseHandler(response) {
+    if (response != null && typeof response == 'string') {
+        getDataFromServer();
+    }
 }
 
 function takeToWorkOrderResponseHandler(response) {

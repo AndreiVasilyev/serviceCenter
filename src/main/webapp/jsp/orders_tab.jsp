@@ -10,7 +10,9 @@
         <div class="col-auto ms-auto">
             <div class="btn-group">
                 <button type="button" class="btn btn-outline-info clear-filter">Сбросить фильтр</button>
-                <button type="button" class="btn btn-outline-success new-order" data-bs-toggle="modal" data-bs-target="#addOrderModal">Новый заказ</button>
+                <button type="button" class="btn btn-outline-success new-order" data-bs-toggle="modal"
+                        data-bs-target="#addOrderModal">Новый заказ
+                </button>
             </div>
         </div>
     </div>
@@ -21,7 +23,7 @@
                     <th scope="col" class="order-action"></th>
                     <th scope="col">
                         <span>Номер&nbspзаказа</span>
-                        <a class="sort-link" >
+                        <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="o.order_number"></i>
                         </a>
                     </th>
@@ -213,5 +215,18 @@
 
             </tbody>
         </table>
+        <div class="col-12 pagination-block my-3">
+            <nav>
+                <ul class="pagination pagination-sm justify-content-center" data-total-orders="" data-current-page="1"
+                    data-is-paginate="">
+                    <li class="page-item"><a class="page-link first" href="#"><span>&laquo;</span></a></li>
+                    <li class="page-item"><a class="page-link previous" href="#"><span>&lsaquo;</span></a></li>
+                    <li class="page-item mx-2"><span class="current-page">n</span> of <span class="total-pages">m</span>
+                    </li>
+                    <li class="page-item"><a class="page-link next" href="#"><span>&rsaquo;</span></a></li>
+                    <li class="page-item"><a class="page-link last" href="#"><span>&raquo;</span></a></li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </div>
