@@ -1,12 +1,14 @@
-package by.epam.jwdsc.controller.command.impl;
+package by.epam.jwdsc.controller.command.impl.findcommand;
 
 import by.epam.jwdsc.controller.command.Command;
 import by.epam.jwdsc.controller.command.PagePath;
 import by.epam.jwdsc.controller.command.Router;
-import by.epam.jwdsc.entity.Order;
+import by.epam.jwdsc.entity.Employee;
+import by.epam.jwdsc.entity.dto.EmployeeParameters;
 import by.epam.jwdsc.entity.dto.OrderParameters;
 import by.epam.jwdsc.entity.dto.OrdersWithPagination;
 import by.epam.jwdsc.exception.ServiceException;
+import by.epam.jwdsc.service.EmployeeService;
 import by.epam.jwdsc.service.OrderService;
 import by.epam.jwdsc.service.ServiceProvider;
 import by.epam.jwdsc.util.GsonUtil;
@@ -22,25 +24,26 @@ import java.util.List;
 
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
-public class FindOrdersCommand implements Command {
+public class FindEmployeesCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();
 
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         Gson gson = GsonUtil.getInstance().getGson();
-        OrderService orderService = ServiceProvider.getInstance().getOrderService();
+        EmployeeService employeeService = ServiceProvider.getInstance().getEmployeeService();
         HttpSession session = request.getSession();
         try {
-            OrderParameters orderParameters = gson.fromJson(request.getReader(), OrderParameters.class);
-            OrdersWithPagination orders = orderService.findOrdersByParameters(orderParameters);
-            return new Router(Router.RouterType.JSON, gson.toJson(orders));
+            EmployeeParameters employeeParameters = gson.fromJson(request.getReader(), EmployeeParameters.class);
+            log.debug("params={}", employeeParameters);
+            List<Employee> employees = employeeService.findEmployeesByParameters(employeeParameters);
+            return new Router(Router.RouterType.JSON, gson.toJson(employees));
         } catch (IOException e) {
             log.error("Error reading JSON string from request");
             session.setAttribute(EXCEPTION, e);
             return new Router(PagePath.ERROR_PAGE, Router.RouterType.REDIRECT);
         } catch (ServiceException e) {
-            log.error("Error execute command find orders by parameters");
+            log.error("Error execute command find employees by parameters");
             session.setAttribute(EXCEPTION, e);
             return new Router(PagePath.ERROR_PAGE, Router.RouterType.REDIRECT);
         }

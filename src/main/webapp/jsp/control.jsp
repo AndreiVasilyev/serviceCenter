@@ -52,6 +52,7 @@
     </head>
     <body class="min-vh-100">
         <c:import url="icon_sprite.jsp"/>
+        <c:import url="registerEmployee.jsp"/>
         <c:import url="add_order.jsp"/>
         <c:import url="edit_order.jsp"/>
         <c:import url="header.jsp"/>
@@ -83,7 +84,9 @@
                     <div class="tab-pane fade show active" id="orders-content">
                         <c:import url="orders_tab.jsp"/>
                     </div>
-                    <div class="tab-pane fade" id="employees-content">employees</div>
+                    <div class="tab-pane fade" id="employees-content">
+                        <c:import url="employees_tab.jsp"/>
+                    </div>
                     <div class="tab-pane fade" id="parts-content">parts</div>
                     <div class="tab-pane fade" id="devices-content">devices</div>
                     <div class="tab-pane fade" id="producers-content">producers</div>
@@ -98,6 +101,7 @@
         <script src="../js/control.js" type="text/javascript"></script>
         <script src="../js/add_order.js" type="text/javascript"></script>
         <script src="../js/edit_order.js" type="text/javascript"></script>
+        <script src="../js/employees.js" type="text/javascript"></script>
         <script src="../js/ajax_request.js" type="text/javascript"></script>
     </body>
 </html>

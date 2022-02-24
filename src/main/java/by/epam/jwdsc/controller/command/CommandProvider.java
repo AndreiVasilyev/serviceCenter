@@ -1,6 +1,7 @@
 package by.epam.jwdsc.controller.command;
 
 import by.epam.jwdsc.controller.command.impl.*;
+import by.epam.jwdsc.controller.command.impl.findcommand.*;
 import by.epam.jwdsc.controller.command.impl.gotocommand.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
@@ -44,6 +45,8 @@ public class CommandProvider {
         commands.put(REMOVE_ORDER_BY_ID, new RemoveOrderByIdCommand());
         commands.put(TAKE_ORDER_TO_WORK, new TakeOrderToWorkCommand());
         commands.put(ISSUE_ORDER, new IssueOrderCommand());
+        commands.put(FIND_EMPLOYEES, new FindEmployeesCommand());
+        commands.put(CHANGE_EMPLOYEE_ROLE, new ChangeEmployeeRoleCommand());
     }
 
     public static CommandProvider getInstance() {

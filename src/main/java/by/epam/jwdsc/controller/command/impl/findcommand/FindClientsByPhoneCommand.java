@@ -1,4 +1,4 @@
-package by.epam.jwdsc.controller.command.impl;
+package by.epam.jwdsc.controller.command.impl.findcommand;
 
 import by.epam.jwdsc.controller.command.Command;
 import by.epam.jwdsc.controller.command.PagePath;

@@ -1,5 +1,6 @@
 package by.epam.jwdsc.dao;
 
+import by.epam.jwdsc.entity.dto.EmployeeParameters;
 import by.epam.jwdsc.entity.dto.OrderParameters;
 import org.apache.logging.log4j.util.Strings;
 
@@ -60,12 +61,47 @@ public final class QueryParametersMapper {
         return parameters;
     }
 
+    public LinkedHashMap<String, Object> mapEmployeeParameters(EmployeeParameters employeeParameters) {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        parseLikeParameter(SC_USERS, USERS_ID, employeeParameters.getId(), parameters);
+        parseLikeParameter(SC_USERS, USERS_ROLE, employeeParameters.getUserRole(), parameters);
+        parseLikeParameter(SC_USERS, USERS_SECOND_NAME, employeeParameters.getSecondName(), parameters);
+        parseLikeParameter(SC_USERS, USERS_FIRST_NAME, employeeParameters.getFirstName(), parameters);
+        parseLikeParameter(SC_USERS, USERS_PATRONYMIC, employeeParameters.getPatronymic(), parameters);
+        parseLikeParameter(SC_USERS, USERS_EMAIL, employeeParameters.getEmail(), parameters);
+        parseLikeParameter(SC_ADDRESSES, ADDRESSES_POSTCODE, employeeParameters.getPostcode(), parameters);
+        parseLikeParameter(SC_ADDRESSES, ADDRESSES_COUNTRY, employeeParameters.getCountry(), parameters);
+        parseLikeParameter(SC_ADDRESSES, ADDRESSES_STATE, employeeParameters.getState(), parameters);
+        parseLikeParameter(SC_ADDRESSES, ADDRESSES_REGION, employeeParameters.getRegion(), parameters);
+        parseLikeParameter(SC_ADDRESSES, ADDRESSES_CITY, employeeParameters.getCity(), parameters);
+        parseLikeParameter(SC_ADDRESSES, ADDRESSES_STREET, employeeParameters.getStreet(), parameters);
+        parseLikeParameter(SC_ADDRESSES, ADDRESSES_HOUSE_NUMBER, employeeParameters.getHouseNumber(), parameters);
+        parseLikeParameter(SC_ADDRESSES, ADDRESSES_APARTMENT_NUMBER, employeeParameters.getApartmentNumber(), parameters);
+        if (employeeParameters.getPhones() != null && !employeeParameters.getPhones().isBlank()) {
+            String paramName = Strings.concat(PHONE_NUMBERS_NUMBER, LIKE_PARAMETER_TEMPLATE);
+            String paramValue = Strings.concat(LIKE_WILDCARD_SYMBOL, employeeParameters.getPhones()).concat(LIKE_WILDCARD_SYMBOL);
+            parameters.put(paramName, paramValue);
+        }
+        return parameters;
+    }
+
     public String mapOrderSort(OrderParameters orderParameters) {
         String sort = Strings.EMPTY;
         if (orderParameters.getSortByName() != null && !orderParameters.getSortByName().isBlank()) {
             sort = orderParameters.getSortByName();
             if (REVERSE_SORT.trim().equalsIgnoreCase(orderParameters.getSortDirection())) {
-                sort = sort.replace(SORT_SEPARATOR,MULTI_REVERSE_SORT).concat(REVERSE_SORT);
+                sort = sort.replace(SORT_SEPARATOR, MULTI_REVERSE_SORT).concat(REVERSE_SORT);
+            }
+        }
+        return sort;
+    }
+
+    public String mapEmployeeSort(EmployeeParameters employeeParameters) {
+        String sort = Strings.EMPTY;
+        if (employeeParameters.getSortByName() != null && !employeeParameters.getSortByName().isBlank()) {
+            sort = employeeParameters.getSortByName();
+            if (REVERSE_SORT.trim().equalsIgnoreCase(employeeParameters.getSortDirection())) {
+                sort = sort.replace(SORT_SEPARATOR, MULTI_REVERSE_SORT).concat(REVERSE_SORT);
             }
         }
         return sort;

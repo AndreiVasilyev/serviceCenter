@@ -27,7 +27,7 @@ function loadDocumentHandler() {
     let tabSwitcherElements = document.querySelectorAll('button[data-bs-toggle]');
     Array.from(tabSwitcherElements).forEach(element => element.addEventListener('shown.bs.tab', tabSwitcherShowHandler));
     //change sort order listener
-    Array.from(sortLinkElements).forEach(element => element.addEventListener('click', changeSortOrderHandler))
+    Array.from(sortLinkElements).forEach(element => element.addEventListener('click', changeSortOrderHandler));
     //change filter value listener
     Array.from(filterInputElements).forEach(element => element.addEventListener('input', changeFilterInputHandler));
     //clear filter button listener
@@ -121,7 +121,7 @@ function findOrdersResponseHandler(response) {
     let oldRowElements = document.querySelectorAll('.order-row');
     Array.from(oldRowElements).forEach(element => element.remove());
     if (response != null && typeof response === 'object') {
-        let tableBodyElement = document.querySelector('tbody');
+        let tableBodyElement = document.querySelector('.order-body');
         for (const orderObject of response.orders) {
             let rowElement = document.createElement('tr');
             rowElement.classList.add('order-row');
@@ -364,6 +364,13 @@ function appendTableCell(cellValue, rowElement) {
 
 function tabSwitcherShowHandler(event) {
     currentActiveTab = document.querySelector('.tab-pane.fade.show.active');
+    switch (currentActiveTab.id) {
+        case 'employees-content':
+            employeesTabLoadHandler();
+            break;
+        // case'parts-content': partsTabLoadHandler();
+        //break;
+    }
 }
 
 function clearFilterInputHandler() {

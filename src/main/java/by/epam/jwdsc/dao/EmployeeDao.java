@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface EmployeeDao extends BaseDao<Employee> {
     List<Employee> findByParams(LinkedHashMap<String, Object> parameters) throws DaoException;
+
+    List<Employee> findByParamsWithSort(LinkedHashMap<String, Object> parameters, String sort) throws DaoException;
 }

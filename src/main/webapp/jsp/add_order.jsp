@@ -28,7 +28,7 @@
 <fmt:message var="add_client_email_title" key="control.orders.add.client.email.title"/>
 <fmt:message var="add_client_email_error" key="control.orders.add.client.email.error"/>
 <fmt:message var="add_client_names_title" key="control.orders.add.client.names.title"/>
-<fmt:message var="add_client_first_name_error" key="control.orders.add.client.first.name.error"/>-
+<fmt:message var="add_client_first_name_error" key="control.orders.add.client.first.name.error"/>
 <fmt:message var="add_client_second_name_error" key="control.orders.add.client.second.name.error"/>
 <fmt:message var="add_client_patronymic_error" key="control.orders.add.client.patronymic.error"/>
 <fmt:message var="add_client_first_name_holder" key="control.orders.add.client.first.name.holder"/>
@@ -60,7 +60,6 @@
 <fmt:message var="add_client_note_error" key="control.orders.add.client.note.error"/>
 <fmt:message var="close_button_title" key="control.orders.add.close.button.title"/>
 <fmt:message var="save_button_title" key="control.orders.add.save.button.title"/>
-
 
 <div class="modal fade" id="addOrderModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">

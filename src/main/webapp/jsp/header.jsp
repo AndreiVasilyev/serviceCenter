@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:set var="role" value="${not empty sessionScope.userRole?sessionScope.userRole:'GUEST'}"/>
+<c:set var="userId" value="${not empty sessionScope.employeeId?sessionScope.employeeId:'0'}"/>
 <c:set var="locale" value="${not empty sessionScope.locale?sessionScope.locale:'en_EN'}"/>
 
 <c:url value="/control?command=goto_main_page" var="main_page"/>
@@ -36,7 +37,7 @@
                 <ul class="nav justify-content-center">
                     <li class="nav-item align-self-center ">
                         <span class="nav-link p-0 px-1 me-4 bg-danger text-light auth-link " data-role="${role}"
-                              id="current-role">${role}</span>
+                              id="current-role" data-user-id="${userId}">${role}</span>
                     </li>
                     <li class="nav-item align-self-center ">
                         <a class="nav-link p-0 pe-1 text-light auth-link "

@@ -2,7 +2,9 @@ package by.epam.jwdsc.service.impl;
 
 import by.epam.jwdsc.dao.DaoProvider;
 import by.epam.jwdsc.dao.EmployeeDao;
+import by.epam.jwdsc.dao.QueryParametersMapper;
 import by.epam.jwdsc.entity.Employee;
+import by.epam.jwdsc.entity.dto.EmployeeParameters;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.exception.ServiceException;
 import by.epam.jwdsc.service.EmployeeService;
@@ -47,14 +49,26 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public List<Employee> findEmployeesByParameters(EmployeeParameters employeeParameters) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
+        QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
+        LinkedHashMap<String, Object> parameters = queryParametersMapper.mapEmployeeParameters(employeeParameters);
+        String sort = queryParametersMapper.mapEmployeeSort(employeeParameters);
+        try {
+            return employeeDao.findByParamsWithSort(parameters, sort);
+        } catch (DaoException e) {
+            log.error("Error when find employees by parameters in DB", e);
+            throw new ServiceException("Error when find employees by parameters in DB", e);
+        }
+    }
+
+    @Override
     public Optional<Employee> authorize(String login, String password) throws ServiceException {
         DaoProvider daoProvider = DaoProvider.getInstance();
         EmployeeDao employeeDao = daoProvider.getEmployeeDao();
-        LinkedHashMap<String, Object> queryParameters = new LinkedHashMap<>();
-        StringBuilder parameterBuilder = new StringBuilder(SC_EMPLOYEES);
-        parameterBuilder.append(COLUMN_NAME_DELIMITER);
-        parameterBuilder.append(EMPLOYEES_LOGIN);
-        queryParameters.put(parameterBuilder.toString(), login);
+        QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
+        LinkedHashMap<String, Object> queryParameters = queryParametersMapper.mapParameter(SC_EMPLOYEES, EMPLOYEES_LOGIN, login);
         try {
             List<Employee> employees = employeeDao.findByParams(queryParameters);
             if (!employees.isEmpty()) {
@@ -73,6 +87,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         } catch (NoSuchAlgorithmException e) {
             log.error("Error encrypt password when authorize employee", e);
             throw new ServiceException("Error encrypt password when authorize employee", e);
+        }
+    }
+
+    @Override
+    public Optional<Employee> updateEmployee(Employee employee) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
+        try {
+            return employeeDao.update(employee);
+        } catch (DaoException e) {
+            log.error("Error executing service update Employee", e);
+            throw new ServiceException("Error executing service update Employee", e);
         }
     }
 }

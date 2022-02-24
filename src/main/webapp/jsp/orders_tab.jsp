@@ -211,7 +211,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="order-body">
 
             </tbody>
         </table>

@@ -65,6 +65,34 @@ public abstract class AbstractUser extends CommonEntity {
         return userRole;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
+    }
+
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setPhones(List<String> phones) {
+        this.phones = phones;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
