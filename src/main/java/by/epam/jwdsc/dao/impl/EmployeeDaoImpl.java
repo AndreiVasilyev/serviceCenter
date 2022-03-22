@@ -21,7 +21,7 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
             "u.first_name, u.second_name, u.patronymic, u.email, a.address_id, a.country, a.postcode, a.state, " +
             "a.region, a.city, a.street, a.house_number, a.apartment_number, " +
             "GROUP_CONCAT(p.phone_number) AS phone_number FROM employees AS e JOIN users AS u USING (user_id) " +
-            "JOIN addresses AS a ON (u.address=a.address_id) LEFT JOIN phone_numbers AS p USING(user_id) " +
+            "LEFT JOIN addresses AS a ON (u.address=a.address_id) LEFT JOIN phone_numbers AS p USING(user_id) " +
             "%s GROUP BY u.user_id %s";
     private static final String SQL_DELETE_EMPLOYEE_BY_ID = "DELETE e, u, a, p FROM employees AS e JOIN users AS u " +
             "USING (user_id) JOIN addresses AS a ON (u.address=a.address_id) JOIN phone_numbers AS p " +
@@ -33,9 +33,9 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
     private static final String SQL_CREATE_EMPLOYEE = "INSERT INTO employees(user_id, login, password) " +
             "VALUES(?,?,?)";
     private static final String SQL_UPDATE_EMPLOYEE = "UPDATE employees AS e JOIN users AS u USING (user_id) " +
-            "JOIN addresses AS a ON (u.address=a.address_id) SET e.login=?, e.password=?, u.user_role=?, u.first_name=?, " +
-            "u.second_name=?, u.patronymic=?, u.email=?, a.country=?, a.postcode=?, a.state=?, a.region=?, a.city=?, " +
-            "a.street=?, a.house_number=?, a.apartment_number=? WHERE u.user_id=?";
+            "LEFT JOIN addresses AS a ON (u.address=a.address_id) SET e.login=?, e.password=?, u.user_role=?, " +
+            "u.first_name=?, u.second_name=?, u.patronymic=?, u.email=?, a.country=?, a.postcode=?, a.state=?, " +
+            "a.region=?, a.city=?, a.street=?, a.house_number=?, a.apartment_number=?, u.address=? WHERE u.user_id=?";
     private static final String WHERE_TEMPLATE = "WHERE ";
     private static final String PARAMETER_TEMPLATE = "=? ";
     private static final int START_PARAMETER_INDEX = 1;
@@ -120,27 +120,32 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
              PreparedStatement statementNewPhones = connection.prepareStatement(SQL_CREATE_PHONE_NUMBER)
         ) {
             connection.setAutoCommit(false);
-            collectCreateAddressQuery(statementNewAddress, employee);
-            statementNewAddress.executeUpdate();
-            try (ResultSet generatedAddressKey = statementNewAddress.getGeneratedKeys()) {
-                employee.getAddress().setId(generatedAddressKey.getLong(1));
-                collectCreateUserQuery(statementNewUser, employee);
-                statementNewUser.executeUpdate();
-                try (ResultSet generatedUserKey = statementNewUser.getGeneratedKeys()) {
-                    employee.setId(generatedUserKey.getLong(1));
-                    collectCreateEmployeeQuery(statementNewClient, employee);
-                    statementNewClient.executeUpdate();
-                    if (employee.getPhones() != null && !employee.getPhones().isEmpty()) {
-                        for (String phoneNumber : employee.getPhones()) {
-                            statementNewPhones.setLong(1, employee.getId());
-                            statementNewPhones.setString(2, phoneNumber);
-                            statementNewPhones.executeUpdate();
-                        }
-                    }
-                    connection.commit();
-                    connection.setAutoCommit(true);
+            if (employee.getAddress() != null) {
+                collectCreateAddressQuery(statementNewAddress, employee);
+                statementNewAddress.executeUpdate();
+                try (ResultSet generatedAddressKey = statementNewAddress.getGeneratedKeys()) {
+                    generatedAddressKey.next();
+                    employee.getAddress().setId(generatedAddressKey.getLong(1));
                 }
             }
+            collectCreateUserQuery(statementNewUser, employee);
+            statementNewUser.executeUpdate();
+            try (ResultSet generatedUserKey = statementNewUser.getGeneratedKeys()) {
+                generatedUserKey.next();
+                employee.setId(generatedUserKey.getLong(1));
+                collectCreateEmployeeQuery(statementNewClient, employee);
+                statementNewClient.executeUpdate();
+                if (employee.getPhones() != null && !employee.getPhones().isEmpty()) {
+                    for (String phoneNumber : employee.getPhones()) {
+                        statementNewPhones.setLong(1, employee.getId());
+                        statementNewPhones.setString(2, phoneNumber);
+                        statementNewPhones.executeUpdate();
+                    }
+                }
+                connection.commit();
+                connection.setAutoCommit(true);
+            }
+
         } catch (SQLException e) {
             try {
                 connection.rollback();
@@ -161,8 +166,17 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
         if (oldEmployeeFound.isPresent()) {
             Employee oldEmployee = oldEmployeeFound.get();
             Connection connection = DbConnectionPool.INSTANCE.getConnection();
-            try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_EMPLOYEE)) {
+            try (PreparedStatement statementNewAddress = connection.prepareStatement(SQL_CREATE_ADDRESS, RETURN_GENERATED_KEYS);
+                 PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_EMPLOYEE)) {
                 connection.setAutoCommit(false);
+                if (oldEmployee.getAddress() == null && employee.getAddress() != null) {
+                    collectCreateAddressQuery(statementNewAddress, employee);
+                    statementNewAddress.executeUpdate();
+                    try (ResultSet generatedAddressKey = statementNewAddress.getGeneratedKeys()) {
+                        generatedAddressKey.next();
+                        employee.getAddress().setId(generatedAddressKey.getLong(1));
+                    }
+                }
                 collectUpdateEmployeeQuery(statement, employee);
                 statement.executeUpdate();
                 updatePhoneNumbers(connection, employee, oldEmployee);
@@ -198,22 +212,35 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
     }
 
     private void collectUpdateEmployeeQuery(PreparedStatement statement, Employee employee) throws SQLException {
-        statement.setString(1, employee.getLogin());
-        statement.setString(2, employee.getPassword());
-        statement.setString(3, employee.getUserRole().name());
-        statement.setString(4, employee.getFirstName());
-        statement.setString(5, employee.getSecondName());
-        statement.setString(6, employee.getPatronymic());
-        statement.setString(7, employee.getEmail());
-        statement.setString(8, employee.getAddress().getCountry());
-        statement.setInt(9, employee.getAddress().getPostcode());
-        statement.setString(10, employee.getAddress().getState());
-        statement.setString(11, employee.getAddress().getRegion());
-        statement.setString(12, employee.getAddress().getCity());
-        statement.setString(13, employee.getAddress().getStreet());
-        statement.setInt(14, employee.getAddress().getHouseNumber());
-        statement.setInt(15, employee.getAddress().getApartmentNumber());
-        statement.setLong(16, employee.getId());
+        statement.setObject(1, employee.getLogin());
+        statement.setObject(2, employee.getPassword());
+        statement.setObject(3, employee.getUserRole().name());
+        statement.setObject(4, employee.getFirstName());
+        statement.setObject(5, employee.getSecondName());
+        statement.setObject(6, employee.getPatronymic());
+        statement.setObject(7, employee.getEmail());
+        if (employee.getAddress() != null) {
+            statement.setObject(8, employee.getAddress().getCountry());
+            statement.setObject(9, employee.getAddress().getPostcode());
+            statement.setObject(10, employee.getAddress().getState());
+            statement.setObject(11, employee.getAddress().getRegion());
+            statement.setObject(12, employee.getAddress().getCity());
+            statement.setObject(13, employee.getAddress().getStreet());
+            statement.setObject(14, employee.getAddress().getHouseNumber());
+            statement.setObject(15, employee.getAddress().getApartmentNumber());
+            statement.setObject(16, employee.getAddress().getId());
+        } else {
+            statement.setObject(8, null);
+            statement.setObject(9, null);
+            statement.setObject(10, null);
+            statement.setObject(11, null);
+            statement.setObject(12, null);
+            statement.setObject(13, null);
+            statement.setObject(14, null);
+            statement.setObject(15, null);
+            statement.setObject(16, null);
+        }
+        statement.setObject(17, employee.getId());
     }
 }
 

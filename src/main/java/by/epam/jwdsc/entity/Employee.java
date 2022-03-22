@@ -7,7 +7,7 @@ public class Employee extends AbstractUser {
     private String password;
 
     public Employee(long id, String firstName, String secondName, String patronymic, Address address,
-                    List<String> phones, String email,UserRole userRole, String login, String password) {
+                    List<String> phones, String email, UserRole userRole, String login, String password) {
         super(id, firstName, secondName, patronymic, address, phones, email, userRole);
         this.login = login;
         this.password = password;
@@ -19,6 +19,14 @@ public class Employee extends AbstractUser {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

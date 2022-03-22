@@ -47,6 +47,10 @@ public class CommandProvider {
         commands.put(ISSUE_ORDER, new IssueOrderCommand());
         commands.put(FIND_EMPLOYEES, new FindEmployeesCommand());
         commands.put(CHANGE_EMPLOYEE_ROLE, new ChangeEmployeeRoleCommand());
+        commands.put(CHECK_LOGIN, new CheckLoginCommand());
+        commands.put(REGISTER_EMPLOYEE, new RegisterEmployeeCommand());
+        commands.put(REGISTRATION_FIRST_STEP, new RegistrationFirstStepCommand());
+        commands.put(REGISTRATION_FINAL, new RegistrationFinalCommand());
     }
 
     public static CommandProvider getInstance() {

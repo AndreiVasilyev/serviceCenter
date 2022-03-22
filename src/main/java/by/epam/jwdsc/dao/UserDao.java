@@ -63,6 +63,11 @@ public abstract class UserDao {
         } else {
             statement.setNull(5, Types.VARCHAR);
         }
+        if (user.getUserRole() != null) {
+            statement.setString(6, user.getUserRole().name());
+        } else {
+            statement.setNull(6, Types.VARCHAR);
+        }
     }
 
     protected <T extends AbstractUser> void updatePhoneNumbers(Connection connection, T user, T oldUser) throws SQLException {

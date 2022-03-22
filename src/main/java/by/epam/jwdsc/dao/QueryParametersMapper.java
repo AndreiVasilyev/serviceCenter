@@ -65,6 +65,7 @@ public final class QueryParametersMapper {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parseLikeParameter(SC_USERS, USERS_ID, employeeParameters.getId(), parameters);
         parseLikeParameter(SC_USERS, USERS_ROLE, employeeParameters.getUserRole(), parameters);
+        parseLikeParameter(SC_EMPLOYEES, EMPLOYEES_LOGIN, employeeParameters.getLogin(), parameters);
         parseLikeParameter(SC_USERS, USERS_SECOND_NAME, employeeParameters.getSecondName(), parameters);
         parseLikeParameter(SC_USERS, USERS_FIRST_NAME, employeeParameters.getFirstName(), parameters);
         parseLikeParameter(SC_USERS, USERS_PATRONYMIC, employeeParameters.getPatronymic(), parameters);

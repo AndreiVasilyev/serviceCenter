@@ -2,11 +2,14 @@ let employeeFilterInputElements = document.querySelectorAll('.employees-filter-i
 let employeeSortLinkElements = document.querySelectorAll('.employee-sort-link');
 let clearEmployeeFilterButton = document.querySelector('.clear-employees-filter');
 let modalRegisterEmployeeButton = document.querySelector('.register-employee');
+let modalRegisterEmployee = document.getElementById('registerEmployeeModal');
 let registerLoginInputElement = document.getElementById('register-user-login');
 let registerRoleInputElement = document.getElementById('register-user-role');
 let registerEmployeeButton = document.getElementById('register-employee-button');
 let registerEmployeeInputElements = document.querySelectorAll('.register-new-employee');
 let checkLoginButton = document.getElementById('check-login-button');
+let registerResultBlock = document.getElementById('alert-register-result');
+let registerResultMessageElement = document.getElementById('register-result-message');
 
 let registerLoginValidityChecks = [
     {
@@ -34,8 +37,12 @@ let registerRoleValidityChecks = [
 
 let validatedRegisterFormHandler = function () {
     let isLoginCorrect = isFieldValid(registerLoginInputElement);
+    let isRoleCorrect = isFieldValid(registerRoleInputElement);
     if (isLoginCorrect) {
         checkLoginButton.removeAttribute('disabled');
+    }
+    if (isLoginCorrect && isRoleCorrect && registerLoginInputElement.dataset.checked == 'ok') {
+        registerEmployeeButton.removeAttribute('disabled');
     }
 }
 
@@ -48,19 +55,57 @@ function employeesTabLoadHandler() {
     Array.from(employeeFilterInputElements).forEach(element => element.addEventListener('input', changeEmployeeFilterInputHandler));
     clearEmployeeFilterButton.addEventListener('click', clearEmployeeFilterButtonHandler);
     modalRegisterEmployeeButton.addEventListener('click', openModalRegisterEmployeeHandler);
+    modalRegisterEmployee.addEventListener('hidden.bs.modal', closeModalRegisterEmployeeHandler);
+    getEmployeeDataFromServer();
+}
+
+function closeModalRegisterEmployeeHandler() {
+    Array.from(employeeFilterInputElements).forEach(element => element.value = '');
+    registerResultBlock.classList.replace('d-flex', 'd-none');
     getEmployeeDataFromServer();
 }
 
 function openModalRegisterEmployeeHandler() {
-    checkLoginButton.addEventListener('click',checkLoginButtonHandler);
+    checkLoginButton.addEventListener('click', checkLoginButtonHandler);
+    registerEmployeeButton.addEventListener('click', registerEmployeeClickButtonHandler);
     Array.from(registerEmployeeInputElements).forEach(element => {
         element.addEventListener('blur', onBlurRegisterInputElementHandler);
         element.addEventListener('focus', onFocusRegisterInputElementHandler);
     });
 }
 
-function checkLoginButtonHandler(){
-    let login=registerLoginInputElement.value;
+function registerEmployeeClickButtonHandler() {
+    let login = registerLoginInputElement.value;
+    let role = registerRoleInputElement.value;
+    let controller = '/control';
+    let params = new URLSearchParams();
+    params.append('command', 'register_employee');
+    params.append('login', login);
+    params.append('employeeRole', role);
+    sendPostFormQuery(controller, params).then(response => registerEmployeeResponseHandler(response));
+}
+
+function registerEmployeeResponseHandler(response) {
+    registerResultBlock.classList.replace('d-none', 'd-flex');
+    let splitedResult = response.split(':');
+    registerResultMessageElement.innerHTML = splitedResult[1];
+    if (splitedResult[0] == 'ok') {
+        registerLoginInputElement.dataset.checked = '';
+        registerLoginInputElement.value = '';
+        registerRoleInputElement.value = '';
+        registerRoleInputElement.classList.remove('is-valid', 'is-invalid');
+        registerLoginInputElement.classList.remove('is-valid', 'is-invalid');
+        registerEmployeeButton.setAttribute('disabled', 'disabled');
+        checkLoginButton.setAttribute('disabled', 'disabled');
+    } else {
+        registerLoginInputElement.dataset.checked = '';
+        registerLoginInputElement.classList.add('is-invalid');
+        registerRoleInputElement.classList.add('is-invalid');
+    }
+}
+
+function checkLoginButtonHandler() {
+    let login = registerLoginInputElement.value;
     let controller = '/control';
     let params = new URLSearchParams();
     params.append('command', 'check_login');
@@ -68,8 +113,19 @@ function checkLoginButtonHandler(){
     sendPostFormQuery(controller, params).then(response => checkOrderResponseHandler(response));
 }
 
-function checkOrderResponseHandler(){
-
+function checkOrderResponseHandler(response) {
+    registerResultBlock.classList.replace('d-none', 'd-flex');
+    let splitedResult = response.split(':');
+    registerResultMessageElement.innerHTML = splitedResult[1];
+    if (splitedResult[0] == 'ok') {
+        registerLoginInputElement.dataset.checked = 'ok';
+        if (registerRoleInputElement.classList.contains('is-valid')) {
+            registerEmployeeButton.removeAttribute('disabled');
+        }
+    } else {
+        registerLoginInputElement.dataset.checked = '';
+        registerLoginInputElement.classList.add('is-invalid');
+    }
 }
 
 
@@ -77,7 +133,13 @@ function onBlurRegisterInputElementHandler() {
     checkInputField(this, validatedRegisterFormHandler, checkLoginButton);
 }
 
-function onFocusRegisterInputElementHandler() {
+function onFocusRegisterInputElementHandler(event) {
+    let currentElement = event.currentTarget;
+    if (currentElement.name == 'login' && registerResultBlock.classList.contains('d-flex')) {
+        registerResultBlock.classList.replace('d-flex', 'd-none');
+        registerResultMessageElement.innerHTML = '';
+        currentElement.dataset.checked = '';
+    }
     registerEmployeeButton.setAttribute('disabled', 'disabled');
     this.classList.remove('is-invalid');
     this.classList.remove('is-valid');
@@ -96,7 +158,6 @@ function getEmployeeDataFromServer() {
 }
 
 function findEmployeesResponseHandler(response) {
-    console.log("response OK " + response);
     let oldRowElements = document.querySelectorAll('.employee-row');
     Array.from(oldRowElements).forEach(element => element.remove());
     if (response != null && typeof response === 'object') {
@@ -107,14 +168,15 @@ function findEmployeesResponseHandler(response) {
             let firstName = employee.firstName != null ? employee.firstName : '';
             let secondName = employee.secondName != null ? employee.secondName : '';
             let patronymic = employee.patronymic != null ? employee.patronymic : '';
-            let postcode = employee.address != null && employee.address.postcode != null ? employee.address.postcode : '';
+            let email = employee.email != null ? employee.email : '';
+            let postcode = employee.address != null && employee.address.postcode != 0 ? employee.address.postcode : '';
             let country = employee.address != null && employee.address.country != null ? employee.address.country : '';
             let state = employee.address != null && employee.address.state != null ? employee.address.state : '';
             let region = employee.address != null && employee.address.region != null ? employee.address.region : '';
             let city = employee.address != null && employee.address.city != null ? employee.address.city : '';
             let street = employee.address != null && employee.address.street != null ? employee.address.street : '';
             let houseNumber = employee.address != null && employee.address.houseNumber != null ? employee.address.houseNumber : '';
-            let apartmentNumber = employee.address != null && employee.address.apartmentNumber != null ? employee.address.apartmentNumber : '';
+            let apartmentNumber = employee.address != null && employee.address.apartmentNumber != 0 ? employee.address.apartmentNumber : '';
             let phones = '';
             if (employee.phones != null && employee.phones.length > 0) {
                 for (phone of employee.phones) {
@@ -134,10 +196,11 @@ function findEmployeesResponseHandler(response) {
             selectElement.addEventListener('input', changeEmployeeRoleHandler);
             cellElement.append(selectElement);
             rowElement.append(cellElement);
+            rowElement = appendTableCell(employee.login, rowElement);
             rowElement = appendTableCell(secondName, rowElement);
             rowElement = appendTableCell(firstName, rowElement);
             rowElement = appendTableCell(patronymic, rowElement);
-            rowElement = appendTableCell(employee.email, rowElement);
+            rowElement = appendTableCell(email, rowElement);
             rowElement = appendTableCell(postcode, rowElement);
             rowElement = appendTableCell(country, rowElement);
             rowElement = appendTableCell(state, rowElement);
@@ -157,19 +220,20 @@ function collectCurrentEmployeeParameters(elements) {
     let parameters = {};
     parameters['id'] = elements[0].value;
     parameters['userRole'] = elements[1].value;
-    parameters['secondName'] = elements[2].value;
-    parameters['firstName'] = elements[3].value;
-    parameters['patronymic'] = elements[4].value;
-    parameters['email'] = elements[5].value;
-    parameters['postcode'] = elements[6].value;
-    parameters['country'] = elements[7].value;
-    parameters['state'] = elements[8].value;
-    parameters['region'] = elements[9].value;
-    parameters['city'] = elements[10].value;
-    parameters['street'] = elements[11].value;
-    parameters['houseNumber'] = elements[12].value;
-    parameters['apartmentNumber'] = elements[13].value;
-    parameters['phones'] = elements[14].value;
+    parameters['login'] = elements[2].value;
+    parameters['secondName'] = elements[3].value;
+    parameters['firstName'] = elements[4].value;
+    parameters['patronymic'] = elements[5].value;
+    parameters['email'] = elements[6].value;
+    parameters['postcode'] = elements[7].value;
+    parameters['country'] = elements[8].value;
+    parameters['state'] = elements[9].value;
+    parameters['region'] = elements[10].value;
+    parameters['city'] = elements[11].value;
+    parameters['street'] = elements[12].value;
+    parameters['houseNumber'] = elements[13].value;
+    parameters['apartmentNumber'] = elements[14].value;
+    parameters['phones'] = elements[15].value;
     let currentSortElements = Array.from(employeeSortLinkElements)
         .map(element => element.firstElementChild)
         .filter(element => element.dataset.sort !== '');

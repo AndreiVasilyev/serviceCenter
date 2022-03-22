@@ -3,6 +3,7 @@ package by.epam.jwdsc.entity.dto;
 public class EmployeeParameters {
     private String id;
     private String userRole;
+    private String login;
     private String firstName;
     private String secondName;
     private String patronymic;
@@ -36,6 +37,14 @@ public class EmployeeParameters {
 
     public void setUserRole(String userRole) {
         this.userRole = userRole;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getFirstName() {
@@ -167,6 +176,7 @@ public class EmployeeParameters {
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (userRole != null ? !userRole.equals(that.userRole) : that.userRole != null) return false;
+        if (login != null ? !login.equals(that.login) : that.login != null) return false;
         if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
         if (secondName != null ? !secondName.equals(that.secondName) : that.secondName != null) return false;
         if (patronymic != null ? !patronymic.equals(that.patronymic) : that.patronymic != null) return false;
@@ -189,6 +199,7 @@ public class EmployeeParameters {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (userRole != null ? userRole.hashCode() : 0);
+        result = 31 * result + (login != null ? login.hashCode() : 0);
         result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         result = 31 * result + (secondName != null ? secondName.hashCode() : 0);
         result = 31 * result + (patronymic != null ? patronymic.hashCode() : 0);
@@ -210,8 +221,9 @@ public class EmployeeParameters {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("EmployeeParameters{");
-        sb.append("userId='").append(id).append('\'');
+        sb.append("id='").append(id).append('\'');
         sb.append(", userRole='").append(userRole).append('\'');
+        sb.append(", login='").append(login).append('\'');
         sb.append(", firstName='").append(firstName).append('\'');
         sb.append(", secondName='").append(secondName).append('\'');
         sb.append(", patronymic='").append(patronymic).append('\'');

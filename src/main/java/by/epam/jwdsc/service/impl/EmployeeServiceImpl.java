@@ -1,13 +1,17 @@
 package by.epam.jwdsc.service.impl;
 
+import by.epam.jwdsc.dao.AddressDao;
 import by.epam.jwdsc.dao.DaoProvider;
 import by.epam.jwdsc.dao.EmployeeDao;
 import by.epam.jwdsc.dao.QueryParametersMapper;
+import by.epam.jwdsc.entity.Address;
 import by.epam.jwdsc.entity.Employee;
+import by.epam.jwdsc.entity.UserRole;
 import by.epam.jwdsc.entity.dto.EmployeeParameters;
 import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.exception.ServiceException;
 import by.epam.jwdsc.service.EmployeeService;
+import by.epam.jwdsc.service.EntityMapper;
 import by.epam.jwdsc.util.PasswordHashGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,6 +95,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Optional<Employee> findRegisteredEmployee(String login, String role) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
+        QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
+        LinkedHashMap<String, Object> queryParameters = queryParametersMapper.mapParameter(SC_EMPLOYEES, EMPLOYEES_LOGIN, login);
+        try {
+            List<Employee> employees = employeeDao.findByParams(queryParameters);
+            if (!employees.isEmpty()) {
+                String savedPasswordHash = employees.get(0).getPassword();
+                if (savedPasswordHash == null || savedPasswordHash.isBlank()) {
+                    if (employees.get(0).getUserRole() == UserRole.valueOf(role)) {
+                        return Optional.ofNullable(employees.get(0));
+                    }
+                }
+            }
+            return Optional.empty();
+        } catch (DaoException e) {
+            log.error("Error find employee when checking is login registered", e);
+            throw new ServiceException("Error find employee when checking is login registered", e);
+        }
+    }
+
+    @Override
     public Optional<Employee> updateEmployee(Employee employee) throws ServiceException {
         DaoProvider daoProvider = DaoProvider.getInstance();
         EmployeeDao employeeDao = daoProvider.getEmployeeDao();
@@ -100,5 +127,49 @@ public class EmployeeServiceImpl implements EmployeeService {
             log.error("Error executing service update Employee", e);
             throw new ServiceException("Error executing service update Employee", e);
         }
+    }
+
+    @Override
+    public boolean createEmployee(Employee employee) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
+        try {
+            return employeeDao.create(employee);
+        } catch (DaoException e) {
+            log.error("Error executing service create Employee", e);
+            throw new ServiceException("Error executing service create Employee", e);
+        }
+    }
+
+    @Override
+    public boolean checkLogin(String login) throws ServiceException {
+        DaoProvider daoProvider = DaoProvider.getInstance();
+        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
+        QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
+        LinkedHashMap<String, Object> queryParameters = queryParametersMapper.mapParameter(SC_EMPLOYEES, EMPLOYEES_LOGIN, login);
+        try {
+            List<Employee> employees = employeeDao.findByParams(queryParameters);
+            return !employees.isEmpty();
+        } catch (DaoException e) {
+            log.error("Error executing service check login", e);
+            throw new ServiceException("Error executing service check login", e);
+        }
+    }
+
+    @Override
+    public Optional<Employee> registrationEmployee(EmployeeParameters employeeParameters, String password) throws ServiceException {
+        try {
+            DaoProvider daoProvider = DaoProvider.getInstance();
+            EmployeeDao employeeDao = daoProvider.getEmployeeDao();
+            PasswordHashGenerator passwordHashGenerator = PasswordHashGenerator.getInstance();
+            String hashedPassword = passwordHashGenerator.hash(password);
+            EntityMapper entityMapper = EntityMapper.getInstance();
+            Employee employee = entityMapper.mapEmployee(employeeParameters, hashedPassword);
+            return updateEmployee(employee);
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Error encrypt password when registration employee", e);
+            throw new ServiceException("Error encrypt password when registration employee", e);
+        }
+
     }
 }

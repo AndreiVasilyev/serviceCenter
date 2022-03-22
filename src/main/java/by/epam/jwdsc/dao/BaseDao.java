@@ -141,22 +141,26 @@ public interface BaseDao<T extends CommonEntity> {
 
     default Address extractAddress(ResultSet resultSet) throws SQLException {
         long addressId = resultSet.getLong(ADDRESSES_ID);
-        String country = resultSet.getString(ADDRESSES_COUNTRY);
-        int postcode = resultSet.getInt(ADDRESSES_POSTCODE);
-        String state = resultSet.getString(ADDRESSES_STATE);
-        String region = resultSet.getString(ADDRESSES_REGION);
-        String city = resultSet.getString(ADDRESSES_CITY);
-        String street = resultSet.getString(ADDRESSES_STREET);
-        int houseNumber = resultSet.getInt(ADDRESSES_HOUSE_NUMBER);
-        int apartmentNumber = resultSet.getInt(ADDRESSES_APARTMENT_NUMBER);
-        return new Address.Builder(city, street, houseNumber)
-                .id(addressId)
-                .country(country)
-                .postcode(postcode)
-                .state(state)
-                .region(region)
-                .apartmentNumber(apartmentNumber)
-                .build();
+        if (addressId != 0) {
+            String country = resultSet.getString(ADDRESSES_COUNTRY);
+            int postcode = resultSet.getInt(ADDRESSES_POSTCODE);
+            String state = resultSet.getString(ADDRESSES_STATE);
+            String region = resultSet.getString(ADDRESSES_REGION);
+            String city = resultSet.getString(ADDRESSES_CITY);
+            String street = resultSet.getString(ADDRESSES_STREET);
+            int houseNumber = resultSet.getInt(ADDRESSES_HOUSE_NUMBER);
+            int apartmentNumber = resultSet.getInt(ADDRESSES_APARTMENT_NUMBER);
+            return new Address.Builder(city, street, houseNumber)
+                    .id(addressId)
+                    .country(country)
+                    .postcode(postcode)
+                    .state(state)
+                    .region(region)
+                    .apartmentNumber(apartmentNumber)
+                    .build();
+        } else {
+            return null;
+        }
     }
 
     default List<String> extractPhones(String phoneNumbers) {

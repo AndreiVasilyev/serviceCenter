@@ -17,5 +17,13 @@ public interface EmployeeService {
 
     Optional<Employee> authorize(String login, String password) throws ServiceException;
 
+    Optional<Employee> findRegisteredEmployee(String login, String role) throws ServiceException;
+
     Optional<Employee> updateEmployee(Employee employee) throws ServiceException;
+
+    boolean createEmployee(Employee employee) throws ServiceException;
+
+    boolean checkLogin(String login) throws ServiceException;
+
+    Optional<Employee> registrationEmployee(EmployeeParameters employeeParameters, String password) throws ServiceException;
 }

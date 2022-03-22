@@ -35,7 +35,7 @@ public class ClientDaoImpl extends UserDao implements ClientDao {
     private static final String SQL_CREATE_ADDRESS = "INSERT INTO addresses(country, postcode, state, region, city," +
             "street, house_number, apartment_number) VALUES(?,?,?,?,?,?,?,?)";
     private static final String SQL_CREATE_USER = "INSERT INTO users(first_name, second_name, patronymic, address, " +
-            "email) VALUES(?,?,?,?,?)";
+            "email, user_role) VALUES(?,?,?,?,?,?)";
     private static final String SQL_CREATE_CLIENT = "INSERT INTO clients(user_id, discount) VALUES(?,?)";
     private static final String SQL_UPDATE_CLIENT = "UPDATE clients AS c JOIN users AS u USING (user_id) " +
             "JOIN addresses AS a ON (u.address=a.address_id) SET c.discount=?, u.first_name=?, u.second_name=?, " +
@@ -127,6 +127,7 @@ public class ClientDaoImpl extends UserDao implements ClientDao {
             collectCreateUserQuery(statementNewUser, client);
             statementNewUser.executeUpdate();
             try (ResultSet generatedUserKey = statementNewUser.getGeneratedKeys()) {
+                generatedUserKey.next();
                 client.setId(generatedUserKey.getLong(1));
                 collectCreateClientQuery(statementNewClient, client);
                 statementNewClient.executeUpdate();

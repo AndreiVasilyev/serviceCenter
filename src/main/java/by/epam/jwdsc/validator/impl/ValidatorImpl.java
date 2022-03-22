@@ -2,9 +2,13 @@ package by.epam.jwdsc.validator.impl;
 
 import by.epam.jwdsc.entity.OrderStatus;
 import by.epam.jwdsc.entity.RepairLevel;
+import by.epam.jwdsc.entity.UserRole;
+import by.epam.jwdsc.entity.dto.EmployeeParameters;
 import by.epam.jwdsc.entity.dto.NewOrderData;
 import by.epam.jwdsc.entity.dto.OrderData;
+import by.epam.jwdsc.service.EntityMapper;
 import by.epam.jwdsc.validator.Validator;
+import org.apache.logging.log4j.util.Strings;
 
 import java.util.Arrays;
 
@@ -306,6 +310,16 @@ public class ValidatorImpl implements Validator {
     }
 
     @Override
+    public boolean isUserRoleValid(String userRole) {
+        boolean result = false;
+        if (userRole != null) {
+            result = Arrays.stream(UserRole.values())
+                    .anyMatch(t -> t.name().equals(userRole.toUpperCase()));
+        }
+        return result;
+    }
+
+    @Override
     public boolean isNewOrderDataValid(NewOrderData newOrderData) {
         return (isNewOrderNumberValid(newOrderData.getOrderNumber()) && isDeviceNameValid(newOrderData.getDeviceName())
                 && isIdValid(newOrderData.getDeviceId()) && isCompanyNameValid(newOrderData.getCompanyName())
@@ -340,6 +354,24 @@ public class ValidatorImpl implements Validator {
                 && isDateValid(orderData.getCompletionDate()) && isDateValid(orderData.getIssueDate())
                 && isOrderStatusValid(orderData.getOrderStatus()) && isRepairLevelValid(orderData.getRepairLevel())
                 && isWorkDescriptionValid(orderData.getWorkDescription()) && isSparePartsValid(orderData.getSpareParts()));
+    }
+
+    public boolean isEmployeeValid(EmployeeParameters employeeParameters, String password, String passwordConfirm) {
+        if (isPasswordValid(password) && isPasswordValid(passwordConfirm) && password.equals(passwordConfirm)) {
+            String[] phones = employeeParameters.getPhones().split(EntityMapper.PHONES_DELIMITER);
+            String phone1 = phones[0];
+            String phone2 = phones.length > 1 ? phones[1] : Strings.EMPTY;
+            String phone3 = phones.length > 2 ? phones[2] : Strings.EMPTY;
+            return (isLoginValid(employeeParameters.getLogin()) && isUserRoleValid(employeeParameters.getUserRole())
+                    && isUnrequitedEmailValid(employeeParameters.getEmail()) && isFirstNameValid(employeeParameters.getFirstName())
+                    && isSecondNameValid(employeeParameters.getSecondName()) && isPatronymicValid(employeeParameters.getPatronymic())
+                    && isPostcodeValid(employeeParameters.getPostcode()) && isCountryValid(employeeParameters.getCountry())
+                    && isStateValid(employeeParameters.getState()) && isRegionValid(employeeParameters.getRegion())
+                    && isCityValid(employeeParameters.getCity()) && isStreetValid(employeeParameters.getStreet())
+                    && isHouseNumberValid(employeeParameters.getHouseNumber()) && isApartmentNumberValid(employeeParameters.getApartmentNumber())
+                    && isRequiredPhoneNumberValid(phone1) && isPhoneNumberValid(phone2) && isPhoneNumberValid(phone3));
+        }
+        return false;
     }
 }
 

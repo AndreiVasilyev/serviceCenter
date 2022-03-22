@@ -3,6 +3,7 @@ package by.epam.jwdsc.controller.command.impl;
 import by.epam.jwdsc.controller.command.Command;
 import by.epam.jwdsc.controller.command.PagePath;
 import by.epam.jwdsc.controller.command.Router;
+import by.epam.jwdsc.controller.command.SessionAttribute;
 import by.epam.jwdsc.entity.Address;
 import by.epam.jwdsc.entity.dto.NewOrderData;
 import by.epam.jwdsc.exception.ServiceException;
@@ -20,7 +21,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+import static by.epam.jwdsc.controller.command.ResponseJsonText.*;
 import static by.epam.jwdsc.controller.command.SessionAttribute.*;
 
 public class SaveNewOrderCommand implements Command {
@@ -34,6 +38,8 @@ public class SaveNewOrderCommand implements Command {
         ServiceProvider serviceProvider = ServiceProvider.getInstance();
         OrderService orderService = serviceProvider.getOrderService();
         HttpSession session = request.getSession();
+        Locale locale = (Locale) session.getAttribute(SessionAttribute.LOCALE);
+        ResourceBundle resourceBundle = ResourceBundle.getBundle(LOCALE_FILE_NAME, locale);
         try {
             NewOrderData newOrderData = gson.fromJson(request.getReader(), NewOrderData.class);
             Validator validator = ValidatorImpl.getInstance();
@@ -75,9 +81,11 @@ public class SaveNewOrderCommand implements Command {
                     newOrderData.setCompanyId(String.valueOf(companyId));
                 }
                 orderService.createNewOrder(newOrderData, (long) session.getAttribute(EMPLOYEE_ID));
-                return new Router(Router.RouterType.JSON, gson.toJson("ok:order was created"));
+                String responseText = resourceBundle.getString(ORDER_CREATED_LOCAL_KEY);
+                return new Router(Router.RouterType.JSON, gson.toJson(POSITIVE_RESPONSE.concat(responseText)));
             } else {
-                return new Router(Router.RouterType.JSON, gson.toJson("error: invalid order parameters"));
+                String responseText = resourceBundle.getString(INVALID_ORDER_PARAMETER_LOCAL_KEY);
+                return new Router(Router.RouterType.JSON, gson.toJson(NEGATIVE_RESPONSE.concat(responseText)));
             }
         } catch (IOException e) {
             log.error("Error reading JSON string from request");

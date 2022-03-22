@@ -6,6 +6,8 @@
 <c:set var="locale" value="${not empty sessionScope.locale?sessionScope.locale:'en_EN'}"/>
 <c:set var="request_parameters" value="${sessionScope.requestData.requestParameters}"/>
 
+<c:url value="/control?command=goto_registration_page" var="registration_page"/>
+
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="locale"/>
 <fmt:message var="login_title" key="login.title"/>
@@ -19,24 +21,6 @@
 <fmt:message var="form_submit" key="login.main.form.submit"/>
 <fmt:message var="remember" key="login.main.form.remember.label"/>
 <fmt:message var="registration" key="login.main.form.link.registration"/>
-
-<fmt:message var="order_number" key="checkOrder.main.table.order.number"/>
-<fmt:message var="order_status" key="checkOrder.main.table.status"/>
-<fmt:message var="order_creation" key="checkOrder.main.table.creation"/>
-<fmt:message var="order_device" key="checkOrder.main.table.device"/>
-<fmt:message var="order_company" key="checkOrder.main.table.company"/>
-<fmt:message var="order_model" key="checkOrder.main.table.model"/>
-<fmt:message var="order_serial" key="checkOrder.main.table.serial"/>
-<fmt:message var="order_completion" key="checkOrder.main.table.completion"/>
-<fmt:message var="order_issue" key="checkOrder.main.table.issue"/>
-<fmt:message var="order_work_description" key="checkOrder.main.table.work.description"/>
-<fmt:message var="order_work_cost" key="checkOrder.main.table.work.cost"/>
-<fmt:message var="order_total_cost" key="checkOrder.main.table.total.cost"/>
-<fmt:message var="order_part_caption" key="checkOrder.main.table.part.caption"/>
-<fmt:message var="order_part_number" key="checkOrder.main.table.part.number"/>
-<fmt:message var="order_part_name" key="checkOrder.main.table.part.name"/>
-<fmt:message var="order_part_description" key="checkOrder.main.table.part.description"/>
-<fmt:message var="order_part_cost" key="checkOrder.main.table.part.cost"/>
 
 <!DOCTYPE html>
 <html>

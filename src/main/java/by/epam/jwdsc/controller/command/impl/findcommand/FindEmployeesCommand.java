@@ -35,7 +35,6 @@ public class FindEmployeesCommand implements Command {
         HttpSession session = request.getSession();
         try {
             EmployeeParameters employeeParameters = gson.fromJson(request.getReader(), EmployeeParameters.class);
-            log.debug("params={}", employeeParameters);
             List<Employee> employees = employeeService.findEmployeesByParameters(employeeParameters);
             return new Router(Router.RouterType.JSON, gson.toJson(employees));
         } catch (IOException e) {

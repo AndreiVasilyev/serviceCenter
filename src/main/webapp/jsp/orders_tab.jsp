@@ -5,13 +5,38 @@
 <c:set var="order_status" value="${sessionScope.orderStatus}"/>
 <c:set var="repair_level" value="${sessionScope.repairLevel}"/>
 
+<c:set var="locale" value="${not empty sessionScope.locale?sessionScope.locale:'en_EN'}"/>
+
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename="locale"/>
+<fmt:message var="orders_reset_filter" key="control.orders.reset.filter.button"/>
+<fmt:message var="orders_new" key="control.orders.new.order.button"/>
+<fmt:message var="orders_number" key="control.orders.column.number"/>
+<fmt:message var="orders_status" key="control.orders.column.status"/>
+<fmt:message var="orders_created" key="control.orders.column.created"/>
+<fmt:message var="orders_client" key="control.orders.column.client"/>
+<fmt:message var="orders_device" key="control.orders.column.device"/>
+<fmt:message var="orders_company" key="control.orders.column.company"/>
+<fmt:message var="orders_model" key="control.orders.column.model"/>
+<fmt:message var="orders_serial" key="control.orders.column.serial"/>
+<fmt:message var="orders_accepted" key="control.orders.column.accepted"/>
+<fmt:message var="orders_completed" key="control.orders.column.completed"/>
+<fmt:message var="orders_completion_date" key="control.orders.column.completion.date"/>
+<fmt:message var="orders_issue_date" key="control.orders.column.issue.date"/>
+<fmt:message var="orders_work_description" key="control.orders.column.work.description"/>
+<fmt:message var="orders_repair_level" key="control.orders.column.repair.level"/>
+<fmt:message var="orders_repair_cost" key="control.orders.column.repair.cost"/>
+<fmt:message var="orders_notes" key="control.orders.column.notes"/>
+<fmt:message var="orders_parts_cost" key="control.orders.column.parts.cost"/>
+<fmt:message var="orders_spare_parts" key="control.orders.column.spare.parts"/>
+
 <div class="container">
     <div class="row">
         <div class="col-auto ms-auto">
             <div class="btn-group">
-                <button type="button" class="btn btn-outline-info clear-filter">Сбросить фильтр</button>
+                <button type="button" class="btn btn-outline-info clear-filter">${orders_reset_filter}</button>
                 <button type="button" class="btn btn-outline-success new-order" data-bs-toggle="modal"
-                        data-bs-target="#addOrderModal">Новый заказ
+                        data-bs-target="#addOrderModal">${orders_new}
                 </button>
             </div>
         </div>
@@ -22,98 +47,98 @@
                 <tr class="table-info text-center">
                     <th scope="col" class="order-action"></th>
                     <th scope="col">
-                        <span>Номер&nbspзаказа</span>
+                        <span>${orders_number}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="o.order_number"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Статус&nbspзаказа</span>
+                        <span>${orders_status}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="o.order_status"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Создан</span>
+                        <span>${orders_created}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="o.creation_date"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Клиент</span>
+                        <span>${orders_client}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="u.first_name, u.second_name"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Устройство</span>
+                        <span>${orders_device}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="d.device_name"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Производитель</span>
+                        <span>${orders_company}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="co.name"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Модель</span>
+                        <span>${orders_model}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="o.model"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Серийный&nbspномер</span>
+                        <span>${orders_serial}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="o.serial_number"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Принял</span>
+                        <span>${orders_accepted}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="accepted_names"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Выполнил</span>
+                        <span>${orders_completed}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="completed_names"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Завершен</span>
+                        <span>${orders_completion_date}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="o.completion_date"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Выдан</span>
+                        <span>${orders_issue_date}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="o.issue_date"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Работы</span>
+                        <span>${orders_work_description}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="o.work_description"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Сложность</span>
+                        <span>${orders_repair_level}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="repair_level"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>Стоимость&nbspработы</span>
+                        <span>${orders_repair_cost}</span>
                         <a class="sort-link">
                             <i class="fa fa-sort" data-sort="" data-column="repair_cost"></i>
                         </a>
                     </th>
-                    <th scope="col">Заметки</th>
-                    <th scope="col">Стоимость&nbspдеталей</th>
-                    <th scope="col">Запчасти</th>
+                    <th scope="col">${orders_notes}</th>
+                    <th scope="col">${orders_parts_cost}</th>
+                    <th scope="col">${orders_spare_parts}</th>
                 </tr>
                 <tr class="order-filter table-secondary">
                     <th></th>
@@ -221,7 +246,7 @@
                     data-is-paginate="">
                     <li class="page-item"><a class="page-link first" href="#"><span>&laquo;</span></a></li>
                     <li class="page-item"><a class="page-link previous" href="#"><span>&lsaquo;</span></a></li>
-                    <li class="page-item mx-2"><span class="current-page">n</span> of <span class="total-pages">m</span>
+                    <li class="page-item mx-2"><span class="current-page"></span> of <span class="total-pages"></span>
                     </li>
                     <li class="page-item"><a class="page-link next" href="#"><span>&rsaquo;</span></a></li>
                     <li class="page-item"><a class="page-link last" href="#"><span>&raquo;</span></a></li>

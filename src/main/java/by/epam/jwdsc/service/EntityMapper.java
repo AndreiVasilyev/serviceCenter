@@ -1,16 +1,18 @@
 package by.epam.jwdsc.service;
 
-import by.epam.jwdsc.entity.Address;
-import by.epam.jwdsc.entity.Client;
-import by.epam.jwdsc.entity.UserBuilders;
+import by.epam.jwdsc.entity.*;
+import by.epam.jwdsc.entity.dto.EmployeeParameters;
 import by.epam.jwdsc.entity.dto.NewOrderData;
 import by.epam.jwdsc.entity.dto.OrderData;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class EntityMapper {
 
     private static EntityMapper instance;
+    public static final String PHONES_DELIMITER = ",";
 
     private EntityMapper() {
     }
@@ -82,5 +84,38 @@ public class EntityMapper {
             address.setApartmentNumber(apartmentNumber);
         }
         return address;
+    }
+
+    public Employee mapEmployee(EmployeeParameters employeeParameters, String hashedPassword) {
+        long userId = Long.parseLong(employeeParameters.getId());
+        int houseNumber = Integer.parseInt(employeeParameters.getHouseNumber());
+        UserRole userRole = UserRole.valueOf(employeeParameters.getUserRole());
+        String[] splitPhones = employeeParameters.getPhones().split(PHONES_DELIMITER);
+        List<String> phones = List.of(splitPhones);
+        Address address = new Address.Builder(employeeParameters.getCity(), employeeParameters.getStreet(), houseNumber)
+                .country(employeeParameters.getCountry())
+                .state(employeeParameters.getState())
+                .region(employeeParameters.getRegion())
+                .build();
+        if (!employeeParameters.getPostcode().isBlank()) {
+            int postcode = Integer.parseInt(employeeParameters.getPostcode());
+            address.setPostcode(postcode);
+        }
+        if (!employeeParameters.getApartmentNumber().isBlank()) {
+            int apartmentNumber = Integer.parseInt(employeeParameters.getApartmentNumber());
+            address.setApartmentNumber(apartmentNumber);
+        }
+        return UserBuilders.newEmployee()
+                .id(userId)
+                .login(employeeParameters.getLogin())
+                .password(hashedPassword)
+                .email(employeeParameters.getEmail())
+                .firstName(employeeParameters.getFirstName())
+                .secondName(employeeParameters.getSecondName())
+                .patronymic(employeeParameters.getPatronymic())
+                .userRole(userRole)
+                .address(address)
+                .phones(phones)
+                .build();
     }
 }

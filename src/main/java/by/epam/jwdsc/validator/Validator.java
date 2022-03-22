@@ -1,5 +1,6 @@
 package by.epam.jwdsc.validator;
 
+import by.epam.jwdsc.entity.dto.EmployeeParameters;
 import by.epam.jwdsc.entity.dto.NewOrderData;
 import by.epam.jwdsc.entity.dto.OrderData;
 
@@ -66,7 +67,11 @@ public interface Validator {
 
     boolean isSparePartsValid(String spareParts);
 
+    boolean isUserRoleValid(String userRole);
+
     boolean isNewOrderDataValid(NewOrderData newOrderData);
 
     boolean isOrderDataValid(OrderData orderData);
+
+    boolean isEmployeeValid(EmployeeParameters employeeParameters, String password, String passwordConfirm);
 }
