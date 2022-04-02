@@ -31,9 +31,9 @@
         <div class="col-auto ms-auto">
             <div class="btn-group">
                 <button type="button"
-                        class="btn btn-outline-info clear-employees-filter">${employees_reset_filter}</button>
+                        class="btn btn-outline-info clear-employees-filter">${parts_reset_filter}</button>
                 <button type="button" class="btn btn-outline-success register-employee" data-bs-toggle="modal"
-                        data-bs-target="#registerEmployeeModal" ${role eq 'ADMIN'?'':'disabled'}>${employees_register_employee}
+                        data-bs-target="#registerEmployeeModal" ${role eq 'ADMIN'?'':'disabled'}>${parts_add_new}
                 </button>
             </div>
         </div>

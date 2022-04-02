@@ -162,6 +162,8 @@ function findEmployeesResponseHandler(response) {
     Array.from(oldRowElements).forEach(element => element.remove());
     if (response != null && typeof response === 'object') {
         let tableBodyElement = document.querySelector('.employees-body');
+        let currentRoleElement = document.getElementById('current-role');
+        let currentRole = currentRoleElement.dataset.role;
         for (const employee of response) {
             let rowElement = document.createElement('tr');
             rowElement.classList.add('employee-row');
@@ -191,7 +193,11 @@ function findEmployeesResponseHandler(response) {
             selectElement.firstChild.nextSibling.remove();
             selectElement.classList.remove('employees-filter-input', 'role-select');
             selectElement.classList.add('role-selected');
-            selectElement.removeAttribute('disabled');
+            if (currentRole == 'ADMIN') {
+                selectElement.removeAttribute('disabled');
+            } else {
+                selectElement.setAttribute('disabled', 'disabled');
+            }
             selectElement.value = employee.userRole;
             selectElement.addEventListener('input', changeEmployeeRoleHandler);
             cellElement.append(selectElement);

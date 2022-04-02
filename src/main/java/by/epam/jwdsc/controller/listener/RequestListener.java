@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static by.epam.jwdsc.controller.command.CommandName.CHANGE_LOCALE;
 import static by.epam.jwdsc.controller.command.RequestParameter.COMMAND_PARAM;
 import static by.epam.jwdsc.controller.command.SessionAttribute.REQUEST_DATA;
 
@@ -39,7 +40,7 @@ public class RequestListener implements ServletRequestListener {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String command = request.getParameter(COMMAND_PARAM);
         String requestReferer = request.getHeader(REQUEST_REFERER);
-        if (command != null && requestReferer!=null && !command.toUpperCase().equals(CommandName.CHANGE_LOCALE)) {
+        if (command != null && requestReferer != null) {
             String requestURI = request.getRequestURI();
             String requestURL = request.getRequestURL().toString();
             String pagePath = requestReferer.replaceAll(requestURL.replaceAll(requestURI, ""), "");
@@ -51,7 +52,6 @@ public class RequestListener implements ServletRequestListener {
                 Object attributeValue = request.getAttribute(attributeName);
                 attributes.put(attributeName, attributeValue);
             }
-
             RequestData requestData = new RequestData(parameters, attributes, pagePath);
             HttpSession httpSession = request.getSession();
             httpSession.removeAttribute(REQUEST_DATA);

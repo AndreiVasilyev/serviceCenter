@@ -34,7 +34,6 @@ public class RegistrationFinalCommand implements Command {
         String password = request.getParameter(PASSWORD_PARAM);
         String passwordConfirm = request.getParameter(PASSWORD_CONFIRM_PARAM);
         EmployeeParameters employeeParameters = extractEmployeeParameters(request);
-        log.debug("params: {}", employeeParameters);
         request.removeAttribute(REGISTRATION_FINAL_FAILED_PARAM);
         Validator validator = ValidatorImpl.getInstance();
         HttpSession httpSession = request.getSession();
@@ -45,7 +44,9 @@ public class RegistrationFinalCommand implements Command {
                 ServiceProvider serviceProvider = ServiceProvider.getInstance();
                 EmployeeService employeeService = serviceProvider.getEmployeeService();
                 employeeService.registrationEmployee(employeeParameters, password);
-                return new Router(PagePath.LOGIN_PAGE, Router.RouterType.FORWARD);
+                httpSession.removeAttribute(SessionAttribute.EMPLOYEE_ROLE);
+                httpSession.removeAttribute(SessionAttribute.LOGIN);
+                return new Router(PagePath.LOGIN_PAGE, Router.RouterType.REDIRECT);
             } catch (ServiceException e) {
                 log.error("Error executing registration final command", e);
                 httpSession.setAttribute(EXCEPTION, e);

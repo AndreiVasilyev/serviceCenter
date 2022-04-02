@@ -31,11 +31,15 @@ public class RegistrationFirstStepCommand implements Command {
 
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession httpSession = request.getSession();
         String login = request.getParameter(LOGIN_PARAM);
         String role = request.getParameter(EMPLOYEE_ROLE_PARAM);
+        if (login == null && role == null) {
+            login = (String) httpSession.getAttribute(SessionAttribute.LOGIN);
+            role = (String) httpSession.getAttribute(SessionAttribute.EMPLOYEE_ROLE);
+        }
         request.removeAttribute(REGISTRATION_FIRST_STEP_FAILED_PARAM);
         Validator validator = ValidatorImpl.getInstance();
-        HttpSession httpSession = request.getSession();
         Locale locale = (Locale) httpSession.getAttribute(SessionAttribute.LOCALE);
         ResourceBundle resourceBundle = ResourceBundle.getBundle(LOCALE_FILE_NAME, locale);
         if (validator.isLoginValid(login) && validator.isUserRoleValid(role)) {
@@ -45,6 +49,8 @@ public class RegistrationFirstStepCommand implements Command {
                 Optional<Employee> registeredEmployee = employeeService.findRegisteredEmployee(login, role);
                 if (registeredEmployee.isPresent()) {
                     request.setAttribute(REGISTERED_EMPLOYEE, registeredEmployee.get());
+                    httpSession.setAttribute(SessionAttribute.LOGIN, login);
+                    httpSession.setAttribute(SessionAttribute.EMPLOYEE_ROLE, role);
                     return new Router(PagePath.REGISTRATION_PAGE_FINAL, Router.RouterType.FORWARD);
                 } else {
                     String requestParameter = resourceBundle.getString(NOT_REGISTERED_LOGIN_LOCAL_KEY);

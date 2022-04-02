@@ -246,17 +246,17 @@ let registrationPhoneRequiredValidityChecks = [
 let validatedRegistrationHandler = function () {
     let isFormValid = true;
     Array.from(registrationInputElements).forEach(element => {
-            if (element.classList.contains('required')) {
-                if (element.value == '' || !isFieldValid(element)) {
-                    registrationSaveButton.setAttribute('disabled', 'disabled');
-                    isFormValid = false;
-                }
-            } else {
-                if (isFieldInvalid(element)) {
-                    registrationSaveButton.setAttribute('disabled', 'disabled');
-                    isFormValid = false;
-                }
+        if (element.classList.contains('required')) {
+            if (element.value == '' || !isFieldValid(element)) {
+                registrationSaveButton.setAttribute('disabled', 'disabled');
+                isFormValid = false;
             }
+        } else {
+            if (isFieldInvalid(element)) {
+                registrationSaveButton.setAttribute('disabled', 'disabled');
+                isFormValid = false;
+            }
+        }
     });
     if (isFormValid) {
         registrationSaveButton.removeAttribute('disabled');
@@ -309,8 +309,22 @@ function unloadRegistrationHandler() {
 
 }
 
-function onBlurRegistrationInputFieldHandler() {
+function onBlurRegistrationInputFieldHandler(event) {
+    let currentElement = event.currentTarget;
     checkInputField(this, validatedRegistrationHandler, registrationSaveButton);
+    if (currentElement.id == 'registration-phone-1-input') {
+        if (currentElement.classList.contains('is-valid')) {
+            registrationPhone2Input.removeAttribute('readonly');
+            registrationPhone3Input.removeAttribute('readonly');
+        } else {
+            registrationPhone2Input.setAttribute('readonly', 'readonly');
+            registrationPhone3Input.setAttribute('readonly', 'readonly');
+            registrationPhone2Input.classList.remove('is-valid', 'is-invalid');
+            registrationPhone3Input.classList.remove('is-valid', 'is-invalid');
+            registrationPhone2Input.value = '';
+            registrationPhone3Input.value = '';
+        }
+    }
 }
 
 function onFocusRegistrationInputFieldHandler() {

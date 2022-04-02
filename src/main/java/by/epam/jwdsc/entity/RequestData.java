@@ -1,5 +1,6 @@
 package by.epam.jwdsc.entity;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class RequestData {
@@ -35,5 +36,21 @@ public class RequestData {
 
     public void setRequestPagePath(String requestPagePath) {
         this.requestPagePath = requestPagePath;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("RequestData{");
+        sb.append("requestParameters=").append(requestParameters);
+        requestParameters.entrySet().forEach(entry -> {
+            sb.append(entry.getKey());
+            sb.append("=");
+            sb.append(Arrays.toString(entry.getValue()));
+            sb.append(", ");
+        });
+        sb.append(", requestAttributes=").append(requestAttributes);
+        sb.append(", requestPagePath='").append(requestPagePath).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

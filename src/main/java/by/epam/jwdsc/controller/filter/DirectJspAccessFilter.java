@@ -29,11 +29,9 @@ public class DirectJspAccessFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        log.debug("Start DirectJspAccessFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        log.debug("Current request URI {}",httpRequest.getRequestURI());
-        if (!httpRequest.getRequestURI().equals(PagePath.ERROR_PAGE)) {
+        if (!httpRequest.getRequestURI().equals(PagePath.ERROR_PAGE) && !httpRequest.getRequestURI().equals(PagePath.LOGIN_PAGE)) {
             httpResponse.sendRedirect(httpRequest.getContextPath() + indexPath);
         }
         chain.doFilter(request, response);

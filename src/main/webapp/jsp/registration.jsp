@@ -37,7 +37,8 @@
                         <h2>${registration_header}</h2>
                     </div>
                     <div class="col-4 mx-auto">
-                        <form method="POST" class="form-floating needs-validation border border-primary border-2 rounded p-4"
+                        <form method="POST"
+                              class="form-floating needs-validation border border-primary border-2 rounded p-4"
                               action="/control?command=registration_first_step">
                             <div class="mb-3">
                                 <div>
@@ -46,10 +47,16 @@
                                             class="required-star">&#8432;</span></label>
                                     <select class="form-select registration-first-step" id="registration-employee-role"
                                             name="employeeRole">
-                                        <option value="" selected></option>
-                                        <option value="ADMIN">ADMIN</option>
-                                        <option value="MANAGER">MANAGER</option>
-                                        <option value="ENGINEER">ENGINEER</option>
+                                        <option value="" ${request_parameters.employeeRole eq null?'selected':''}></option>
+                                        <option value="ADMIN" ${request_parameters.employeeRole[0] eq 'ADMIN'?'selected':''}>
+                                            ADMIN
+                                        </option>
+                                        <option value="MANAGER" ${request_parameters.employeeRole[0] eq 'MANAGER'?'selected':''}>
+                                            MANAGER
+                                        </option>
+                                        <option value="ENGINEER" ${request_parameters.employeeRole[0] eq 'ENGINEER'?'selected':''}>
+                                            ENGINEER
+                                        </option>
                                     </select>
                                 </div>
                                 <div id="registration-employee-role-error" class="form-text text-danger"

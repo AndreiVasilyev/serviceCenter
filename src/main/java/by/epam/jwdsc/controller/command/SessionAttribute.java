@@ -9,6 +9,8 @@ public final class SessionAttribute {
     public static final String ORDER_STATUS = "orderStatus";
     public static final String REPAIR_LEVEL = "repairLevel";
     public static final String EXCEPTION = "exception";
+    public static final String LOGIN = "login";
+    public static final String EMPLOYEE_ROLE = "employeeRole";
     public static final int COOKIE_AGE_MONTH = 2160000;
 
     private SessionAttribute() {
