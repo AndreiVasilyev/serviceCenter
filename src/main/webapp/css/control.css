@@ -27,3 +27,7 @@ html{
     z-index: 100;
 }
 
+.parts-tab-container{
+    max-height: 80vh;
+    overflow-y: auto;
+}

@@ -37,6 +37,26 @@ public class SparePart extends CommonEntity {
         return cost;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setPartNumber(String partNumber) {
+        this.partNumber = partNumber;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,7 +103,6 @@ public class SparePart extends CommonEntity {
 
 
         public Builder(String name, BigDecimal cost) {
-            this.id = id;
             this.name = name;
             this.cost = cost;
         }

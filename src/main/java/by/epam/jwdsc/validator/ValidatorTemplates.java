@@ -30,6 +30,10 @@ public final class ValidatorTemplates {
     public static final String DATE_REGEX = "^((\\d{2} ){2}\\d{4} \\d{2}(:\\d{2}){2})?$";
     public static final String WORK_DESCRIPTION_REGEX = "^([\\wа-яА-Я].{3,200})?$";
     public static final String SPARE_PARTS_REGEX = "^((\\d{1,5} )+)?$";
+    public static final String PART_NUMBER_REGEX = "^([\\wа-яА-Я \\-]{3,30})?$";
+    public static final String PART_NAME_REGEX = "^[\\wа-яА-Я ]{2,40}$";
+    public static final String PART_DESCRIPTION_REGEX = "^([\\wа-яА-Я].{1,100})?$";
+    public static final String PART_COST_REGEX = "^\\d+(\\.\\d{2})?$";
 
     private ValidatorTemplates() {
     }

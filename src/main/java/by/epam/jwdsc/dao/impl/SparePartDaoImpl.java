@@ -7,8 +7,7 @@ import by.epam.jwdsc.pool.DbConnectionPool;
 import org.apache.logging.log4j.util.Strings;
 
 import java.sql.*;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class SparePartDaoImpl implements SparePartDao {
 
@@ -16,6 +15,8 @@ public class SparePartDaoImpl implements SparePartDao {
             "s.cost FROM spare_parts AS s";
     private static final String SQL_SELECT_SPARE_PART_BY_ID = "SELECT s.id, s.part_number, s.name, s.description, " +
             "s.cost FROM spare_parts AS s WHERE s.id=?";
+    private static final String SQL_SELECT_PARTS_TEMPLATE = "SELECT s.id, s.part_number, s.name, s.description, " +
+            "s.cost FROM spare_parts AS s %s %s";
     private static final String SQL_SELECT_SPARE_PARTS_BY_PARAM = "SELECT s.id, s.part_number, s.name, s.description, " +
             "s.cost FROM spare_parts AS s WHERE s.part_number LIKE ? OR s.name LIKE ? OR s.description LIKE ?";
     private static final String SQL_DELETE_SPARE_PART_BY_ID = "DELETE s FROM spare_parts AS s WHERE s.id=?";
@@ -71,6 +72,14 @@ public class SparePartDaoImpl implements SparePartDao {
     }
 
     @Override
+    public List<SparePart> findByParametersWithSort(LinkedHashMap<String, Object> parameters, String sort) throws DaoException {
+        String whereBlock = prepareWhereBlock(parameters.keySet());
+        String sortBlock = prepareSortBlock(sort);
+        String selectQuery = String.format(SQL_SELECT_PARTS_TEMPLATE, whereBlock, sortBlock);
+        return findSpareParts(selectQuery, parameters.values());
+    }
+
+    @Override
     public boolean delete(SparePart sparePart) throws DaoException {
         return deleteById(sparePart.getId());
     }
@@ -120,6 +129,21 @@ public class SparePartDaoImpl implements SparePartDao {
             }
         }
         return oldSparePartFound;
+    }
+
+    private List<SparePart> findSpareParts(String selectQuery, Collection<Object> parameters) throws DaoException {
+        List<SparePart> parts;
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+            prepareStatement(preparedStatement, parameters);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                parts = extractSpareParts(resultSet);
+            }
+            return parts;
+        } catch (SQLException e) {
+            log.error("Error executing query find spare parts", e);
+            throw new DaoException("Error executing query find spare parts", e);
+        }
     }
 
     private void collectCreateSparePartQuery(PreparedStatement statement, SparePart sparePart) throws SQLException {

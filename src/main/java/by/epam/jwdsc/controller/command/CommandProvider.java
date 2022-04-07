@@ -51,6 +51,8 @@ public class CommandProvider {
         commands.put(REGISTER_EMPLOYEE, new RegisterEmployeeCommand());
         commands.put(REGISTRATION_FIRST_STEP, new RegistrationFirstStepCommand());
         commands.put(REGISTRATION_FINAL, new RegistrationFinalCommand());
+        commands.put(ADD_NEW_PART, new AddNewPartCommand());
+        commands.put(FIND_PARTS, new FindPartsCommand());
     }
 
     public static CommandProvider getInstance() {

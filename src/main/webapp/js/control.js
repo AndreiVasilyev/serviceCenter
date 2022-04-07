@@ -368,8 +368,9 @@ function tabSwitcherShowHandler(event) {
         case 'employees-content':
             employeesTabLoadHandler();
             break;
-        // case'parts-content': partsTabLoadHandler();
-        //break;
+        case'parts-content':
+            partsTabLoadHandler();
+            break;
     }
 }
 

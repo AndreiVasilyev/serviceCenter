@@ -22,6 +22,8 @@ public final class ResponseJsonText {
     public static final String INVALID_LOGIN_USER_ROLE_LOCAL_KEY = "control.employees.register.invalid.login.or.role";
     public static final String NOT_REGISTERED_LOGIN_LOCAL_KEY = "registration.login.not.registered";
     public static final String INVALID_EMPLOYEE_LOCAL_KEY = "registration.final.invalid.employee.data";
+    public static final String PART_CREATED_LOCAL_KEY = "control.parts.create.new.part.success";
+    public static final String INVALID_PART_PARAMETER_LOCAL_KEY = "control.parts.create.new.part.invalid.parameter";
 
     private ResponseJsonText() {
     }

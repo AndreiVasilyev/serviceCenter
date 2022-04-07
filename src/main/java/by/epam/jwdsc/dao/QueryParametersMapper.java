@@ -2,6 +2,7 @@ package by.epam.jwdsc.dao;
 
 import by.epam.jwdsc.entity.dto.EmployeeParameters;
 import by.epam.jwdsc.entity.dto.OrderParameters;
+import by.epam.jwdsc.entity.dto.SparePartData;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.LinkedHashMap;
@@ -86,6 +87,16 @@ public final class QueryParametersMapper {
         return parameters;
     }
 
+    public LinkedHashMap<String, Object> mapSparePartParameters(SparePartData sparePartData) {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        parseLikeParameter(SC_SPARE_PARTS, SPARE_PARTS_ID, sparePartData.getId(), parameters);
+        parseLikeParameter(SC_SPARE_PARTS, SPARE_PARTS_PART_NUMBER, sparePartData.getPartNumber(), parameters);
+        parseLikeParameter(SC_SPARE_PARTS, SPARE_PARTS_NAME, sparePartData.getName(), parameters);
+        parseLikeParameter(SC_SPARE_PARTS, SPARE_PARTS_DESCRIPTION, sparePartData.getDescription(), parameters);
+        parseLikeParameter(SC_SPARE_PARTS, SPARE_PARTS_COST, sparePartData.getCost(), parameters);
+        return parameters;
+    }
+
     public String mapOrderSort(OrderParameters orderParameters) {
         String sort = Strings.EMPTY;
         if (orderParameters.getSortByName() != null && !orderParameters.getSortByName().isBlank()) {
@@ -102,6 +113,17 @@ public final class QueryParametersMapper {
         if (employeeParameters.getSortByName() != null && !employeeParameters.getSortByName().isBlank()) {
             sort = employeeParameters.getSortByName();
             if (REVERSE_SORT.trim().equalsIgnoreCase(employeeParameters.getSortDirection())) {
+                sort = sort.replace(SORT_SEPARATOR, MULTI_REVERSE_SORT).concat(REVERSE_SORT);
+            }
+        }
+        return sort;
+    }
+
+    public String mapSparePartSort(SparePartData sparePartData) {
+        String sort = Strings.EMPTY;
+        if (sparePartData.getSortByName() != null && !sparePartData.getSortByName().isBlank()) {
+            sort = sparePartData.getSortByName();
+            if (REVERSE_SORT.trim().equalsIgnoreCase(sparePartData.getSortDirection())) {
                 sort = sort.replace(SORT_SEPARATOR, MULTI_REVERSE_SORT).concat(REVERSE_SORT);
             }
         }

@@ -6,6 +6,7 @@ import by.epam.jwdsc.entity.UserRole;
 import by.epam.jwdsc.entity.dto.EmployeeParameters;
 import by.epam.jwdsc.entity.dto.NewOrderData;
 import by.epam.jwdsc.entity.dto.OrderData;
+import by.epam.jwdsc.entity.dto.SparePartData;
 import by.epam.jwdsc.service.EntityMapper;
 import by.epam.jwdsc.validator.Validator;
 import org.apache.logging.log4j.util.Strings;
@@ -320,6 +321,42 @@ public class ValidatorImpl implements Validator {
     }
 
     @Override
+    public boolean isPartNumberValid(String partNumber) {
+        boolean result = false;
+        if (partNumber != null) {
+            result = partNumber.matches(PART_NUMBER_REGEX);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isPartNameValid(String name) {
+        boolean result = false;
+        if (name != null) {
+            result = name.matches(PART_NAME_REGEX);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isPartDescriptionValid(String description) {
+        boolean result = false;
+        if (description != null) {
+            result = description.matches(PART_DESCRIPTION_REGEX);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isPartCostValid(String cost) {
+        boolean result = false;
+        if (cost != null) {
+            result = cost.matches(PART_COST_REGEX);
+        }
+        return result;
+    }
+
+    @Override
     public boolean isNewOrderDataValid(NewOrderData newOrderData) {
         return (isNewOrderNumberValid(newOrderData.getOrderNumber()) && isDeviceNameValid(newOrderData.getDeviceName())
                 && isIdValid(newOrderData.getDeviceId()) && isCompanyNameValid(newOrderData.getCompanyName())
@@ -372,6 +409,11 @@ public class ValidatorImpl implements Validator {
                     && isRequiredPhoneNumberValid(phone1) && isPhoneNumberValid(phone2) && isPhoneNumberValid(phone3));
         }
         return false;
+    }
+
+    public boolean isPartValid(SparePartData sparePartData) {
+        return (isPartNumberValid(sparePartData.getPartNumber()) && isPartNameValid(sparePartData.getName())
+                && isPartDescriptionValid(sparePartData.getDescription()) && isPartCostValid(sparePartData.getCost()));
     }
 }
 

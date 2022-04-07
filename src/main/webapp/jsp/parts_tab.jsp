@@ -7,227 +7,165 @@
 
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="locale"/>
-<fmt:message var="employees_reset_filter" key="control.employees.reset.filter.button"/>
-<fmt:message var="employees_register_employee" key="control.employees.register.employee.button"/>
-<fmt:message var="employees_id" key="control.employees.column.user.id"/>
-<fmt:message var="employees_role" key="control.employees.column.user.role"/>
-<fmt:message var="employees_login" key="control.employees.column.login"/>
-<fmt:message var="employees_second_name" key="control.employees.column.second.name"/>
-<fmt:message var="employees_first_name" key="control.employees.column.first.name"/>
-<fmt:message var="employees_patronymic" key="control.employees.column.patronymic"/>
-<fmt:message var="employees_email" key="control.employees.column.email"/>
-<fmt:message var="employees_postcode" key="control.employees.column.postcode"/>
-<fmt:message var="employees_country" key="control.employees.column.country"/>
-<fmt:message var="employees_state" key="control.employees.column.state"/>
-<fmt:message var="employees_region" key="control.employees.column.region"/>
-<fmt:message var="employees_city" key="control.employees.column.city"/>
-<fmt:message var="employees_street" key="control.employees.column.street"/>
-<fmt:message var="employees_house_number" key="control.employees.column.house.number"/>
-<fmt:message var="employees_apartment_number" key="control.employees.column.apartment.number"/>
-<fmt:message var="employees_phone_number" key="control.employees.column.phone.number"/>
+<fmt:message var="add_part_header" key="control.parts.add.new.header"/>
+<fmt:message var="add_part_number" key="control.parts.add.new.part.number.label"/>
+<fmt:message var="add_part_number_error" key="control.parts.add.new.part.number.error"/>
+<fmt:message var="add_part_name" key="control.parts.add.new.part.name.label"/>
+<fmt:message var="add_part_name_error" key="control.parts.add.new.part.name.error"/>
+<fmt:message var="add_part_description" key="control.parts.add.new.part.description.label"/>
+<fmt:message var="add_part_description_error" key="control.parts.add.new.part.description.error"/>
+<fmt:message var="add_part_cost" key="control.parts.add.new.part.cost.label"/>
+<fmt:message var="add_part_cost_error" key="control.parts.add.new.part.cost.error"/>
+<fmt:message var="add_part_button" key="control.parts.add.new.button.label"/>
+<fmt:message var="parts_header" key="control.parts.table.header"/>
+<fmt:message var="parts_reset_filter" key="control.parts.reset.filter.button.label"/>
+<fmt:message var="part_number" key="control.parts.column.part.number"/>
+<fmt:message var="part_name" key="control.parts.column.name"/>
+<fmt:message var="part_description" key="control.parts.column.description"/>
+<fmt:message var="part_cost" key="control.parts.column.cost"/>
 
-<div class="container">
-    <div class="row">
-        <div class="col-auto ms-auto">
+<div class="container parts-tab-container">
+    <div class="row mb-3 border p-3">
+        <div class="col-12">
+            <h3 class="text-primary">${add_part_header}</h3>
+        </div>
+        <div class="col-6">
+            <label for="part-number-input" class="form-label">${add_part_number}:</label>
+            <div>
+                <input type="text" class="form-control add-part"
+                       id="part-number-input" name="partNumber"/>
+            </div>
+            <div id="part-number-error" class="form-text text-danger"
+                 data-error-match="${add_part_number_error}">
+            </div>
+        </div>
+        <div class="col-6">
+            <label for="part-name-input" class="form-label">${add_part_name}:<span
+                    class="required-star">&#8432;</span></label>
+            <div>
+                <input type="text" class="form-control add-part"
+                       id="part-name-input" name="name"/>
+            </div>
+            <div id="part-name-error" class="form-text text-danger"
+                 data-error-match="${add_part_name_error}">
+            </div>
+        </div>
+        <div class="col-6">
+            <label for="part-description-input" class="form-label">${add_part_description}:</label>
+            <div>
+                <input type="text" class="form-control add-part"
+                       id="part-description-input" name="description"/>
+            </div>
+            <div id="part-description-error" class="form-text text-danger"
+                 data-error-match="${add_part_description_error}">
+            </div>
+        </div>
+        <div class="col-6">
+            <label for="part-cost-input" class="form-label">${add_part_cost}:<span
+                    class="required-star">&#8432;</span></label>
+            <div>
+                <input type="text" class="form-control add-part"
+                       id="part-cost-input" name="cost"/>
+            </div>
+            <div id="part-cost-error" class="form-text text-danger"
+                 data-error-match="${add_part_cost_error}">
+            </div>
+        </div>
+        <div class="alert alert-warning d-none align-items-center mt-2 p-1"
+             id="alert-new-part-result">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24">
+                <use href="#exclamation-triangle-fill"/>
+            </svg>
+            <div id="new-part-result-message" class=""></div>
+        </div>
+        <div class="col-auto ms-auto mt-2">
             <div class="btn-group">
-                <button type="button"
-                        class="btn btn-outline-info clear-employees-filter">${parts_reset_filter}</button>
-                <button type="button" class="btn btn-outline-success register-employee" data-bs-toggle="modal"
-                        data-bs-target="#registerEmployeeModal" ${role eq 'ADMIN'?'':'disabled'}>${parts_add_new}
+                <button type="button" disabled
+                        class="btn btn-outline-info save-new-part">${add_part_button}
                 </button>
             </div>
         </div>
     </div>
-    <div class="row mt-3 table-container">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-primary">${parts_header}</h3>
+        </div>
+        <div class="col-auto ms-auto">
+            <div class="btn-group">
+                <button type="button"
+                        class="btn btn-outline-info clear-parts-filter">${parts_reset_filter}
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3 table-container mb-5">
         <table class="table table-hover table-sm">
             <thead>
                 <tr class="table-info text-center">
                     <th scope="col">
-                        <span>${employees_id}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="u.user_id"></i>
+                        <span>ID</span>
+                        <a class="part-sort-link">
+                            <i class="fa fa-sort" data-sort="" data-column="s.id"></i>
                         </a>
                     </th>
                     <th scope="col" class="px-4">
-                        <span>${employees_role}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="u.user_role"></i>
+                        <span>${part_number}</span>
+                        <a class="part-sort-link">
+                            <i class="fa fa-sort" data-sort="" data-column="s.part_number"></i>
                         </a>
                     </th>
                     <th scope="col" class="px-4">
-                        <span>${employees_login}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="e.login"></i>
+                        <span>${part_name}</span>
+                        <a class="part-sort-link">
+                            <i class="fa fa-sort" data-sort="" data-column="s.name"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>${employees_second_name}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="u.second_name"></i>
+                        <span>${part_description}</span>
+                        <a class="part-sort-link">
+                            <i class="fa fa-sort" data-sort="" data-column="s.description"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>${employees_first_name}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="u.first_name"></i>
+                        <span>${part_cost}</span>
+                        <a class="part-sort-link">
+                            <i class="fa fa-sort" data-sort="" data-column="s.cost"></i>
                         </a>
                     </th>
                     <th scope="col">
-                        <span>${employees_patronymic}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="u.patronymic"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <span>${employees_email}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="u.email"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <span>${employees_postcode}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="a.postcode"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <span>${employees_country}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="a.country"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <span>${employees_state}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="a.state"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <span>${employees_region}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="a.region"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <span>${employees_city}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="a.city"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <span>${employees_street}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="a.street"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <span>${employees_house_number}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="a.house_number"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <span>${employees_apartment_number}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="a.apartment_number"></i>
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <span>${employees_phone_number}</span>
-                        <a class="employee-sort-link">
-                            <i class="fa fa-sort" data-sort="" data-column="phone_number"></i>
-                        </a>
+
                     </th>
                 </tr>
-                <tr class="employees-filter table-secondary">
+                <tr class="part-filter table-secondary">
                     <th>
                         <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
+                            <input class="form-control part-filter-input" type="text"/>
                         </div>
                     </th>
                     <th>
                         <div class="input-group input-group-sm">
-                            <select class="form-select employees-filter-input role-select">
-                                <option value="" selected></option>
-                                <option value="ADMIN">ADMIN</option>
-                                <option value="MANAGER">MANAGER</option>
-                                <option value="ENGINEER">ENGINEER</option>
-                            </select>
+                            <input class="form-control part-filter-input" type="text"/>
                         </div>
                     </th>
                     <th>
                         <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
+                            <input class="form-control part-filter-input" type="text"/>
                         </div>
                     </th>
                     <th>
                         <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
+                            <input class="form-control part-filter-input" type="text"/>
                         </div>
                     </th>
                     <th>
                         <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
+                            <input class="form-control part-filter-input" type="text"/>
                         </div>
                     </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="input-group input-group-sm">
-                            <input class="form-control employees-filter-input" type="text"/>
-                        </div>
-                    </th>
+                    <th></th>
                 </tr>
             </thead>
-            <tbody class="employees-body">
+            <tbody class="parts-body">
 
             </tbody>
         </table>

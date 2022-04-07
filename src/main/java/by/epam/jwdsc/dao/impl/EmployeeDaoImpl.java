@@ -36,9 +36,6 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
             "LEFT JOIN addresses AS a ON (u.address=a.address_id) SET e.login=?, e.password=?, u.user_role=?, " +
             "u.first_name=?, u.second_name=?, u.patronymic=?, u.email=?, a.country=?, a.postcode=?, a.state=?, " +
             "a.region=?, a.city=?, a.street=?, a.house_number=?, a.apartment_number=?, u.address=? WHERE u.user_id=?";
-    private static final String WHERE_TEMPLATE = "WHERE ";
-    private static final String PARAMETER_TEMPLATE = "=? ";
-    private static final int START_PARAMETER_INDEX = 1;
 
     @Override
     public List<Employee> findAll() throws DaoException {
@@ -67,24 +64,6 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
         String sortBlock = prepareSortBlock(sort);
         String selectQuery = String.format(SQL_SELECT_EMPLOYEES_TEMPLATE, whereBlock, sortBlock);
         return findEmployees(selectQuery, parameters.values());
-    }
-
-    private List<Employee> findEmployees(String selectQuery, Collection<Object> parameters) throws DaoException {
-        List<Employee> employees = new ArrayList<>();
-        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
-            prepareStatement(preparedStatement, parameters);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    Employee employee = extractEmployee(resultSet);
-                    employees.add(employee);
-                }
-            }
-            return employees;
-        } catch (SQLException e) {
-            log.error("Error executing query find employees", e);
-            throw new DaoException("Error executing query find employees", e);
-        }
     }
 
     @Override
@@ -195,6 +174,24 @@ public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
             }
         }
         return oldEmployeeFound;
+    }
+
+    private List<Employee> findEmployees(String selectQuery, Collection<Object> parameters) throws DaoException {
+        List<Employee> employees = new ArrayList<>();
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+            prepareStatement(preparedStatement, parameters);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Employee employee = extractEmployee(resultSet);
+                    employees.add(employee);
+                }
+            }
+            return employees;
+        } catch (SQLException e) {
+            log.error("Error executing query find employees", e);
+            throw new DaoException("Error executing query find employees", e);
+        }
     }
 
     private void collectCreateEmployeeQuery(PreparedStatement statement, Employee employee) throws SQLException {
