@@ -6,9 +6,7 @@ import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.pool.DbConnectionPool;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static by.epam.jwdsc.dao.ColumnName.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -18,6 +16,7 @@ public class DeviceDaoImpl implements DeviceDao {
     private static final String SQL_SELECT_ALL_DEVICES = "SELECT d.device_id, d.device_name FROM devices AS d";
     private static final String SQL_SELECT_DEVICE_BY_ID = "SELECT d.device_id, d.device_name FROM devices AS d " +
             "WHERE d.device_id=?";
+    private static final String SQL_SELECT_DEVICES_TEMPLATE = "SELECT d.device_id, d.device_name FROM devices AS d %s %s";
     private static final String SQL_DELETE_DEVICE_BY_ID = "DELETE d FROM devices AS d WHERE d.device_id=?";
     private static final String SQL_CREATE_DEVICE = "INSERT INTO devices(device_name) VALUES(?)";
     private static final String SQL_UPDATE_DEVICE = "UPDATE devices AS d SET d.device_name=? WHERE d.device_id=?";
@@ -37,6 +36,14 @@ public class DeviceDaoImpl implements DeviceDao {
             throw new DaoException("Error executing query findAll from Devices", e);
         }
         return devices;
+    }
+
+    @Override
+    public List<Device> findByParametersWithSort(LinkedHashMap<String, Object> parameters, String sort) throws DaoException {
+        String whereBlock = prepareWhereBlock(parameters.keySet());
+        String sortBlock = prepareSortBlock(sort);
+        String selectQuery = String.format(SQL_SELECT_DEVICES_TEMPLATE, whereBlock, sortBlock);
+        return findDevices(selectQuery, parameters.values());
     }
 
     @Override
@@ -123,6 +130,25 @@ public class DeviceDaoImpl implements DeviceDao {
             }
         }
         return oldDeviceFound;
+    }
+
+    private List<Device> findDevices(String selectQuery, Collection<Object> parameters) throws DaoException {
+        List<Device> devices = new ArrayList<>();
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+            prepareStatement(preparedStatement, parameters);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Device device = extractDevice(resultSet);
+                    devices.add(device);
+                }
+
+            }
+            return devices;
+        } catch (SQLException e) {
+            log.error("Error executing query find devices", e);
+            throw new DaoException("Error executing query find devices", e);
+        }
     }
 
     private Device extractDevice(ResultSet resultSet) throws SQLException {

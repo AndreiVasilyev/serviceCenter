@@ -371,6 +371,9 @@ function tabSwitcherShowHandler(event) {
         case'parts-content':
             partsTabLoadHandler();
             break;
+        case'devices-content':
+            devicesTabLoadHandler();
+            break;
     }
 }
 

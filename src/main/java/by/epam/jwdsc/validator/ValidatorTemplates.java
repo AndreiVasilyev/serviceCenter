@@ -9,8 +9,8 @@ public final class ValidatorTemplates {
     public static final String LOGIN_REGEX = "^[\\wа-яА-Я@.]{3,20}$";
     public static final String PASSWORD_REGEX = "^[\\w^_]{8,20}$";
     public static final String NEW_ORDER_NUMBER_REGEX = "^NO$";
-    public static final String DEVICE_NAME_REGEX = "^([a-zA-zа-яА-Я]{3,20})([ -][a-zA-zа-яА-Я]{1,20}){0,4}$";
-    public static final String COMPANY_NAME_REGEX = "^(([a-zA-zа-яА-Я]{1,20})( [a-zA-zа-яА-Я]{1,20}){0,3})?$";
+    public static final String DEVICE_NAME_REGEX = "^([a-zA-Zа-яА-Я]{3,20})([ -][a-zA-Zа-яА-Я]{1,20}){0,4}$";
+    public static final String COMPANY_NAME_REGEX = "^(([a-zA-Zа-яА-Я]{1,20})( [a-zA-Zа-яА-Я]{1,20}){0,3})?$";
     public static final String ID_REGEX = "^(\\d{1,19})?$";
     public static final String MODEL_REGEX = "^([\\wа-яА-Я \\-\\+]{3,20})?$";
     public static final String SERIAL_REGEX = "^([\\wа-яА-Я -]{3,20})?$";

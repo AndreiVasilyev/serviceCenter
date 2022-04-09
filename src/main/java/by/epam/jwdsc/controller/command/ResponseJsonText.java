@@ -24,6 +24,8 @@ public final class ResponseJsonText {
     public static final String INVALID_EMPLOYEE_LOCAL_KEY = "registration.final.invalid.employee.data";
     public static final String PART_CREATED_LOCAL_KEY = "control.parts.create.new.part.success";
     public static final String INVALID_PART_PARAMETER_LOCAL_KEY = "control.parts.create.new.part.invalid.parameter";
+    public static final String DEVICE_CREATED_LOCAL_KEY = "control.devices.create.new.device.success";
+    public static final String INVALID_DEVICE_PARAMETER_LOCAL_KEY = "control.devices.create.new.device.invalid.parameter";
 
     private ResponseJsonText() {
     }

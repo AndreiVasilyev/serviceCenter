@@ -163,7 +163,6 @@ function collectCurrentPartsParameters(elements) {
 }
 
 function findPartsResponseHandler(response) {
-    console.log('DONE, response:' + response);
     let oldRowElements = document.querySelectorAll('.part-row');
     Array.from(oldRowElements).forEach(element => element.remove());
     if (response != null && typeof response === 'object') {

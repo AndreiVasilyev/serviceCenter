@@ -1,5 +1,6 @@
 package by.epam.jwdsc.dao;
 
+import by.epam.jwdsc.entity.dto.DeviceData;
 import by.epam.jwdsc.entity.dto.EmployeeParameters;
 import by.epam.jwdsc.entity.dto.OrderParameters;
 import by.epam.jwdsc.entity.dto.SparePartData;
@@ -97,6 +98,13 @@ public final class QueryParametersMapper {
         return parameters;
     }
 
+    public LinkedHashMap<String, Object> mapDeviceParameters(DeviceData deviceData) {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        parseLikeParameter(SC_DEVICES, DEVICES_ID, deviceData.getId(), parameters);
+        parseLikeParameter(SC_DEVICES, DEVICES_NAME, deviceData.getName(), parameters);
+        return parameters;
+    }
+
     public String mapOrderSort(OrderParameters orderParameters) {
         String sort = Strings.EMPTY;
         if (orderParameters.getSortByName() != null && !orderParameters.getSortByName().isBlank()) {
@@ -124,6 +132,17 @@ public final class QueryParametersMapper {
         if (sparePartData.getSortByName() != null && !sparePartData.getSortByName().isBlank()) {
             sort = sparePartData.getSortByName();
             if (REVERSE_SORT.trim().equalsIgnoreCase(sparePartData.getSortDirection())) {
+                sort = sort.replace(SORT_SEPARATOR, MULTI_REVERSE_SORT).concat(REVERSE_SORT);
+            }
+        }
+        return sort;
+    }
+
+    public String mapDeviceSort(DeviceData deviceData) {
+        String sort = Strings.EMPTY;
+        if (deviceData.getSortByName() != null && !deviceData.getSortByName().isBlank()) {
+            sort = deviceData.getSortByName();
+            if (REVERSE_SORT.trim().equalsIgnoreCase(deviceData.getSortDirection())) {
                 sort = sort.replace(SORT_SEPARATOR, MULTI_REVERSE_SORT).concat(REVERSE_SORT);
             }
         }
