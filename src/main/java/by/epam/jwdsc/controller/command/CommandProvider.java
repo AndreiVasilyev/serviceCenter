@@ -55,6 +55,8 @@ public class CommandProvider {
         commands.put(FIND_PARTS, new FindPartsCommand());
         commands.put(FIND_DEVICES, new FindDevicesCommand());
         commands.put(ADD_NEW_DEVICE, new AddNewDeviceCommand());
+        commands.put(FIND_COMPANIES, new FindCompaniesCommand());
+        commands.put(ADD_NEW_COMPANY, new AddNewCompanyCommand());
     }
 
     public static CommandProvider getInstance() {

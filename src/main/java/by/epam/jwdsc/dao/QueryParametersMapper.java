@@ -1,9 +1,6 @@
 package by.epam.jwdsc.dao;
 
-import by.epam.jwdsc.entity.dto.DeviceData;
-import by.epam.jwdsc.entity.dto.EmployeeParameters;
-import by.epam.jwdsc.entity.dto.OrderParameters;
-import by.epam.jwdsc.entity.dto.SparePartData;
+import by.epam.jwdsc.entity.dto.*;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.LinkedHashMap;
@@ -105,6 +102,14 @@ public final class QueryParametersMapper {
         return parameters;
     }
 
+    public LinkedHashMap<String, Object> mapCompanyParameters(CompanyData companyData) {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        parseLikeParameter(SC_COMPANIES, COMPANIES_ID, companyData.getId(), parameters);
+        parseLikeParameter(SC_COMPANIES, COMPANIES_NAME, companyData.getName(), parameters);
+        parseLikeParameter(SC_COMPANIES, COMPANIES_IS_SERVICE_CONTRACT, companyData.getIsContract(), parameters);
+        return parameters;
+    }
+
     public String mapOrderSort(OrderParameters orderParameters) {
         String sort = Strings.EMPTY;
         if (orderParameters.getSortByName() != null && !orderParameters.getSortByName().isBlank()) {
@@ -143,6 +148,17 @@ public final class QueryParametersMapper {
         if (deviceData.getSortByName() != null && !deviceData.getSortByName().isBlank()) {
             sort = deviceData.getSortByName();
             if (REVERSE_SORT.trim().equalsIgnoreCase(deviceData.getSortDirection())) {
+                sort = sort.replace(SORT_SEPARATOR, MULTI_REVERSE_SORT).concat(REVERSE_SORT);
+            }
+        }
+        return sort;
+    }
+
+    public String mapCompanySort(CompanyData companyData) {
+        String sort = Strings.EMPTY;
+        if (companyData.getSortByName() != null && !companyData.getSortByName().isBlank()) {
+            sort = companyData.getSortByName();
+            if (REVERSE_SORT.trim().equalsIgnoreCase(companyData.getSortDirection())) {
                 sort = sort.replace(SORT_SEPARATOR, MULTI_REVERSE_SORT).concat(REVERSE_SORT);
             }
         }

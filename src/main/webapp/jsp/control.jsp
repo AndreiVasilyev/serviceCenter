@@ -93,7 +93,9 @@
                     <div class="tab-pane fade" id="devices-content">
                         <c:import url="devices_tab.jsp"/>
                     </div>
-                    <div class="tab-pane fade" id="producers-content">producers</div>
+                    <div class="tab-pane fade" id="producers-content">
+                        <c:import url="companies_tab.jsp"/>
+                    </div>
                     <div class="tab-pane fade" id="prices-content">prices</div>
                 </div>
             </div>
@@ -108,6 +110,7 @@
         <script src="../js/employees.js" type="text/javascript"></script>
         <script src="../js/parts.js" type="text/javascript"></script>
         <script src="../js/devices.js" type="text/javascript"></script>
+        <script src="../js/companies.js" type="text/javascript"></script>
         <script src="../js/ajax_request.js" type="text/javascript"></script>
     </body>
 </html>

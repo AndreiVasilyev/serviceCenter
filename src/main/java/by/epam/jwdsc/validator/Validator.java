@@ -78,6 +78,8 @@ public interface Validator {
 
     boolean isPartCostValid(String cost);
 
+    boolean isContractValid(String isContract);
+
     boolean isNewOrderDataValid(NewOrderData newOrderData);
 
     boolean isOrderDataValid(OrderData orderData);

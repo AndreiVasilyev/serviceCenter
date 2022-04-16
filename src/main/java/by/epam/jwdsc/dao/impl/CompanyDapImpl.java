@@ -6,9 +6,7 @@ import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.pool.DbConnectionPool;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static by.epam.jwdsc.dao.ColumnName.*;
 
@@ -18,6 +16,8 @@ public class CompanyDapImpl implements CompanyDao {
             "FROM companies AS c";
     private static final String SQL_SELECT_COMPANY_BY_ID = "SELECT c.company_id, c.name, c.is_service_contract " +
             "FROM companies AS c WHERE c.company_id=?";
+    private static final String SQL_SELECT_COMPANIES_TEMPLATE = "SELECT co.company_id, co.name, co.is_service_contract" +
+            " FROM companies AS co %s %s";
     private static final String SQL_DELETE_COMPANY_BY_ID = "DELETE c FROM companies AS c WHERE c.company_id=?";
     private static final String SQL_CREATE_COMPANY = "INSERT INTO companies(name, is_service_contract) VALUES(?,?)";
     private static final String SQL_UPDATE_COMPANY = "UPDATE companies AS c SET c.name=?, c.is_service_contract=? " +
@@ -56,6 +56,14 @@ public class CompanyDapImpl implements CompanyDao {
             throw new DaoException("Error executing query findById from Companies", e);
         }
         return company;
+    }
+
+    @Override
+    public List<Company> findByParametersWithSort(LinkedHashMap<String, Object> parameters, String sort) throws DaoException {
+        String whereBlock = prepareWhereBlock(parameters.keySet());
+        String sortBlock = prepareSortBlock(sort);
+        String selectQuery = String.format(SQL_SELECT_COMPANIES_TEMPLATE, whereBlock, sortBlock);
+        return findCompanies(selectQuery, parameters.values());
     }
 
     @Override
@@ -127,6 +135,25 @@ public class CompanyDapImpl implements CompanyDao {
             }
         }
         return oldCompanyFound;
+    }
+
+    private List<Company> findCompanies(String selectQuery, Collection<Object> parameters) throws DaoException {
+        List<Company> companies = new ArrayList<>();
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+            prepareStatement(preparedStatement, parameters);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Company company = extractCompany(resultSet);
+                    companies.add(company);
+                }
+
+            }
+            return companies;
+        } catch (SQLException e) {
+            log.error("Error executing query find companies", e);
+            throw new DaoException("Error executing query find companies", e);
+        }
     }
 
     private Company extractCompany(ResultSet resultSet) throws SQLException {

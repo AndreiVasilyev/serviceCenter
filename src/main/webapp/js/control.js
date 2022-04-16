@@ -374,6 +374,9 @@ function tabSwitcherShowHandler(event) {
         case'devices-content':
             devicesTabLoadHandler();
             break;
+        case'producers-content':
+            companiesTabLoadHandler();
+            break;
     }
 }
 

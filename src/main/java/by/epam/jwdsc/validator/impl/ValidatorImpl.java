@@ -357,6 +357,16 @@ public class ValidatorImpl implements Validator {
     }
 
     @Override
+    public boolean isContractValid(String isContract) {
+        boolean result = false;
+        if (isContract != null) {
+            result = isContract.matches(IS_CONTRACT_REGEX);
+        }
+        return result;
+    }
+
+
+    @Override
     public boolean isNewOrderDataValid(NewOrderData newOrderData) {
         return (isNewOrderNumberValid(newOrderData.getOrderNumber()) && isDeviceNameValid(newOrderData.getDeviceName())
                 && isIdValid(newOrderData.getDeviceId()) && isCompanyNameValid(newOrderData.getCompanyName())
