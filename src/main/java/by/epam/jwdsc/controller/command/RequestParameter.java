@@ -36,7 +36,6 @@ public final class RequestParameter {
     public static final String EMPLOYEE_PHONE3_PARAM = "phoneNumber3";
     public static final String REGISTRATION_FIRST_STEP_FAILED_PARAM = "registrationFirstStepFailed";
     public static final String REGISTRATION_FINAL_FAILED_PARAM = "registrationFinalFailed";
-
     private RequestParameter() {
     }
 }

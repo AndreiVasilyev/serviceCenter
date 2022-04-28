@@ -20,7 +20,7 @@ public class CommandProvider {
     private final EnumMap<CommandName, Command> commands;
 
     private CommandProvider() {
-        commands = new EnumMap<CommandName, Command>(CommandName.class);
+        commands = new EnumMap<>(CommandName.class);
         commands.put(CHANGE_LOCALE, new ChangeLocaleCommand());
         commands.put(GOTO_MAIN_PAGE, new GotoMainPageCommand());
         commands.put(GOTO_CHECK_ORDER_PAGE, new GotoCheckOrderPageCommand());
@@ -57,6 +57,9 @@ public class CommandProvider {
         commands.put(ADD_NEW_DEVICE, new AddNewDeviceCommand());
         commands.put(FIND_COMPANIES, new FindCompaniesCommand());
         commands.put(ADD_NEW_COMPANY, new AddNewCompanyCommand());
+        commands.put(FIND_ALL_DEVICES, new FindAllDevicesCommand());
+        commands.put(FIND_PRICES_BY_DEVICE, new FindPricesByDeviceCommand());
+        commands.put(SAVE_PRICES_BY_DEVICE, new SavePricesByDevice());
     }
 
     public static CommandProvider getInstance() {

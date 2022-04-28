@@ -33,7 +33,7 @@ public final class ValidatorTemplates {
     public static final String PART_NUMBER_REGEX = "^([\\wа-яА-Я \\-]{3,30})?$";
     public static final String PART_NAME_REGEX = "^[\\wа-яА-Я ]{2,40}$";
     public static final String PART_DESCRIPTION_REGEX = "^([\\wа-яА-Я].{1,100})?$";
-    public static final String PART_COST_REGEX = "^\\d+(\\.\\d{2})?$";
+    public static final String COST_REGEX = "^\\d+(\\.\\d{2})?$";
     public static final String IS_CONTRACT_REGEX = "^[01]{1}?$";
 
     private ValidatorTemplates() {

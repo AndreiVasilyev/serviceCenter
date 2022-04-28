@@ -28,6 +28,9 @@ public final class ResponseJsonText {
     public static final String INVALID_DEVICE_PARAMETER_LOCAL_KEY = "control.devices.create.new.device.invalid.parameter";
     public static final String COMPANY_CREATED_LOCAL_KEY = "control.companies.create.new.device.success";
     public static final String INVALID_COMPANY_PARAMETER_LOCAL_KEY = "control.companies.create.new.device.invalid.parameter";
+    public static final String INVALID_DEVICE_ID_LOCAL_KEY = "control.prices.find.device.invalid.id.parameter";
+    public static final String PRICES_SAVED_LOCAL_KEY = "control.prices.save.prices.success";
+    public static final String INVALID_PRICES_PARAMETER_LOCAL_KEY = "control.prices.save.prices.invalid.parameter";
 
     private ResponseJsonText() {
     }

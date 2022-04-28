@@ -17,6 +17,12 @@ public class PriceInfo extends CommonEntity {
         this.repairCost = repairCost;
     }
 
+    public PriceInfo(long device, RepairLevel repairLevel, BigDecimal repairCost) {
+        this.device = device;
+        this.repairLevel = repairLevel;
+        this.repairCost = repairCost;
+    }
+
     public long getId() {
         return id;
     }
@@ -31,6 +37,10 @@ public class PriceInfo extends CommonEntity {
 
     public BigDecimal getRepairCost() {
         return repairCost;
+    }
+
+    public void setRepairCost(BigDecimal repairCost) {
+        this.repairCost = repairCost;
     }
 
     @Override
@@ -65,4 +75,5 @@ public class PriceInfo extends CommonEntity {
         sb.append('}');
         return sb.toString();
     }
+
 }

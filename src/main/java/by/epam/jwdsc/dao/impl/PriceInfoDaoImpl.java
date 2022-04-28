@@ -19,6 +19,8 @@ public class PriceInfoDaoImpl implements PriceInfoDao {
             "d.device_name FROM prices AS p JOIN devices AS d USING (device_id)";
     private static final String SQL_SELECT_PRICE_BY_ID = "SELECT p.id, p.device_id, p.repair_level, p.repair_cost, " +
             "d.device_name FROM prices AS p JOIN devices AS d USING (device_id) WHERE p.id=?";
+    private static final String SQL_SELECT_PRICES_BY_DEVICE_ID = "SELECT p.id, p.device_id, p.repair_level, p.repair_cost " +
+            "FROM prices AS p WHERE p.device_id=?";
     private static final String SQL_SELECT_COST_BY_DEVICE_AND_LEVEL = "SELECT p.repair_cost FROM prices AS p " +
             "WHERE p.device_id=? AND p.repair_level=?";
     private static final String SQL_SELECT_PRICE_BY_DEVICE_AND_LEVEL = "SELECT p.id, p.device_id, p.repair_level, " +
@@ -100,6 +102,25 @@ public class PriceInfoDaoImpl implements PriceInfoDao {
             throw new DaoException("Error executing query find priceInfo by device id and repair level", e);
         }
         return priceInfo;
+    }
+
+    @Override
+    public List<PriceInfo> findCostsByDevice(long deviceId) throws DaoException {
+        List<PriceInfo> prices = new ArrayList<>();
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_PRICES_BY_DEVICE_ID)) {
+            statement.setLong(1, deviceId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    PriceInfo priceInfo = extractPrice(resultSet);
+                    prices.add(priceInfo);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error executing query find prices by device id", e);
+            throw new DaoException("Error executing query find prices by device id", e);
+        }
+        return prices;
     }
 
     @Override

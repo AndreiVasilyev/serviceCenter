@@ -64,7 +64,6 @@ public class SaveNewOrderCommand implements Command {
                         addressId = existingAddresses.get(0).getId();
                     }
                     Address address = addressService.findById(addressId).get();
-
                     clientId = clientService.createClient(newOrderData, address, phones);
                     newOrderData.setClientId(String.valueOf(clientId));
                 } else {

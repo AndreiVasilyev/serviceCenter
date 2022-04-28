@@ -3,10 +3,7 @@ package by.epam.jwdsc.validator.impl;
 import by.epam.jwdsc.entity.OrderStatus;
 import by.epam.jwdsc.entity.RepairLevel;
 import by.epam.jwdsc.entity.UserRole;
-import by.epam.jwdsc.entity.dto.EmployeeParameters;
-import by.epam.jwdsc.entity.dto.NewOrderData;
-import by.epam.jwdsc.entity.dto.OrderData;
-import by.epam.jwdsc.entity.dto.SparePartData;
+import by.epam.jwdsc.entity.dto.*;
 import by.epam.jwdsc.service.EntityMapper;
 import by.epam.jwdsc.validator.Validator;
 import org.apache.logging.log4j.util.Strings;
@@ -348,10 +345,10 @@ public class ValidatorImpl implements Validator {
     }
 
     @Override
-    public boolean isPartCostValid(String cost) {
+    public boolean isCostValid(String cost) {
         boolean result = false;
         if (cost != null) {
-            result = cost.matches(PART_COST_REGEX);
+            result = cost.matches(COST_REGEX);
         }
         return result;
     }
@@ -423,7 +420,13 @@ public class ValidatorImpl implements Validator {
 
     public boolean isPartValid(SparePartData sparePartData) {
         return (isPartNumberValid(sparePartData.getPartNumber()) && isPartNameValid(sparePartData.getName())
-                && isPartDescriptionValid(sparePartData.getDescription()) && isPartCostValid(sparePartData.getCost()));
+                && isPartDescriptionValid(sparePartData.getDescription()) && isCostValid(sparePartData.getCost()));
+    }
+
+    public boolean isPricesDataValid(PricesData pricesData) {
+        return isIdValid(pricesData.getDevice()) && isCostValid(pricesData.getDiagnostic()) && isCostValid(pricesData.getMaintenance())
+                && isCostValid(pricesData.getRepairLevel1()) && isCostValid(pricesData.getRepairLevel2())
+                && isCostValid(pricesData.getRepairLevel3()) && isCostValid(pricesData.getTechnicalConclusion());
     }
 }
 
