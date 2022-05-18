@@ -28,7 +28,7 @@ public class OrderDaoImpl implements OrderDao {
             "(SELECT pc.repair_cost FROM prices AS pc WHERE o.work_price=pc.id) AS repair_cost " +
             "FROM orders AS o JOIN clients AS c ON(o.client=c.user_id) JOIN users AS u ON(o.client=u.user_id) " +
             "JOIN addresses AS a ON(a.address_id = u.address) JOIN devices AS d ON(d.device_id=o.device) " +
-            "JOIN companies AS co ON(co.company_id=o.company) LEFT JOIN phone_numbers AS p ON(o.client=p.user_id) " +
+            "LEFT JOIN companies AS co ON(co.company_id=o.company) LEFT JOIN phone_numbers AS p ON(o.client=p.user_id) " +
             "%s GROUP BY o.order_id %s %s";
     private static final String SQL_COUNT_ORDERS_TEMPLATE = "SELECT COUNT(*) AS count FROM (SELECT COUNT(o.order_id) " +
             "FROM orders AS o JOIN clients AS c ON(o.client=c.user_id) JOIN users AS u ON(o.client=u.user_id) " +
@@ -70,7 +70,7 @@ public class OrderDaoImpl implements OrderDao {
         String whereBlock = prepareWhereBlock(parameters.keySet());
         String selectQuery = String.format(SQL_SELECT_ORDERS_TEMPLATE, whereBlock, Strings.EMPTY, Strings.EMPTY);
         List<Order> orders = findOrders(selectQuery, parameters.values());
-        return Optional.ofNullable(orders.get(0));
+        return !orders.isEmpty() ? Optional.of(orders.get(0)) : Optional.empty();
     }
 
     @Override
@@ -90,7 +90,6 @@ public class OrderDaoImpl implements OrderDao {
         }
     }
 
-
     @Override
     public List<Order> findByParams(LinkedHashMap<String, Object> parameters) throws DaoException {
         String whereBlock = prepareWhereBlock(parameters.keySet());
@@ -109,68 +108,21 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public String findLastOrderNumber(String orderType) throws DaoException {
-        String sqlParameter = Strings.concat(orderType, ANY_SYMBOLS_WILDCARD);
-        String sqlQuery = String.format(SQL_SELECT_LAST_ORDER_BY_TYPE, sqlParameter);
-        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sqlQuery)) {
-            resultSet.next();
-            return resultSet.getString(1);
-        } catch (SQLException e) {
-            log.error("Error executing query find last orderNumber", e);
-            throw new DaoException("Error executing query find last orderNumber", e);
-        }
-    }
-
-    private List<Order> findOrders(String selectQuery, Collection<Object> parameters) throws DaoException {
-        List<Order> orders = new ArrayList<>();
-        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
-             PreparedStatement orderStatement = connection.prepareStatement(selectQuery)) {
-            prepareStatement(orderStatement, parameters);
-            try (ResultSet orderResultSet = orderStatement.executeQuery()) {
-                while (orderResultSet.next()) {
-                    try (PreparedStatement employeePreparedStatement = connection.prepareStatement(SQL_SELECT_EMPLOYEE_BY_ID)) {
-                        OrderStatus orderStatus = OrderStatus.valueOf(orderResultSet.getString(ORDERS_STATUS));
-                        long acceptedEmployeeId = orderResultSet.getLong(ORDERS_ACCEPTED_EMPLOYEE);
-                        employeePreparedStatement.setLong(1, acceptedEmployeeId);
-                        try (ResultSet acceptedEmployeeResultSet = employeePreparedStatement.executeQuery()) {
-                            Employee acceptedEmployee = acceptedEmployeeResultSet.next() ? extractEmployee(acceptedEmployeeResultSet) : null;
-                            Employee completedEmployee = null;
-                            PriceInfo priceInfo = null;
-                            List<SparePart> spareParts = null;
-                            if (orderStatus != OrderStatus.ACCEPTED) {
-                                try (PreparedStatement pricePreparedStatement = connection.prepareStatement(SQL_SELECT_PRICE_BY_ID);
-                                     PreparedStatement partsPreparedStatement = connection.prepareStatement(SQL_SELECT_PARTS_BY_ORDER_ID)) {
-                                    long completedEmployeeId = orderResultSet.getLong(ORDERS_COMPLETED_EMPLOYEE);
-                                    employeePreparedStatement.setLong(1, completedEmployeeId);
-                                    try (ResultSet completedEmployeeResultSet = employeePreparedStatement.executeQuery()) {
-                                        completedEmployee = completedEmployeeResultSet.next() ? extractEmployee(completedEmployeeResultSet) : null;
-                                        long workPriceId = orderResultSet.getLong(ORDERS_WORK_PRICE);
-                                        pricePreparedStatement.setLong(1, workPriceId);
-                                        partsPreparedStatement.setLong(1, orderResultSet.getLong(ORDERS_ID));
-                                        try (ResultSet priceResultSet = pricePreparedStatement.executeQuery();
-                                             ResultSet partsResultSet = partsPreparedStatement.executeQuery()) {
-                                            priceInfo = priceResultSet.next() ? extractPrice(priceResultSet) : null;
-                                            spareParts = extractSpareParts(partsResultSet);
-                                        }
-                                    }
-                                }
-                            }
-                            Order order = extractOrder(orderResultSet, acceptedEmployee)
-                                    .completedEmployee(completedEmployee)
-                                    .workPrice(priceInfo)
-                                    .spareParts(spareParts)
-                                    .build();
-                            orders.add(order);
-                        }
-                    }
-                }
+        if ("P".equals(orderType) || "S".equals(orderType)) {
+            String sqlParameter = Strings.concat(orderType, ANY_SYMBOLS_WILDCARD);
+            String sqlQuery = String.format(SQL_SELECT_LAST_ORDER_BY_TYPE, sqlParameter);
+            try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+                 Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(sqlQuery)) {
+                resultSet.next();
+                return resultSet.getString(1);
+            } catch (SQLException e) {
+                log.error("Error executing query find last orderNumber", e);
+                throw new DaoException("Error executing query find last orderNumber", e);
             }
-        } catch (SQLException e) {
-            log.error("Error executing query find orders", e);
-            throw new DaoException("Error executing query find orders", e);
         }
-        return orders;
+        log.error("Error executing query find last orderNumber because illegal argument order type: {}", orderType);
+        throw new DaoException("Error executing query find last orderNumber because illegal argument order type");
     }
 
     @Override
@@ -252,6 +204,57 @@ public class OrderDaoImpl implements OrderDao {
             }
         }
         return oldOrderFound;
+    }
+
+    private List<Order> findOrders(String selectQuery, Collection<Object> parameters) throws DaoException {
+        List<Order> orders = new ArrayList<>();
+        try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
+             PreparedStatement orderStatement = connection.prepareStatement(selectQuery)) {
+            prepareStatement(orderStatement, parameters);
+            try (ResultSet orderResultSet = orderStatement.executeQuery()) {
+                while (orderResultSet.next()) {
+                    try (PreparedStatement employeePreparedStatement = connection.prepareStatement(SQL_SELECT_EMPLOYEE_BY_ID)) {
+                        OrderStatus orderStatus = OrderStatus.valueOf(orderResultSet.getString(ORDERS_STATUS));
+                        long acceptedEmployeeId = orderResultSet.getLong(ORDERS_ACCEPTED_EMPLOYEE);
+                        employeePreparedStatement.setLong(1, acceptedEmployeeId);
+                        try (ResultSet acceptedEmployeeResultSet = employeePreparedStatement.executeQuery()) {
+                            Employee acceptedEmployee = acceptedEmployeeResultSet.next() ? extractEmployee(acceptedEmployeeResultSet) : null;
+                            Employee completedEmployee = null;
+                            PriceInfo priceInfo = null;
+                            List<SparePart> spareParts = null;
+                            if (orderStatus != OrderStatus.ACCEPTED) {
+                                try (PreparedStatement pricePreparedStatement = connection.prepareStatement(SQL_SELECT_PRICE_BY_ID);
+                                     PreparedStatement partsPreparedStatement = connection.prepareStatement(SQL_SELECT_PARTS_BY_ORDER_ID)) {
+                                    long completedEmployeeId = orderResultSet.getLong(ORDERS_COMPLETED_EMPLOYEE);
+                                    employeePreparedStatement.setLong(1, completedEmployeeId);
+                                    try (ResultSet completedEmployeeResultSet = employeePreparedStatement.executeQuery()) {
+                                        completedEmployee = completedEmployeeResultSet.next() ? extractEmployee(completedEmployeeResultSet) : null;
+                                        long workPriceId = orderResultSet.getLong(ORDERS_WORK_PRICE);
+                                        pricePreparedStatement.setLong(1, workPriceId);
+                                        partsPreparedStatement.setLong(1, orderResultSet.getLong(ORDERS_ID));
+                                        try (ResultSet priceResultSet = pricePreparedStatement.executeQuery();
+                                             ResultSet partsResultSet = partsPreparedStatement.executeQuery()) {
+                                            priceInfo = priceResultSet.next() ? extractPrice(priceResultSet) : null;
+                                            spareParts = extractSpareParts(partsResultSet);
+                                        }
+                                    }
+                                }
+                            }
+                            Order order = extractOrder(orderResultSet, acceptedEmployee)
+                                    .completedEmployee(completedEmployee)
+                                    .workPrice(priceInfo)
+                                    .spareParts(spareParts)
+                                    .build();
+                            orders.add(order);
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Error executing query find orders", e);
+            throw new DaoException("Error executing query find orders", e);
+        }
+        return orders;
     }
 
     private Order.Builder extractOrder(ResultSet resultSet, Employee acceptedEmployee) throws SQLException {

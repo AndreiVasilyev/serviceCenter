@@ -6,9 +6,7 @@ import by.epam.jwdsc.exception.DaoException;
 import by.epam.jwdsc.pool.DbConnectionPool;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
@@ -19,9 +17,10 @@ public class AddressDaoImpl implements AddressDao {
     private static final String SQL_SELECT_ADDRESS_BY_ID = "SELECT a.address_id, a.country, a.postcode, a.state, " +
             "a.region, a.city, a.street, a.house_number, a.apartment_number FROM addresses AS a WHERE a.address_id=?";
     private static final String SQL_SELECT_ADDRESSES_BY_PARAMS = "SELECT a.address_id, a.country, a.postcode, a.state, " +
-            "a.region, a.city, a.street, a.house_number, a.apartment_number FROM addresses AS a WHERE a.country=? AND " +
-            "a.postcode=? AND a.state=? AND a.region=? AND a.city=? AND a.street=? AND a.house_number=? AND " +
-            "a.apartment_number=?";
+            "a.region, a.city, a.street, a.house_number, a.apartment_number FROM addresses AS a " +
+            "WHERE ((? is null AND a.country is null)OR(a.country=?)) AND ((? is null AND a.postcode is null)OR(a.postcode=?)) " +
+            "AND ((? is null AND a.state is null)OR(a.state=?)) AND ((? is null AND a.region is null)OR(a.region=?)) " +
+            "AND a.city=? AND a.street=? AND a.house_number=? AND ((? is null AND a.apartment_number is null)OR(a.apartment_number=?))";
     private static final String SQL_DELETE_ADDRESS_BY_ID = "DELETE a FROM addresses AS a WHERE a.address_id=?";
     private static final String SQL_CREATE_ADDRESS = "INSERT INTO addresses(country, postcode, state, region, city, " +
             "street, house_number, apartment_number) VALUES(?,?,?,?,?,?,?,?)";
@@ -30,10 +29,10 @@ public class AddressDaoImpl implements AddressDao {
 
 
     @Override
-    public List<Address> findByParams(Address addressTemplate) throws DaoException {
+    public List<Address> findByAllParams(Address addressTemplate) throws DaoException {
         try (Connection connection = DbConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ADDRESSES_BY_PARAMS)) {
-            collectAddressQuery(statement, addressTemplate);
+            collectSelectAddressQuery(statement, addressTemplate);
             try (ResultSet resultSet = statement.executeQuery()) {
                 List<Address> addresses = new ArrayList<>();
                 while (resultSet.next()) {
@@ -151,6 +150,22 @@ public class AddressDaoImpl implements AddressDao {
             }
         }
         return oldAddressFound;
+    }
+
+    private void collectSelectAddressQuery(PreparedStatement statement, Address address) throws SQLException {
+        setUnrequitedStringValue(statement, 1, address.getCountry());
+        setUnrequitedStringValue(statement, 2, address.getCountry());
+        setUnrequitedIntValue(statement, 3, address.getPostcode());
+        setUnrequitedIntValue(statement, 4, address.getPostcode());
+        setUnrequitedStringValue(statement, 5, address.getState());
+        setUnrequitedStringValue(statement, 6, address.getState());
+        setUnrequitedStringValue(statement, 7, address.getRegion());
+        setUnrequitedStringValue(statement, 8, address.getRegion());
+        statement.setString(9, address.getCity());
+        statement.setString(10, address.getStreet());
+        statement.setInt(11, address.getHouseNumber());
+        setUnrequitedIntValue(statement, 12, address.getApartmentNumber());
+        setUnrequitedIntValue(statement, 13, address.getApartmentNumber());
     }
 
     private void collectAddressQuery(PreparedStatement statement, Address address) throws SQLException {

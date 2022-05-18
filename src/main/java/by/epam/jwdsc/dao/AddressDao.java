@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AddressDao extends BaseDao<Address> {
 
-    List<Address> findByParams(Address address) throws DaoException;
+    List<Address> findByAllParams(Address address) throws DaoException;
 
     long createAddress(Address address) throws DaoException;
 }

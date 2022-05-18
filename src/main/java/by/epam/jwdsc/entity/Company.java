@@ -28,6 +28,10 @@ public class Company extends CommonEntity {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public boolean isContract() {
         return isContract;
     }
@@ -41,13 +45,13 @@ public class Company extends CommonEntity {
 
         if (id != company.id) return false;
         if (isContract != company.isContract) return false;
-        return name.equals(company.name);
+        return name != null ? name.equals(company.name) : company.name == null;
     }
 
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + name.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (isContract ? 1 : 0);
         return result;
     }

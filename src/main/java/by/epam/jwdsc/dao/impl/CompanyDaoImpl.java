@@ -10,7 +10,7 @@ import java.util.*;
 
 import static by.epam.jwdsc.dao.ColumnName.*;
 
-public class CompanyDapImpl implements CompanyDao {
+public class CompanyDaoImpl implements CompanyDao {
 
     private static final String SQL_SELECT_ALL_COMPANIES = "SELECT c.company_id, c.name, c.is_service_contract " +
             "FROM companies AS c";

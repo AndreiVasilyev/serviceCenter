@@ -26,7 +26,7 @@ public class AddressServiceImpl implements AddressService {
         EntityMapper entityMapper = EntityMapper.getInstance();
         Address addressTemplate = entityMapper.mapAddress(newOrderData);
         try {
-            return addressDao.findByParams(addressTemplate);
+            return addressDao.findByAllParams(addressTemplate);
         } catch (DaoException e) {
             log.error("Error executing service find addresses by params", e);
             throw new ServiceException("Error executing service find addresses by params", e);

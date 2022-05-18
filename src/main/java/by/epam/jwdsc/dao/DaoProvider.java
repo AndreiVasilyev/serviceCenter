@@ -1,8 +1,6 @@
 package by.epam.jwdsc.dao;
 
 import by.epam.jwdsc.dao.impl.*;
-import by.epam.jwdsc.entity.Company;
-import by.epam.jwdsc.entity.Device;
 
 public class DaoProvider {
 
@@ -23,7 +21,7 @@ public class DaoProvider {
         this.sparePartDao = new SparePartDaoImpl();
         this.priceInfoDao = new PriceInfoDaoImpl();
         this.deviceDao = new DeviceDaoImpl();
-        this.companyDao = new CompanyDapImpl();
+        this.companyDao = new CompanyDaoImpl();
         this.orderDao = new OrderDaoImpl();
         this.codeDao = new CodeDaoImpl();
         this.addressDao = new AddressDaoImpl();

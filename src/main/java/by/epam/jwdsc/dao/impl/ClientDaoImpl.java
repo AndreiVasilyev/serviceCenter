@@ -41,7 +41,6 @@ public class ClientDaoImpl extends UserDao implements ClientDao {
             "JOIN addresses AS a ON (u.address=a.address_id) SET c.discount=?, u.first_name=?, u.second_name=?, " +
             "u.patronymic=?, u.email=?, a.country=?, a.postcode=?, a.state=?, a.region=?, a.city=?, a.street=?, " +
             "a.house_number=?, a.apartment_number=? WHERE u.user_id=?";
-
     @Override
     public List<Client> findAll() throws DaoException {
         List<Client> clients = new ArrayList<>();
@@ -187,10 +186,12 @@ public class ClientDaoImpl extends UserDao implements ClientDao {
             collectCreateAddressQuery(statementNewAddress, client);
             statementNewAddress.executeUpdate();
             try (ResultSet generatedAddressKey = statementNewAddress.getGeneratedKeys()) {
+                generatedAddressKey.next();
                 client.getAddress().setId(generatedAddressKey.getLong(1));
                 collectCreateUserQuery(statementNewUser, client);
                 statementNewUser.executeUpdate();
                 try (ResultSet generatedUserKey = statementNewUser.getGeneratedKeys()) {
+                    generatedUserKey.next();
                     client.setId(generatedUserKey.getLong(1));
                     collectCreateClientQuery(statementNewClient, client);
                     statementNewClient.executeUpdate();
@@ -230,6 +231,7 @@ public class ClientDaoImpl extends UserDao implements ClientDao {
                 collectUpdateClientQuery(statement, client);
                 statement.executeUpdate();
                 updatePhoneNumbers(connection, client, oldClient);
+
             } catch (SQLException e) {
                 log.error("Error executing query update Client", e);
                 throw new DaoException("Error executing query update Client", e);

@@ -45,7 +45,7 @@ public class SparePartDaoImpl implements SparePartDao {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 List<SparePart> spareParts = extractSpareParts(resultSet);
-                return Optional.ofNullable(spareParts.get(0));
+                return spareParts.isEmpty() ? Optional.empty() : Optional.of(spareParts.get(0));
             }
         } catch (SQLException e) {
             log.error("Error executing query findById from SpareParts", e);

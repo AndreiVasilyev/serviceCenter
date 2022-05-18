@@ -118,6 +118,22 @@ public class Order extends CommonEntity {
         return note;
     }
 
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public void setCompletedEmployee(Employee completedEmployee) {
         this.completedEmployee = completedEmployee;
     }
