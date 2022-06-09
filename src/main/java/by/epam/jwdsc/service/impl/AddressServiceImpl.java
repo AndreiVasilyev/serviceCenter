@@ -1,6 +1,7 @@
 package by.epam.jwdsc.service.impl;
 
 import by.epam.jwdsc.dao.AddressDao;
+import by.epam.jwdsc.dao.ClientDao;
 import by.epam.jwdsc.dao.DaoProvider;
 import by.epam.jwdsc.entity.Address;
 import by.epam.jwdsc.entity.dto.NewOrderData;
@@ -18,11 +19,18 @@ import java.util.Optional;
 public class AddressServiceImpl implements AddressService {
 
     private static final Logger log = LogManager.getLogger();
+    private AddressDao addressDao;
+
+    public AddressServiceImpl() {
+        this.addressDao = DaoProvider.getInstance().getAddressDao();
+    }
+
+    public AddressServiceImpl(AddressDao addressDao) {
+        this.addressDao = addressDao;
+    }
 
     @Override
     public List<Address> findAddressesByParams(NewOrderData newOrderData) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        AddressDao addressDao = daoProvider.getAddressDao();
         EntityMapper entityMapper = EntityMapper.getInstance();
         Address addressTemplate = entityMapper.mapAddress(newOrderData);
         try {
@@ -35,8 +43,6 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public long createAddress(NewOrderData newOrderData) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        AddressDao addressDao = daoProvider.getAddressDao();
         EntityMapper entityMapper = EntityMapper.getInstance();
         Address addressTemplate = entityMapper.mapAddress(newOrderData);
         try {
@@ -49,8 +55,6 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Optional<Address> findById(long id) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        AddressDao addressDao = daoProvider.getAddressDao();
         try {
             return addressDao.findById(id);
         } catch (DaoException e) {
@@ -61,8 +65,6 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Optional<Address> updateAddress(OrderData orderData) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        AddressDao addressDao = daoProvider.getAddressDao();
         EntityMapper entityMapper = EntityMapper.getInstance();
         Address address = entityMapper.mapAddress(orderData);
         try {

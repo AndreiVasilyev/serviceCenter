@@ -1,10 +1,8 @@
 package by.epam.jwdsc.service.impl;
 
-import by.epam.jwdsc.dao.AddressDao;
 import by.epam.jwdsc.dao.DaoProvider;
 import by.epam.jwdsc.dao.EmployeeDao;
 import by.epam.jwdsc.dao.QueryParametersMapper;
-import by.epam.jwdsc.entity.Address;
 import by.epam.jwdsc.entity.Employee;
 import by.epam.jwdsc.entity.UserRole;
 import by.epam.jwdsc.entity.dto.EmployeeParameters;
@@ -27,11 +25,18 @@ import static by.epam.jwdsc.dao.TableAliasName.*;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private static final Logger log = LogManager.getLogger();
+    private EmployeeDao employeeDao;
+
+    public EmployeeServiceImpl() {
+        this.employeeDao = DaoProvider.getInstance().getEmployeeDao();
+    }
+
+    public EmployeeServiceImpl(EmployeeDao employeeDao) {
+        this.employeeDao = employeeDao;
+    }
 
     @Override
     public List<Employee> findAll() throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
         try {
             return employeeDao.findAll();
         } catch (DaoException e) {
@@ -42,8 +47,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> findById(long id) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
         try {
             return employeeDao.findById(id);
         } catch (DaoException e) {
@@ -54,8 +57,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> findEmployeesByParameters(EmployeeParameters employeeParameters) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
         QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
         LinkedHashMap<String, Object> parameters = queryParametersMapper.mapEmployeeParameters(employeeParameters);
         String sort = queryParametersMapper.mapEmployeeSort(employeeParameters);
@@ -69,8 +70,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> authorize(String login, String password) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
         QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
         LinkedHashMap<String, Object> queryParameters = queryParametersMapper.mapParameter(SC_EMPLOYEES, EMPLOYEES_LOGIN, login);
         try {
@@ -96,8 +95,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> findRegisteredEmployee(String login, String role) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
         QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
         LinkedHashMap<String, Object> queryParameters = queryParametersMapper.mapParameter(SC_EMPLOYEES, EMPLOYEES_LOGIN, login);
         try {
@@ -119,8 +116,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> updateEmployee(Employee employee) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
         try {
             return employeeDao.update(employee);
         } catch (DaoException e) {
@@ -131,8 +126,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public boolean createEmployee(Employee employee) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
         try {
             return employeeDao.create(employee);
         } catch (DaoException e) {
@@ -143,8 +136,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public boolean checkLogin(String login) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        EmployeeDao employeeDao = daoProvider.getEmployeeDao();
         QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
         LinkedHashMap<String, Object> queryParameters = queryParametersMapper.mapParameter(SC_EMPLOYEES, EMPLOYEES_LOGIN, login);
         try {
@@ -159,17 +150,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Optional<Employee> registrationEmployee(EmployeeParameters employeeParameters, String password) throws ServiceException {
         try {
-            DaoProvider daoProvider = DaoProvider.getInstance();
-            EmployeeDao employeeDao = daoProvider.getEmployeeDao();
             PasswordHashGenerator passwordHashGenerator = PasswordHashGenerator.getInstance();
             String hashedPassword = passwordHashGenerator.hash(password);
             EntityMapper entityMapper = EntityMapper.getInstance();
             Employee employee = entityMapper.mapEmployee(employeeParameters, hashedPassword);
-            return updateEmployee(employee);
+            return employeeDao.update(employee);
+        } catch (DaoException e) {
+            log.error("Error executing service registration Employee", e);
+            throw new ServiceException("Error executing service registration Employee", e);
         } catch (NoSuchAlgorithmException e) {
             log.error("Error encrypt password when registration employee", e);
             throw new ServiceException("Error encrypt password when registration employee", e);
+        } catch (NumberFormatException e) {
+            log.error("Error when executing service registration Employee", e);
+            throw new ServiceException("Error when executing service registration Employee", e);
         }
-
     }
 }

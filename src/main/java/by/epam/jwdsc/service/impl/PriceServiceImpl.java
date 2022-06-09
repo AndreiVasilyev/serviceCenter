@@ -1,5 +1,6 @@
 package by.epam.jwdsc.service.impl;
 
+import by.epam.jwdsc.dao.CompanyDao;
 import by.epam.jwdsc.dao.DaoProvider;
 import by.epam.jwdsc.dao.PriceInfoDao;
 import by.epam.jwdsc.entity.PriceInfo;
@@ -18,11 +19,18 @@ import java.util.Optional;
 public class PriceServiceImpl implements PriceService {
 
     private static final Logger log = LogManager.getLogger();
+    private PriceInfoDao priceInfoDao;
+
+    public PriceServiceImpl() {
+        this.priceInfoDao = DaoProvider.getInstance().getPriceInfoDao();
+    }
+
+    public PriceServiceImpl(PriceInfoDao priceInfoDao) {
+        this.priceInfoDao = priceInfoDao;
+    }
 
     @Override
     public Optional<BigDecimal> findCostByDeviceAndLevel(long deviceId, String repairLevel) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        PriceInfoDao priceInfoDao = daoProvider.getPriceInfoDao();
         try {
             return priceInfoDao.findCostByDeviceAndLevel(deviceId, repairLevel);
         } catch (DaoException e) {
@@ -33,8 +41,6 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public List<PriceInfo> findPricesByDevice(long deviceId) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        PriceInfoDao priceInfoDao = daoProvider.getPriceInfoDao();
         try {
             return priceInfoDao.findCostsByDevice(deviceId);
         } catch (DaoException e) {
@@ -67,8 +73,6 @@ public class PriceServiceImpl implements PriceService {
     }
 
     private void savePriceByDevice(long deviceId, RepairLevel repairLevel, String repairCost) throws DaoException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        PriceInfoDao priceInfoDao = daoProvider.getPriceInfoDao();
         BigDecimal currentCost = new BigDecimal(repairCost);
         Optional<PriceInfo> savedPriceInfo = priceInfoDao.findByDeviceAndLevel(deviceId, repairLevel.name());
         if (savedPriceInfo.isPresent()) {

@@ -1,9 +1,6 @@
 package by.epam.jwdsc.service.impl;
 
-import by.epam.jwdsc.dao.DaoProvider;
-import by.epam.jwdsc.dao.EmployeeDao;
-import by.epam.jwdsc.dao.QueryParametersMapper;
-import by.epam.jwdsc.dao.SparePartDao;
+import by.epam.jwdsc.dao.*;
 import by.epam.jwdsc.entity.SparePart;
 import by.epam.jwdsc.entity.dto.SparePartData;
 import by.epam.jwdsc.exception.DaoException;
@@ -19,11 +16,18 @@ import java.util.List;
 public class SparePartServiceImpl implements SparePartService {
 
     private static final Logger log = LogManager.getLogger();
+    private SparePartDao sparePartDao;
+
+    public SparePartServiceImpl() {
+        this.sparePartDao = DaoProvider.getInstance().getSparePartDao();
+    }
+
+    public SparePartServiceImpl(SparePartDao sparePartDao) {
+        this.sparePartDao = sparePartDao;
+    }
 
     @Override
     public List<SparePart> findPartsByParam(String param) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        SparePartDao sparePartDao = daoProvider.getSparePartDao();
         try {
             return sparePartDao.findByParam(param);
         } catch (DaoException e) {
@@ -34,8 +38,6 @@ public class SparePartServiceImpl implements SparePartService {
 
     @Override
     public List<SparePart> findPartsByParameters(SparePartData sparePartData) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        SparePartDao sparePartDao = daoProvider.getSparePartDao();
         QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
         LinkedHashMap<String, Object> parameters = queryParametersMapper.mapSparePartParameters(sparePartData);
         String sort = queryParametersMapper.mapSparePartSort(sparePartData);
@@ -49,8 +51,6 @@ public class SparePartServiceImpl implements SparePartService {
 
     @Override
     public boolean addNewPart(SparePartData sparePartData) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        SparePartDao sparePartDao = daoProvider.getSparePartDao();
         BigDecimal partCost = new BigDecimal(sparePartData.getCost());
         SparePart sparePart = new SparePart.Builder(sparePartData.getName(), partCost)
                 .partNumber(sparePartData.getPartNumber())

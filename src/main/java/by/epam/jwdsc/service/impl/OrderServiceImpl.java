@@ -24,11 +24,18 @@ public class OrderServiceImpl implements OrderService {
 
     private static final Logger log = LogManager.getLogger();
     private static final String PARTS_SEPARATOR = " ";
+    private OrderDao orderDao;
+
+    public OrderServiceImpl() {
+        this.orderDao = DaoProvider.getInstance().getOrderDao();
+    }
+
+    public OrderServiceImpl(OrderDao orderDao) {
+        this.orderDao = orderDao;
+    }
 
     @Override
     public Optional<Order> findOrderById(long id) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        OrderDao orderDao = daoProvider.getOrderDao();
         try {
             return orderDao.findById(id);
         } catch (DaoException e) {
@@ -39,8 +46,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Optional<Order> findOrderByOrderNumber(String orderNumber) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        OrderDao orderDao = daoProvider.getOrderDao();
         QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
         LinkedHashMap<String, Object> parameters = queryParametersMapper.mapParameter(SC_ORDERS, ORDERS_ORDER_NUMBER, orderNumber);
         try {
@@ -54,8 +59,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findOrdersByClientEmail(String email) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        OrderDao orderDao = daoProvider.getOrderDao();
         QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
         LinkedHashMap<String, Object> parameters = queryParametersMapper.mapParameter(SC_USERS, USERS_EMAIL, email);
         try {
@@ -68,14 +71,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrdersWithPagination findOrdersByParameters(OrderParameters orderParameters) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        OrderDao orderDao = daoProvider.getOrderDao();
         OrdersWithPagination ordersWithPagination = new OrdersWithPagination();
         QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
         LinkedHashMap<String, Object> parameters = queryParametersMapper.mapOrderParameters(orderParameters);
         String sort = queryParametersMapper.mapOrderSort(orderParameters);
-        int pageNumber = Integer.parseInt(orderParameters.getPageNumber());
         try {
+            int pageNumber = Integer.parseInt(orderParameters.getPageNumber());
             long totalOrdersQuantity = orderDao.countOrdersByParams(parameters);
             List<Order> orders = orderDao.findByParamsWithSortAndPage(parameters, sort, pageNumber);
             ordersWithPagination.setOrders(orders);
@@ -85,13 +86,15 @@ public class OrderServiceImpl implements OrderService {
         } catch (DaoException e) {
             log.error("Error when find orders by parameters in DB", e);
             throw new ServiceException("Error when find orders by parameters in DB", e);
+        } catch (NumberFormatException e) {
+            log.error("Error when find orders by parameters in DB", e);
+            throw new ServiceException("Error when find orders by parameters in DB", e);
         }
     }
 
     @Override
     public boolean createNewOrder(NewOrderData newOrderData, long employeeId) throws ServiceException {
         DaoProvider daoProvider = DaoProvider.getInstance();
-        OrderDao orderDao = daoProvider.getOrderDao();
         ClientDao clientDao = daoProvider.getClientDao();
         EmployeeDao employeeDao = daoProvider.getEmployeeDao();
         DeviceDao deviceDao = daoProvider.getDeviceDao();
@@ -116,13 +119,15 @@ public class OrderServiceImpl implements OrderService {
         } catch (DaoException e) {
             log.error("Error in service when creating new order in DB", e);
             throw new ServiceException("Error in service when creating new order in DB", e);
+        } catch (NumberFormatException e) {
+            log.error("Error when find orders by parameters in DB", e);
+            throw new ServiceException("Error when find orders by parameters in DB", e);
         }
     }
 
     @Override
     public Optional<Order> updateOrder(OrderData orderData, long employeeId) throws ServiceException {
         DaoProvider daoProvider = DaoProvider.getInstance();
-        OrderDao orderDao = daoProvider.getOrderDao();
         ClientDao clientDao = daoProvider.getClientDao();
         EmployeeDao employeeDao = daoProvider.getEmployeeDao();
         DeviceDao deviceDao = daoProvider.getDeviceDao();
@@ -186,13 +191,14 @@ public class OrderServiceImpl implements OrderService {
         } catch (DaoException e) {
             log.error("Error in service when updating order in DB", e);
             throw new ServiceException("Error in service when updating order in DB", e);
+        }catch (NumberFormatException e) {
+            log.error("Error when find orders by parameters in DB", e);
+            throw new ServiceException("Error when find orders by parameters in DB", e);
         }
     }
 
     @Override
     public Optional<Order> updateOrder(Order order) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        OrderDao orderDao = daoProvider.getOrderDao();
         try {
             return orderDao.update(order);
         } catch (DaoException e) {
@@ -203,8 +209,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean removeOrderById(long id) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        OrderDao orderDao = daoProvider.getOrderDao();
         try {
             return orderDao.deleteById(id);
         } catch (DaoException e) {
@@ -212,4 +216,5 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("Error executing service to remove order by id", e);
         }
     }
+
 }

@@ -19,11 +19,18 @@ import java.util.Optional;
 public class ClientServiceImpl implements ClientService {
 
     private static final Logger log = LogManager.getLogger();
+    private ClientDao clientDao;
+
+    public ClientServiceImpl() {
+        this.clientDao = DaoProvider.getInstance().getClientDao();
+    }
+
+    public ClientServiceImpl(ClientDao clientDao) {
+        this.clientDao = clientDao;
+    }
 
     @Override
     public List<Client> findClientsByPhone(String phoneNumber) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        ClientDao clientDao = daoProvider.getClientDao();
         try {
             return clientDao.findByPhone(phoneNumber);
         } catch (DaoException e) {
@@ -34,8 +41,6 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Optional<Client> findClientById(long userId) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        ClientDao clientDao = daoProvider.getClientDao();
         try {
             return clientDao.findById(userId);
         } catch (DaoException e) {
@@ -46,8 +51,6 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public long createClient(NewOrderData newOrderData, Address address, List<String> phones) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        ClientDao clientDao = daoProvider.getClientDao();
         EntityMapper entityMapper = EntityMapper.getInstance();
         Client client = entityMapper.mapClient(newOrderData, address, phones);
         try {
@@ -60,12 +63,10 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Optional<Client> updateClient(NewOrderData newOrderData, List<String> phones) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        ClientDao clientDao = daoProvider.getClientDao();
         EntityMapper entityMapper = EntityMapper.getInstance();
         long clientId = Long.parseLong(newOrderData.getClientId());
         try {
-            Client oldClient = findClientById(clientId).get();
+            Client oldClient = clientDao.findById(clientId).get();
             Address address = entityMapper.mapAddress(newOrderData);
             address.setId(oldClient.getAddress().getId());
             Client newClient = entityMapper.mapClient(newOrderData, address, phones);
@@ -78,8 +79,6 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Optional<Client> updateClient(OrderData orderData, List<String> phones) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        ClientDao clientDao = daoProvider.getClientDao();
         EntityMapper entityMapper = EntityMapper.getInstance();
         try {
             Address address = entityMapper.mapAddress(orderData);

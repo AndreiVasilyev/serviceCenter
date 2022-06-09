@@ -17,11 +17,18 @@ import java.util.List;
 public class DeviceServiceImpl implements DeviceService {
 
     private static final Logger log = LogManager.getLogger();
+    private DeviceDao deviceDao;
+
+    public DeviceServiceImpl() {
+        this.deviceDao = DaoProvider.getInstance().getDeviceDao();
+    }
+
+    public DeviceServiceImpl(DeviceDao deviceDao) {
+        this.deviceDao = deviceDao;
+    }
 
     @Override
     public List<Device> findAll() throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        DeviceDao deviceDao = daoProvider.getDeviceDao();
         try {
             return deviceDao.findAll();
         } catch (DaoException e) {
@@ -32,8 +39,6 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public List<Device> findDevicesByParameters(DeviceData deviceData) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        DeviceDao deviceDao = daoProvider.getDeviceDao();
         QueryParametersMapper queryParametersMapper = QueryParametersMapper.getInstance();
         LinkedHashMap<String, Object> parameters = queryParametersMapper.mapDeviceParameters(deviceData);
         String sort = queryParametersMapper.mapDeviceSort(deviceData);
@@ -47,8 +52,6 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public long createDevice(String name) throws ServiceException {
-        DaoProvider daoProvider = DaoProvider.getInstance();
-        DeviceDao deviceDao = daoProvider.getDeviceDao();
         try {
             return deviceDao.createDevice(new Device(name));
         } catch (DaoException e) {
@@ -56,4 +59,6 @@ public class DeviceServiceImpl implements DeviceService {
             throw new ServiceException("Error executing service create devices", e);
         }
     }
+
+
 }

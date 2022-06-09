@@ -50,7 +50,7 @@ public class OrderDaoTest {
 
     @Test
     public void findByIdNegativeResult() throws DaoException {
-        Optional<Order> foundOrder = orderDao.findById(0);
+        Optional<Order> foundOrder = orderDao.findById(-5L);
         assertThat(foundOrder)
                 .isEmpty();
     }

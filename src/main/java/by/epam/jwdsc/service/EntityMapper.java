@@ -36,7 +36,7 @@ public class EntityMapper {
     }
 
     public Client mapClient(OrderData orderData, Address address, List<String> phones) {
-        long id = Long.parseLong(orderData.getId());
+        long id = Long.parseLong(orderData.getClientId());
         return UserBuilders.newClient()
                 .id(id)
                 .firstName(orderData.getFirstName())
@@ -67,7 +67,7 @@ public class EntityMapper {
     }
 
     public Address mapAddress(OrderData orderData) {
-        long id = Long.parseLong(orderData.getId());
+        long id = Long.parseLong(orderData.getAddressId());
         int houseNumber = Integer.parseInt(orderData.getHouseNumber());
         Address address = new Address.Builder(orderData.getCity(), orderData.getStreet(), houseNumber)
                 .country(orderData.getCountry())
