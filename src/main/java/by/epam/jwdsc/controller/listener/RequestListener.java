@@ -20,6 +20,9 @@ import static by.epam.jwdsc.controller.command.CommandName.CHANGE_LOCALE;
 import static by.epam.jwdsc.controller.command.RequestParameter.COMMAND_PARAM;
 import static by.epam.jwdsc.controller.command.SessionAttribute.REQUEST_DATA;
 
+/**
+ * The type Request listener.
+ */
 @WebListener
 public class RequestListener implements ServletRequestListener {
 

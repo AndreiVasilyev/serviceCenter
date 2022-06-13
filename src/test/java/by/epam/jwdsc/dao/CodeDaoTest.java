@@ -8,14 +8,25 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The type Code dao test.
+ */
 public class CodeDaoTest {
     private CodeDao codeDao;
 
+    /**
+     * Sets up.
+     */
     @Before
     public void setUp() {
         codeDao = DaoProvider.getInstance().getCodeDao();
     }
 
+    /**
+     * Find all.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findAll() throws DaoException {
         Map<String, String> foundCodes = codeDao.findAll();
@@ -25,6 +36,11 @@ public class CodeDaoTest {
                 .hasSizeGreaterThanOrEqualTo(2);
     }
 
+    /**
+     * Find by email positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByEmailPositiveResult() throws DaoException {
         Optional<String> foundCode = codeDao.findByEmail("petrov@mail.ru");
@@ -34,6 +50,11 @@ public class CodeDaoTest {
                 .isEqualTo("64898");
     }
 
+    /**
+     * Find by id negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByIdNegativeResult() throws DaoException {
         Optional<String> foundCode = codeDao.findByEmail("petrov");
@@ -41,6 +62,11 @@ public class CodeDaoTest {
                 .isEmpty();
     }
 
+    /**
+     * Create.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void create() throws DaoException {
         boolean isCreatedCode = codeDao.create("testEmail", "45612");
@@ -54,6 +80,11 @@ public class CodeDaoTest {
         codeDao.deleteByCode(createdCode.get());
     }
 
+    /**
+     * Update.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void update() throws DaoException {
         codeDao.create("testEmail", "45612");
@@ -69,6 +100,11 @@ public class CodeDaoTest {
         codeDao.deleteByCode("44444");
     }
 
+    /**
+     * Delete by code.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void deleteByCode() throws DaoException {
         codeDao.create("testEmail", "45612");
@@ -77,6 +113,11 @@ public class CodeDaoTest {
                 .isTrue();
     }
 
+    /**
+     * Delete by id.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void deleteById() throws DaoException {
         codeDao.create("testEmail", "45612");

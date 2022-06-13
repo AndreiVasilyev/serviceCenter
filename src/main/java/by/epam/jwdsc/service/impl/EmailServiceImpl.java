@@ -14,6 +14,9 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+/**
+ * The type Email service.
+ */
 public class EmailServiceImpl implements EmailService {
 
     private static final Logger log = LogManager.getLogger();

@@ -11,6 +11,9 @@ import static by.epam.jwdsc.controller.command.Router.RouterType.FORWARD;
 import static by.epam.jwdsc.controller.command.SessionAttribute.*;
 import static by.epam.jwdsc.entity.UserRole.GUEST;
 
+/**
+ * The type Logout command.
+ */
 public class LogoutCommand implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {

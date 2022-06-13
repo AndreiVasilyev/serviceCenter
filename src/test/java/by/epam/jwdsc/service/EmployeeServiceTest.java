@@ -19,6 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
+/**
+ * The type Employee service test.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class EmployeeServiceTest {
 
@@ -28,6 +31,11 @@ public class EmployeeServiceTest {
     private EmployeeServiceImpl employeeService = new EmployeeServiceImpl();
     private Employee testEmployee;
 
+    /**
+     * Sets up.
+     *
+     * @throws DaoException the dao exception
+     */
     @Before
     public void setUp() throws DaoException {
         Address testAddress = new Address.Builder("testCity", "testStreet", 1111)
@@ -50,6 +58,12 @@ public class EmployeeServiceTest {
                 .build();
     }
 
+    /**
+     * Find all positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findAllPositiveResult() throws ServiceException, DaoException {
         when(employeeDao.findAll()).thenReturn(new ArrayList<>(Collections.nCopies(10, testEmployee)));
@@ -63,6 +77,12 @@ public class EmployeeServiceTest {
                 .hasFieldOrPropertyWithValue("login", "testLogin");
     }
 
+    /**
+     * Find by id positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findByIdPositiveResult() throws ServiceException, DaoException {
         when(employeeDao.findById(5L)).thenReturn(Optional.ofNullable(testEmployee));
@@ -74,6 +94,12 @@ public class EmployeeServiceTest {
                 .hasFieldOrPropertyWithValue("login", "testLogin");
     }
 
+    /**
+     * Find by id negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findByIdNegativeResult() throws ServiceException, DaoException {
         when(employeeDao.findById(-5L)).thenReturn(Optional.empty());
@@ -82,6 +108,12 @@ public class EmployeeServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Find employees by parameters positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findEmployeesByParametersPositiveResult() throws ServiceException, DaoException {
         EmployeeParameters employeeParameters = new EmployeeParameters();
@@ -98,6 +130,11 @@ public class EmployeeServiceTest {
                 .hasFieldOrPropertyWithValue("login", "testLogin");
     }
 
+    /**
+     * Find employees by parameters negative result.
+     *
+     * @throws ServiceException the service exception
+     */
     @Test
     public void findEmployeesByParametersNegativeResult() throws ServiceException {
         EmployeeParameters employeeParameters = new EmployeeParameters();
@@ -107,6 +144,12 @@ public class EmployeeServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Authorize positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void authorizePositiveResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -125,6 +168,12 @@ public class EmployeeServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Authorize negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void authorizeNegativeResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -134,6 +183,12 @@ public class EmployeeServiceTest {
         employeeService.authorize("testLogin", "superroot");
     }
 
+    /**
+     * Find registered employee positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findRegisteredEmployeePositiveResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -153,6 +208,12 @@ public class EmployeeServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Find registered employee negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void findRegisteredEmployeeNegativeResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -161,6 +222,12 @@ public class EmployeeServiceTest {
         employeeService.findRegisteredEmployee("testLogin", "ADMIN");
     }
 
+    /**
+     * Update employee positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void updateEmployeePositiveResult() throws ServiceException, DaoException {
         when(employeeDao.update(testEmployee)).thenReturn(Optional.of(testEmployee));
@@ -172,12 +239,24 @@ public class EmployeeServiceTest {
                 .hasFieldOrPropertyWithValue("login", "testLogin");
     }
 
+    /**
+     * Update employee negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void updateEmployeeNegativeResult() throws ServiceException, DaoException {
         when(employeeDao.update(testEmployee)).thenThrow(DaoException.class);
         employeeService.updateEmployee(testEmployee);
     }
 
+    /**
+     * Create employee positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void createEmployeePositiveResult() throws ServiceException, DaoException {
         when(employeeDao.create(testEmployee)).thenReturn(true);
@@ -186,12 +265,24 @@ public class EmployeeServiceTest {
                 .isTrue();
     }
 
+    /**
+     * Create employee negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void createEmployeeNegativeResult() throws ServiceException, DaoException {
         when(employeeDao.create(testEmployee)).thenThrow(DaoException.class);
         employeeService.createEmployee(testEmployee);
     }
 
+    /**
+     * Check login positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void checkLoginPositiveResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -202,6 +293,12 @@ public class EmployeeServiceTest {
                 .isTrue();
     }
 
+    /**
+     * Check login negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void checkLoginNegativeResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -212,6 +309,12 @@ public class EmployeeServiceTest {
                 .isFalse();
     }
 
+    /**
+     * Registration employee positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void registrationEmployeePositiveResult() throws ServiceException, DaoException {
         EmployeeParameters employeeParameters = new EmployeeParameters();
@@ -230,6 +333,12 @@ public class EmployeeServiceTest {
                 .hasFieldOrPropertyWithValue("login", "testLogin");
     }
 
+    /**
+     * Registration employee negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void registrationEmployeeNegativeResult() throws ServiceException, DaoException {
         EmployeeParameters employeeParameters = new EmployeeParameters();

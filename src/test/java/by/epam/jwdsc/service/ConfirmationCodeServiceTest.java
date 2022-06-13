@@ -16,6 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 
+/**
+ * The type Confirmation code service test.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class ConfirmationCodeServiceTest {
 
@@ -24,6 +27,12 @@ public class ConfirmationCodeServiceTest {
     @InjectMocks
     private ConfirmationCodeServiceImpl confirmationCodeService = new ConfirmationCodeServiceImpl();
 
+    /**
+     * Save code for existing with positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void saveCodeForExistingWithPositiveResult() throws ServiceException, DaoException {
         when(codeDao.findByEmail("testEmail@mail.com")).thenReturn(Optional.of("55555"));
@@ -33,6 +42,12 @@ public class ConfirmationCodeServiceTest {
                 .isTrue();
     }
 
+    /**
+     * Save code for new with positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void saveCodeForNewWithPositiveResult() throws ServiceException, DaoException {
         when(codeDao.findByEmail("testEmail@mail.com")).thenReturn(Optional.empty());
@@ -42,12 +57,24 @@ public class ConfirmationCodeServiceTest {
                 .isTrue();
     }
 
+    /**
+     * Save code negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void saveCodeNegativeResult() throws ServiceException, DaoException {
         when(codeDao.findByEmail("testEmail@mail.com")).thenThrow(DaoException.class);
         confirmationCodeService.saveCode("55555", "testEmail@mail.com");
     }
 
+    /**
+     * Verify code positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void verifyCodePositiveResult() throws ServiceException, DaoException {
         when(codeDao.findByEmail("testEmail@mail.com")).thenReturn(Optional.of("55555"));
@@ -56,6 +83,12 @@ public class ConfirmationCodeServiceTest {
                 .isTrue();
     }
 
+    /**
+     * Verify code negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void verifyCodeNegativeResult() throws ServiceException, DaoException {
         when(codeDao.findByEmail("testEmail@mail.com")).thenReturn(Optional.of("55555"));

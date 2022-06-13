@@ -9,6 +9,9 @@ import static by.epam.jwdsc.controller.command.PagePath.CHECK_ORDER_PAGE;
 import static by.epam.jwdsc.controller.command.Router.RouterType.FORWARD;
 
 
+/**
+ * The type Goto check order page command.
+ */
 public class GotoCheckOrderPageCommand implements Command {
 
     @Override

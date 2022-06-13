@@ -24,6 +24,9 @@ import java.util.List;
 
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Find employees command.
+ */
 public class FindEmployeesCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

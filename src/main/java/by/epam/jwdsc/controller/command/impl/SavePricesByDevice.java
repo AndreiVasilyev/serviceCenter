@@ -25,6 +25,9 @@ import java.util.ResourceBundle;
 import static by.epam.jwdsc.controller.command.ResponseJsonText.*;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Save prices by device.
+ */
 public class SavePricesByDevice implements Command {
 
     private static final Logger log = LogManager.getLogger();

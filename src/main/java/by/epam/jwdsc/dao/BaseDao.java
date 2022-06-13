@@ -15,28 +15,103 @@ import java.util.stream.Collectors;
 import static by.epam.jwdsc.dao.ColumnName.*;
 import static by.epam.jwdsc.dao.ColumnName.SPARE_PARTS_COST;
 
+/**
+ * The interface Base dao.
+ *
+ * @param <T> the type parameter
+ */
 public interface BaseDao<T extends CommonEntity> {
+    /**
+     * The constant log.
+     */
     Logger log = LogManager.getLogger();
+    /**
+     * The constant PHONES_SEPARATOR.
+     */
     String PHONES_SEPARATOR = ",";
+    /**
+     * The constant LOGIC_AND.
+     */
     String LOGIC_AND = "AND ";
+    /**
+     * The constant WHERE_TEMPLATE.
+     */
     String WHERE_TEMPLATE = "WHERE ";
+    /**
+     * The constant PAGE_TEMPLATE.
+     */
     String PAGE_TEMPLATE = "LIMIT 10 OFFSET %d";
+    /**
+     * The constant SORT_TEMPLATE.
+     */
     String SORT_TEMPLATE = "ORDER BY %s";
+    /**
+     * The constant START_PARAMETER_INDEX.
+     */
     int START_PARAMETER_INDEX = 1;
+    /**
+     * The constant PAGE_SIZE.
+     */
     int PAGE_SIZE = 10;
 
+    /**
+     * Find all list.
+     *
+     * @return the list
+     * @throws DaoException the dao exception
+     */
     List<T> findAll() throws DaoException;
 
+    /**
+     * Find by id optional.
+     *
+     * @param id the id
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     Optional<T> findById(long id) throws DaoException;
 
+    /**
+     * Delete boolean.
+     *
+     * @param t the t
+     * @return the boolean
+     * @throws DaoException the dao exception
+     */
     boolean delete(T t) throws DaoException;
 
+    /**
+     * Delete by id boolean.
+     *
+     * @param id the id
+     * @return the boolean
+     * @throws DaoException the dao exception
+     */
     boolean deleteById(long id) throws DaoException;
 
+    /**
+     * Create boolean.
+     *
+     * @param t the t
+     * @return the boolean
+     * @throws DaoException the dao exception
+     */
     boolean create(T t) throws DaoException;
 
+    /**
+     * Update optional.
+     *
+     * @param t the t
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     Optional<T> update(T t) throws DaoException;
 
+    /**
+     * Close.
+     *
+     * @param statement the statement
+     */
     default void close(Statement statement) {
         try {
             if (statement != null) {
@@ -47,12 +122,23 @@ public interface BaseDao<T extends CommonEntity> {
         }
     }
 
+    /**
+     * Close.
+     *
+     * @param connection the connection
+     */
     default void close(Connection connection) {
         if (connection != null) {
             DbConnectionPool.INSTANCE.releaseConnection(connection);
         }
     }
 
+    /**
+     * Prepare where block string.
+     *
+     * @param parameterExpression the parameter expression
+     * @return the string
+     */
     default String prepareWhereBlock(Set<String> parameterExpression) {
         String whereBlock = Strings.EMPTY;
         if (parameterExpression != null && !parameterExpression.isEmpty()) {
@@ -67,6 +153,12 @@ public interface BaseDao<T extends CommonEntity> {
         return whereBlock;
     }
 
+    /**
+     * Prepare sort block string.
+     *
+     * @param sort the sort
+     * @return the string
+     */
     default String prepareSortBlock(String sort) {
         String sortBlock = Strings.EMPTY;
         if (sort != null && !sort.isBlank()) {
@@ -75,6 +167,12 @@ public interface BaseDao<T extends CommonEntity> {
         return sortBlock;
     }
 
+    /**
+     * Prepare page block string.
+     *
+     * @param pageNumber the page number
+     * @return the string
+     */
     default String preparePageBlock(int pageNumber) {
         String pageBlock = Strings.EMPTY;
         if (pageNumber > 0) {
@@ -83,6 +181,13 @@ public interface BaseDao<T extends CommonEntity> {
         return pageBlock;
     }
 
+    /**
+     * Prepare statement.
+     *
+     * @param preparedStatement the prepared statement
+     * @param parameters        the parameters
+     * @throws SQLException the sql exception
+     */
     default void prepareStatement(PreparedStatement preparedStatement, Collection<Object> parameters) throws SQLException {
         if (parameters != null && !parameters.isEmpty()) {
             int parameterIndex = START_PARAMETER_INDEX;
@@ -92,6 +197,13 @@ public interface BaseDao<T extends CommonEntity> {
         }
     }
 
+    /**
+     * Extract client client.
+     *
+     * @param resultSet the result set
+     * @return the client
+     * @throws SQLException the sql exception
+     */
     default Client extractClient(ResultSet resultSet) throws SQLException {
         int discount = resultSet.getInt(CLIENTS_DISCOUNT);
         Map<String, Object> userValues = extractUser(resultSet);
@@ -107,6 +219,13 @@ public interface BaseDao<T extends CommonEntity> {
                 .build();
     }
 
+    /**
+     * Extract employee employee.
+     *
+     * @param resultSet the result set
+     * @return the employee
+     * @throws SQLException the sql exception
+     */
     default Employee extractEmployee(ResultSet resultSet) throws SQLException {
         Map<String, Object> userValues = extractUser(resultSet);
         String login = resultSet.getString(EMPLOYEES_LOGIN);
@@ -126,6 +245,13 @@ public interface BaseDao<T extends CommonEntity> {
                 .build();
     }
 
+    /**
+     * Extract user map.
+     *
+     * @param resultSet the result set
+     * @return the map
+     * @throws SQLException the sql exception
+     */
     default Map<String, Object> extractUser(ResultSet resultSet) throws SQLException {
         Map<String, Object> result = new HashMap<>();
         result.put(USERS_ID, resultSet.getLong(USERS_ID));
@@ -139,6 +265,13 @@ public interface BaseDao<T extends CommonEntity> {
         return result;
     }
 
+    /**
+     * Extract address address.
+     *
+     * @param resultSet the result set
+     * @return the address
+     * @throws SQLException the sql exception
+     */
     default Address extractAddress(ResultSet resultSet) throws SQLException {
         long addressId = resultSet.getLong(ADDRESSES_ID);
         if (addressId != 0) {
@@ -163,6 +296,12 @@ public interface BaseDao<T extends CommonEntity> {
         }
     }
 
+    /**
+     * Extract phones list.
+     *
+     * @param phoneNumbers the phone numbers
+     * @return the list
+     */
     default List<String> extractPhones(String phoneNumbers) {
         if (phoneNumbers != null && !phoneNumbers.isBlank()) {
             return Arrays.stream(phoneNumbers.split(PHONES_SEPARATOR))
@@ -172,6 +311,13 @@ public interface BaseDao<T extends CommonEntity> {
         return new ArrayList<>();
     }
 
+    /**
+     * Extract price price info.
+     *
+     * @param resultSet the result set
+     * @return the price info
+     * @throws SQLException the sql exception
+     */
     default PriceInfo extractPrice(ResultSet resultSet) throws SQLException {
         long id = resultSet.getLong(PRICES_ID);
         long deviceId = resultSet.getLong(DEVICES_ID);
@@ -181,6 +327,13 @@ public interface BaseDao<T extends CommonEntity> {
         return new PriceInfo(id, deviceId, repairLevel, repairCost);
     }
 
+    /**
+     * Extract spare parts list.
+     *
+     * @param resultSet the result set
+     * @return the list
+     * @throws SQLException the sql exception
+     */
     default List<SparePart> extractSpareParts(ResultSet resultSet) throws SQLException {
         List<SparePart> spareParts = new ArrayList<>();
         while (resultSet.next()) {

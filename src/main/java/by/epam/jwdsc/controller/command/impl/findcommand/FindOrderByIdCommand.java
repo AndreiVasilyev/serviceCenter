@@ -21,6 +21,9 @@ import java.util.Optional;
 import static by.epam.jwdsc.controller.command.RequestParameter.ORDER_ID_PARAM;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Find order by id command.
+ */
 public class FindOrderByIdCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

@@ -9,6 +9,9 @@ import static by.epam.jwdsc.controller.command.PagePath.ERROR_PAGE;
 import static by.epam.jwdsc.controller.command.Router.RouterType.FORWARD;
 import static by.epam.jwdsc.controller.command.Router.RouterType.REDIRECT;
 
+/**
+ * The type Goto error page command.
+ */
 public class GotoErrorPageCommand implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {

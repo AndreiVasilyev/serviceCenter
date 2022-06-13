@@ -1,5 +1,23 @@
 package by.epam.jwdsc.entity;
 
+/**
+ * The enum Order status.
+ */
 public enum OrderStatus {
-    ACCEPTED, IN_PROGRESS, CLOSED, ISSUED
+    /**
+     * Accepted order status.
+     */
+    ACCEPTED,
+    /**
+     * In progress order status.
+     */
+    IN_PROGRESS,
+    /**
+     * Closed order status.
+     */
+    CLOSED,
+    /**
+     * Issued order status.
+     */
+    ISSUED
 }

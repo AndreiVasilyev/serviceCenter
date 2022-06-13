@@ -5,26 +5,52 @@ import by.epam.jwdsc.entity.Device;
 
 import java.util.List;
 
+/**
+ * The type Companies and devices.
+ */
 public class CompaniesAndDevices {
     private List<Company> companies;
     private List<Device> devices;
 
+    /**
+     * Instantiates a new Companies and devices.
+     */
     public CompaniesAndDevices() {
 
     }
 
+    /**
+     * Gets companies.
+     *
+     * @return the companies
+     */
     public List<Company> getCompanies() {
         return companies;
     }
 
+    /**
+     * Sets companies.
+     *
+     * @param companies the companies
+     */
     public void setCompanies(List<Company> companies) {
         this.companies = companies;
     }
 
+    /**
+     * Gets devices.
+     *
+     * @return the devices
+     */
     public List<Device> getDevices() {
         return devices;
     }
 
+    /**
+     * Sets devices.
+     *
+     * @param devices the devices
+     */
     public void setDevices(List<Device> devices) {
         this.devices = devices;
     }

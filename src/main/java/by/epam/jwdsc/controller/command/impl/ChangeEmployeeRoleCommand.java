@@ -23,6 +23,9 @@ import static by.epam.jwdsc.controller.command.RequestParameter.*;
 import static by.epam.jwdsc.controller.command.ResponseJsonText.POSITIVE_RESPONSE;
 import static by.epam.jwdsc.controller.command.SessionAttribute.*;
 
+/**
+ * The type Change employee role command.
+ */
 public class ChangeEmployeeRoleCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

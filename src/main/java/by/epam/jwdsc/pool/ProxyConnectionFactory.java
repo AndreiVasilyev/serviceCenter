@@ -9,6 +9,9 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+/**
+ * The type Proxy connection factory.
+ */
 class ProxyConnectionFactory {
 
     private static final Logger log = LogManager.getLogger();
@@ -46,6 +49,12 @@ class ProxyConnectionFactory {
     private ProxyConnectionFactory() {
     }
 
+    /**
+     * Gets proxy connection.
+     *
+     * @return the proxy connection
+     * @throws SQLException the sql exception
+     */
     static ProxyConnection getProxyConnection() throws SQLException {
         return new ProxyConnection(DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD));
     }

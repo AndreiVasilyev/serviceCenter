@@ -15,6 +15,9 @@ import java.io.IOException;
 
 import static by.epam.jwdsc.controller.command.SessionAttribute.USER_ROLE;
 
+/**
+ * The type Direct jsp access filter.
+ */
 @WebFilter(urlPatterns = "/jsp/*", initParams = {@WebInitParam(name = "INDEX_PATH", value = "/index.jsp")})
 public class DirectJspAccessFilter implements Filter {
 

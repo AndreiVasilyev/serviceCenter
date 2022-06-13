@@ -22,6 +22,9 @@ import java.util.*;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The type Order service test.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class OrderServiceTest {
 
@@ -31,6 +34,11 @@ public class OrderServiceTest {
     private OrderServiceImpl orderService = new OrderServiceImpl();
     private Order testOrder;
 
+    /**
+     * Sets up.
+     *
+     * @throws DaoException the dao exception
+     */
     @Before
     public void setUp() throws DaoException {
         testOrder = new Order.Builder(0, "P0", LocalDateTime.now(), null, null, null)
@@ -38,6 +46,12 @@ public class OrderServiceTest {
                 .build();
     }
 
+    /**
+     * Find order by id positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findOrderByIdPositiveResult() throws ServiceException, DaoException {
         when(orderDao.findById(5L)).thenReturn(Optional.ofNullable(testOrder));
@@ -49,6 +63,12 @@ public class OrderServiceTest {
                 .hasFieldOrPropertyWithValue("client", null);
     }
 
+    /**
+     * Find order by id negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findOrderByIdNegativeResult() throws ServiceException, DaoException {
         when(orderDao.findById(-5L)).thenReturn(Optional.empty());
@@ -57,6 +77,12 @@ public class OrderServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Find order by order number positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findOrderByOrderNumberPositiveResult() throws ServiceException, DaoException {
         when(orderDao.findByParams(new LinkedHashMap<>(Map.of("o.order_number =? ", "P2")))).thenReturn(new ArrayList<>(List.of(testOrder)));
@@ -68,6 +94,12 @@ public class OrderServiceTest {
                 .hasFieldOrPropertyWithValue("client", null);
     }
 
+    /**
+     * Find order by order number negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findOrderByOrderNumberNegativeResult() throws ServiceException, DaoException {
         when(orderDao.findByParams(new LinkedHashMap<>(Map.of("o.order_number =? ", "A2")))).thenReturn(new ArrayList<>());
@@ -76,6 +108,12 @@ public class OrderServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Find orders by client email positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findOrdersByClientEmailPositiveResult() throws ServiceException, DaoException {
         when(orderDao.findByParams(new LinkedHashMap<>(Map.of("u.email =? ", "test@test.com")))).thenReturn(new ArrayList<>(List.of(testOrder)));
@@ -88,6 +126,12 @@ public class OrderServiceTest {
                 .hasFieldOrPropertyWithValue("client", null);
     }
 
+    /**
+     * Find orders by client email negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findOrdersByClientEmailNegativeResult() throws ServiceException, DaoException {
         when(orderDao.findByParams(new LinkedHashMap<>(Map.of("u.email =? ", "test.com")))).thenReturn(new ArrayList<>());
@@ -97,6 +141,12 @@ public class OrderServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Find orders by parameters positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findOrdersByParametersPositiveResult() throws ServiceException, DaoException {
         OrderParameters orderParameters = new OrderParameters();
@@ -137,6 +187,11 @@ public class OrderServiceTest {
                 .hasFieldOrPropertyWithValue("client", null);
     }
 
+    /**
+     * Find orders by parameters negative result.
+     *
+     * @throws ServiceException the service exception
+     */
     @Test(expected = ServiceException.class)
     public void findOrdersByParametersNegativeResult() throws ServiceException {
         OrderParameters orderParameters = new OrderParameters();
@@ -144,6 +199,12 @@ public class OrderServiceTest {
         orderService.findOrdersByParameters(orderParameters);
     }
 
+    /**
+     * Create new order positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void createNewOrderPositiveResult() throws ServiceException, DaoException {
         NewOrderData newOrderData = new NewOrderData();
@@ -159,6 +220,12 @@ public class OrderServiceTest {
 
     }
 
+    /**
+     * Create new order negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void createNewOrderNegativeResult() throws ServiceException, DaoException {
         NewOrderData newOrderData = new NewOrderData();
@@ -167,6 +234,12 @@ public class OrderServiceTest {
         orderService.createNewOrder(newOrderData, 1L);
     }
 
+    /**
+     * Update order positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void updateOrderPositiveResult() throws ServiceException, DaoException {
         OrderData orderData = new OrderData();
@@ -188,6 +261,12 @@ public class OrderServiceTest {
 
     }
 
+    /**
+     * Update order negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void updateOrderNegativeResult() throws ServiceException, DaoException {
         OrderData orderData = new OrderData();
@@ -195,6 +274,12 @@ public class OrderServiceTest {
         orderService.updateOrder(orderData, 1L);
     }
 
+    /**
+     * Update positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void updatePositiveResult() throws ServiceException, DaoException {
         testOrder.setOrderStatus(OrderStatus.ACCEPTED);
@@ -207,6 +292,11 @@ public class OrderServiceTest {
                 .hasFieldOrPropertyWithValue("client", null);
     }
 
+    /**
+     * Update negative result.
+     *
+     * @throws ServiceException the service exception
+     */
     @Test
     public void updateNegativeResult() throws ServiceException {
         Optional<Order> oldOlder = orderService.updateOrder(testOrder);
@@ -214,6 +304,12 @@ public class OrderServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Remove order by id positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void removeOrderByIdPositiveResult() throws ServiceException, DaoException {
         when(orderDao.deleteById(1L)).thenReturn(true);

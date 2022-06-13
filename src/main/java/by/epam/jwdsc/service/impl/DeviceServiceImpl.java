@@ -14,15 +14,26 @@ import org.apache.logging.log4j.Logger;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+/**
+ * The type Device service.
+ */
 public class DeviceServiceImpl implements DeviceService {
 
     private static final Logger log = LogManager.getLogger();
     private DeviceDao deviceDao;
 
+    /**
+     * Instantiates a new Device service.
+     */
     public DeviceServiceImpl() {
         this.deviceDao = DaoProvider.getInstance().getDeviceDao();
     }
 
+    /**
+     * Instantiates a new Device service.
+     *
+     * @param deviceDao the device dao
+     */
     public DeviceServiceImpl(DeviceDao deviceDao) {
         this.deviceDao = deviceDao;
     }

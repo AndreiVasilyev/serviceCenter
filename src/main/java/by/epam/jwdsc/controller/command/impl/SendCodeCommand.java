@@ -29,6 +29,9 @@ import static by.epam.jwdsc.controller.command.ResponseJsonText.*;
 import static by.epam.jwdsc.controller.command.Router.RouterType.JSON;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Send code command.
+ */
 public class SendCodeCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

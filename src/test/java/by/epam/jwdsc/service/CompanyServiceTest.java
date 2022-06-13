@@ -21,6 +21,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+/**
+ * The type Company service test.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class CompanyServiceTest {
 
@@ -30,11 +33,22 @@ public class CompanyServiceTest {
     private CompanyServiceImpl companyService = new CompanyServiceImpl();
     private Company testCompany;
 
+    /**
+     * Sets up.
+     *
+     * @throws DaoException the dao exception
+     */
     @Before
     public void setUp() throws DaoException {
         testCompany = new Company("testCompany", true);
     }
 
+    /**
+     * Find all positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findAllPositiveResult() throws ServiceException, DaoException {
         when(companyDao.findAll()).thenReturn(new ArrayList<>(Collections.nCopies(5, testCompany)));
@@ -48,12 +62,24 @@ public class CompanyServiceTest {
                 .hasFieldOrPropertyWithValue("isContract", true);
     }
 
+    /**
+     * Find all negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void findAllNegativeResult() throws ServiceException, DaoException {
         when(companyDao.findAll()).thenThrow(DaoException.class);
         companyService.findAll();
     }
 
+    /**
+     * Find companies by parameters positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findCompaniesByParametersPositiveResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
@@ -71,6 +97,12 @@ public class CompanyServiceTest {
                 .hasFieldOrPropertyWithValue("isContract", true);
     }
 
+    /**
+     * Find companies by parameters negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findCompaniesByParametersNegativeResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
@@ -84,6 +116,12 @@ public class CompanyServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Create company positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void createCompanyPositiveResult() throws ServiceException, DaoException {
         when(companyDao.createCompany(testCompany)).thenReturn(5L);
@@ -94,6 +132,12 @@ public class CompanyServiceTest {
                 .isEqualTo(5L);
     }
 
+    /**
+     * Create company negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void createCompanyNegativeResult() throws ServiceException, DaoException {
         when(companyDao.createCompany(testCompany)).thenThrow(DaoException.class);

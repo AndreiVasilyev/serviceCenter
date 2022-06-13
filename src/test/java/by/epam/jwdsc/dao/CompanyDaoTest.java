@@ -9,16 +9,27 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The type Company dao test.
+ */
 public class CompanyDaoTest {
     private CompanyDao companyDao;
     private Company testCompany;
 
+    /**
+     * Sets up.
+     */
     @Before
     public void setUp() {
         companyDao = DaoProvider.getInstance().getCompanyDao();
         testCompany = new Company("testCompany", true);
     }
 
+    /**
+     * Find all.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findAll() throws DaoException {
         List<Company> foundCompanies = companyDao.findAll();
@@ -28,6 +39,11 @@ public class CompanyDaoTest {
                 .hasSizeGreaterThanOrEqualTo(10);
     }
 
+    /**
+     * Find by id positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByIdPositiveResult() throws DaoException {
         Optional<Company> foundCompany = companyDao.findById(1);
@@ -38,6 +54,11 @@ public class CompanyDaoTest {
                 .hasFieldOrPropertyWithValue("isContract", true);
     }
 
+    /**
+     * Find by id negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByIdNegativeResult() throws DaoException {
         Optional<Company> foundCompany = companyDao.findById(0);
@@ -45,6 +66,11 @@ public class CompanyDaoTest {
                 .isEmpty();
     }
 
+    /**
+     * Find by parameters with sort positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParametersWithSortPositiveResult() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -73,6 +99,11 @@ public class CompanyDaoTest {
                 .isSortedAccordingTo((o1, o2) -> o2.getName().compareTo(o1.getName()));
     }
 
+    /**
+     * Find by parameters with sort with exception.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test(expected = DaoException.class)
     public void findByParametersWithSortWithException() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -81,6 +112,11 @@ public class CompanyDaoTest {
         companyDao.findByParametersWithSort(parameters, sortParam);
     }
 
+    /**
+     * Create.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void create() throws DaoException {
         boolean isCreatedCompany = companyDao.create(testCompany);
@@ -96,6 +132,11 @@ public class CompanyDaoTest {
         companyDao.delete(createdCompany.get(0));
     }
 
+    /**
+     * Create device.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void createDevice() throws DaoException {
         long createdCompanyId = companyDao.createCompany(testCompany);
@@ -110,6 +151,11 @@ public class CompanyDaoTest {
         companyDao.delete(createdCompany.get());
     }
 
+    /**
+     * Update.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void update() throws DaoException {
         long createdCompanyId = companyDao.createCompany(testCompany);
@@ -128,6 +174,11 @@ public class CompanyDaoTest {
         companyDao.deleteById(createdCompanyId);
     }
 
+    /**
+     * Delete.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void delete() throws DaoException {
         long createdCompanyId = companyDao.createCompany(testCompany);
@@ -137,6 +188,11 @@ public class CompanyDaoTest {
                 .isTrue();
     }
 
+    /**
+     * Delete by id.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void deleteById() throws DaoException {
         long createdCompanyId = companyDao.createCompany(testCompany);

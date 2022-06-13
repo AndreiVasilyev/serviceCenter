@@ -21,6 +21,9 @@ import java.util.List;
 
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Find companies command.
+ */
 public class FindCompaniesCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

@@ -22,15 +22,26 @@ import java.util.Optional;
 import static by.epam.jwdsc.dao.ColumnName.*;
 import static by.epam.jwdsc.dao.TableAliasName.*;
 
+/**
+ * The type Employee service.
+ */
 public class EmployeeServiceImpl implements EmployeeService {
 
     private static final Logger log = LogManager.getLogger();
     private EmployeeDao employeeDao;
 
+    /**
+     * Instantiates a new Employee service.
+     */
     public EmployeeServiceImpl() {
         this.employeeDao = DaoProvider.getInstance().getEmployeeDao();
     }
 
+    /**
+     * Instantiates a new Employee service.
+     *
+     * @param employeeDao the employee dao
+     */
     public EmployeeServiceImpl(EmployeeDao employeeDao) {
         this.employeeDao = employeeDao;
     }

@@ -17,6 +17,9 @@ import static by.epam.jwdsc.controller.command.Router.RouterType.FORWARD;
 import static by.epam.jwdsc.controller.command.Router.RouterType.REDIRECT;
 import static by.epam.jwdsc.controller.command.SessionAttribute.*;
 
+/**
+ * The type Change locale command.
+ */
 public class ChangeLocaleCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

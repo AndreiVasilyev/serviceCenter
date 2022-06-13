@@ -10,6 +10,9 @@ import java.util.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
+/**
+ * The type Address dao.
+ */
 public class AddressDaoImpl implements AddressDao {
 
     private static final String SQL_SELECT_ALL_ADDRESSES = "SELECT a.address_id, a.country, a.postcode, a.state, " +

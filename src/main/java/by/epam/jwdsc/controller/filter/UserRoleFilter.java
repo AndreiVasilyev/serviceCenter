@@ -19,6 +19,9 @@ import java.util.Optional;
 import static by.epam.jwdsc.controller.command.SessionAttribute.*;
 import static by.epam.jwdsc.entity.UserRole.*;
 
+/**
+ * The type User role filter.
+ */
 @WebFilter(urlPatterns = {"/control"}, servletNames = {"scServlet"})
 public class UserRoleFilter implements Filter {
 

@@ -15,15 +15,26 @@ import org.apache.logging.log4j.Logger;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+/**
+ * The type Company service.
+ */
 public class CompanyServiceImpl implements CompanyService {
 
     private static final Logger log = LogManager.getLogger();
     private CompanyDao companyDao;
 
+    /**
+     * Instantiates a new Company service.
+     */
     public CompanyServiceImpl() {
         this.companyDao = DaoProvider.getInstance().getCompanyDao();
     }
 
+    /**
+     * Instantiates a new Company service.
+     *
+     * @param companyDao the company dao
+     */
     public CompanyServiceImpl(CompanyDao companyDao) {
         this.companyDao = companyDao;
     }

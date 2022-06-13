@@ -23,6 +23,9 @@ import java.util.stream.Stream;
 
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Find all selectable items command.
+ */
 public class FindAllSelectableItemsCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

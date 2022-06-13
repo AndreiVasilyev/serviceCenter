@@ -31,6 +31,9 @@ import static by.epam.jwdsc.controller.command.ResponseJsonText.*;
 import static by.epam.jwdsc.controller.command.SessionAttribute.*;
 import static by.epam.jwdsc.entity.UserRole.*;
 
+/**
+ * The type Find order by number command.
+ */
 public class FindOrderByNumberCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

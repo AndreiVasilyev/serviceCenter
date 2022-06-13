@@ -21,6 +21,9 @@ import java.util.List;
 
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Find parts command.
+ */
 public class FindPartsCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

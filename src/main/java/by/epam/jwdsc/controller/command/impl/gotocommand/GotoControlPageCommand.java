@@ -13,6 +13,9 @@ import static by.epam.jwdsc.controller.command.PagePath.CONTROL_PAGE;
 import static by.epam.jwdsc.controller.command.Router.RouterType.FORWARD;
 import static by.epam.jwdsc.controller.command.SessionAttribute.USER_ROLE;
 
+/**
+ * The type Goto control page command.
+ */
 public class GotoControlPageCommand implements Command {
 
     @Override

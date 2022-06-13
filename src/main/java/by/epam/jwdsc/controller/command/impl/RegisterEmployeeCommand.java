@@ -28,6 +28,9 @@ import static by.epam.jwdsc.controller.command.RequestParameter.*;
 import static by.epam.jwdsc.controller.command.ResponseJsonText.*;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Register employee command.
+ */
 public class RegisterEmployeeCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

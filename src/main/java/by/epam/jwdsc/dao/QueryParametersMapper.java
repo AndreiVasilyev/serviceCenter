@@ -8,6 +8,9 @@ import java.util.LinkedHashMap;
 import static by.epam.jwdsc.dao.ColumnName.*;
 import static by.epam.jwdsc.dao.TableAliasName.*;
 
+/**
+ * The type Query parameters mapper.
+ */
 public final class QueryParametersMapper {
 
     private static QueryParametersMapper instance;
@@ -17,14 +20,31 @@ public final class QueryParametersMapper {
     private static final String CONCAT_TEMPLATE = "CONCAT_WS(' ',u.first_name,u.second_name)";
     private static final String PARAMETER_TEMPLATE = " =? ";
     private static final String LIKE_PARAMETER_TEMPLATE = " LIKE ? ";
+    /**
+     * The constant EMPLOYEE_TEMPLATE.
+     */
     public static final String EMPLOYEE_TEMPLATE = "o.%s IN (SELECT u.user_id FROM users AS u WHERE CONCAT_WS(' ',u.first_name,u.second_name) %s)";
+    /**
+     * The constant PRICES_TEMPLATE.
+     */
     public static final String PRICES_TEMPLATE = "o.work_price IN (SELECT prs.id FROM prices AS prs WHERE prs.%s %s)";
+    /**
+     * The constant REVERSE_SORT.
+     */
     public static final String REVERSE_SORT = " DESC";
+    /**
+     * The constant MULTI_REVERSE_SORT.
+     */
     public static final String MULTI_REVERSE_SORT = " DESC,";
 
     private QueryParametersMapper() {
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static QueryParametersMapper getInstance() {
         if (instance == null) {
             instance = new QueryParametersMapper();
@@ -32,6 +52,14 @@ public final class QueryParametersMapper {
         return instance;
     }
 
+    /**
+     * Map parameter linked hash map.
+     *
+     * @param table  the table
+     * @param column the column
+     * @param value  the value
+     * @return the linked hash map
+     */
     public LinkedHashMap<String, Object> mapParameter(String table, String column, Object value) {
         String parameterName = Strings.concat(table, ALIAS_SEPARATOR).concat(column).concat(PARAMETER_TEMPLATE);
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -39,6 +67,12 @@ public final class QueryParametersMapper {
         return parameters;
     }
 
+    /**
+     * Map order parameters linked hash map.
+     *
+     * @param orderParameters the order parameters
+     * @return the linked hash map
+     */
     public LinkedHashMap<String, Object> mapOrderParameters(OrderParameters orderParameters) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parseLikeParameter(SC_ORDERS, ORDERS_ORDER_NUMBER, orderParameters.getOrderNumber(), parameters);
@@ -60,6 +94,12 @@ public final class QueryParametersMapper {
         return parameters;
     }
 
+    /**
+     * Map employee parameters linked hash map.
+     *
+     * @param employeeParameters the employee parameters
+     * @return the linked hash map
+     */
     public LinkedHashMap<String, Object> mapEmployeeParameters(EmployeeParameters employeeParameters) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parseLikeParameter(SC_USERS, USERS_ID, employeeParameters.getId(), parameters);
@@ -85,6 +125,12 @@ public final class QueryParametersMapper {
         return parameters;
     }
 
+    /**
+     * Map spare part parameters linked hash map.
+     *
+     * @param sparePartData the spare part data
+     * @return the linked hash map
+     */
     public LinkedHashMap<String, Object> mapSparePartParameters(SparePartData sparePartData) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parseLikeParameter(SC_SPARE_PARTS, SPARE_PARTS_ID, sparePartData.getId(), parameters);
@@ -95,6 +141,12 @@ public final class QueryParametersMapper {
         return parameters;
     }
 
+    /**
+     * Map device parameters linked hash map.
+     *
+     * @param deviceData the device data
+     * @return the linked hash map
+     */
     public LinkedHashMap<String, Object> mapDeviceParameters(DeviceData deviceData) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parseLikeParameter(SC_DEVICES, DEVICES_ID, deviceData.getId(), parameters);
@@ -102,6 +154,12 @@ public final class QueryParametersMapper {
         return parameters;
     }
 
+    /**
+     * Map company parameters linked hash map.
+     *
+     * @param companyData the company data
+     * @return the linked hash map
+     */
     public LinkedHashMap<String, Object> mapCompanyParameters(CompanyData companyData) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parseLikeParameter(SC_COMPANIES, COMPANIES_ID, companyData.getId(), parameters);
@@ -110,6 +168,12 @@ public final class QueryParametersMapper {
         return parameters;
     }
 
+    /**
+     * Map order sort string.
+     *
+     * @param orderParameters the order parameters
+     * @return the string
+     */
     public String mapOrderSort(OrderParameters orderParameters) {
         String sort = Strings.EMPTY;
         if (orderParameters.getSortByName() != null && !orderParameters.getSortByName().isBlank()) {
@@ -121,6 +185,12 @@ public final class QueryParametersMapper {
         return sort;
     }
 
+    /**
+     * Map employee sort string.
+     *
+     * @param employeeParameters the employee parameters
+     * @return the string
+     */
     public String mapEmployeeSort(EmployeeParameters employeeParameters) {
         String sort = Strings.EMPTY;
         if (employeeParameters.getSortByName() != null && !employeeParameters.getSortByName().isBlank()) {
@@ -132,6 +202,12 @@ public final class QueryParametersMapper {
         return sort;
     }
 
+    /**
+     * Map spare part sort string.
+     *
+     * @param sparePartData the spare part data
+     * @return the string
+     */
     public String mapSparePartSort(SparePartData sparePartData) {
         String sort = Strings.EMPTY;
         if (sparePartData.getSortByName() != null && !sparePartData.getSortByName().isBlank()) {
@@ -143,6 +219,12 @@ public final class QueryParametersMapper {
         return sort;
     }
 
+    /**
+     * Map device sort string.
+     *
+     * @param deviceData the device data
+     * @return the string
+     */
     public String mapDeviceSort(DeviceData deviceData) {
         String sort = Strings.EMPTY;
         if (deviceData.getSortByName() != null && !deviceData.getSortByName().isBlank()) {
@@ -154,6 +236,12 @@ public final class QueryParametersMapper {
         return sort;
     }
 
+    /**
+     * Map company sort string.
+     *
+     * @param companyData the company data
+     * @return the string
+     */
     public String mapCompanySort(CompanyData companyData) {
         String sort = Strings.EMPTY;
         if (companyData.getSortByName() != null && !companyData.getSortByName().isBlank()) {

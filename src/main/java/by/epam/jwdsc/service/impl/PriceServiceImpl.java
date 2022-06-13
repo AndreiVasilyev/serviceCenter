@@ -16,15 +16,26 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Price service.
+ */
 public class PriceServiceImpl implements PriceService {
 
     private static final Logger log = LogManager.getLogger();
     private PriceInfoDao priceInfoDao;
 
+    /**
+     * Instantiates a new Price service.
+     */
     public PriceServiceImpl() {
         this.priceInfoDao = DaoProvider.getInstance().getPriceInfoDao();
     }
 
+    /**
+     * Instantiates a new Price service.
+     *
+     * @param priceInfoDao the price info dao
+     */
     public PriceServiceImpl(PriceInfoDao priceInfoDao) {
         this.priceInfoDao = priceInfoDao;
     }

@@ -10,6 +10,9 @@ import java.util.*;
 
 import static by.epam.jwdsc.dao.ColumnName.*;
 
+/**
+ * The type Code dao.
+ */
 public class CodeDaoImpl implements CodeDao {
 
     private static final String SQL_SELECT_ALL_CODES = "SELECT c.email, c.code FROM codes AS c";

@@ -1,5 +1,8 @@
 package by.epam.jwdsc.entity.dto;
 
+/**
+ * The type New order data.
+ */
 public class NewOrderData {
 
     private String orderNumber;
@@ -27,197 +30,440 @@ public class NewOrderData {
     private String apartmentNumber;
     private String note;
 
+    /**
+     * Instantiates a new New order data.
+     */
     public NewOrderData() {
     }
 
+    /**
+     * Gets order number.
+     *
+     * @return the order number
+     */
     public String getOrderNumber() {
         return orderNumber;
     }
 
+    /**
+     * Sets order number.
+     *
+     * @param orderNumber the order number
+     */
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
 
+    /**
+     * Gets device name.
+     *
+     * @return the device name
+     */
     public String getDeviceName() {
         return deviceName;
     }
 
+    /**
+     * Sets device name.
+     *
+     * @param deviceName the device name
+     */
     public void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
     }
 
+    /**
+     * Gets device id.
+     *
+     * @return the device id
+     */
     public String getDeviceId() {
         return deviceId;
     }
 
+    /**
+     * Sets device id.
+     *
+     * @param deviceId the device id
+     */
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
 
+    /**
+     * Gets company name.
+     *
+     * @return the company name
+     */
     public String getCompanyName() {
         return companyName;
     }
 
+    /**
+     * Sets company name.
+     *
+     * @param companyName the company name
+     */
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
     }
 
+    /**
+     * Gets company id.
+     *
+     * @return the company id
+     */
     public String getCompanyId() {
         return companyId;
     }
 
+    /**
+     * Sets company id.
+     *
+     * @param companyId the company id
+     */
     public void setCompanyId(String companyId) {
         this.companyId = companyId;
     }
 
+    /**
+     * Gets model.
+     *
+     * @return the model
+     */
     public String getModel() {
         return model;
     }
 
+    /**
+     * Sets model.
+     *
+     * @param model the model
+     */
     public void setModel(String model) {
         this.model = model;
     }
 
+    /**
+     * Gets serial.
+     *
+     * @return the serial
+     */
     public String getSerial() {
         return serial;
     }
 
+    /**
+     * Sets serial.
+     *
+     * @param serial the serial
+     */
     public void setSerial(String serial) {
         this.serial = serial;
     }
 
+    /**
+     * Gets client id.
+     *
+     * @return the client id
+     */
     public String getClientId() {
         return clientId;
     }
 
+    /**
+     * Sets client id.
+     *
+     * @param clientId the client id
+     */
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
+    /**
+     * Gets email.
+     *
+     * @return the email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Sets email.
+     *
+     * @param email the email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Gets first name.
+     *
+     * @return the first name
+     */
     public String getFirstName() {
         return firstName;
     }
 
+    /**
+     * Sets first name.
+     *
+     * @param firstName the first name
+     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    /**
+     * Gets second name.
+     *
+     * @return the second name
+     */
     public String getSecondName() {
         return secondName;
     }
 
+    /**
+     * Sets second name.
+     *
+     * @param secondName the second name
+     */
     public void setSecondName(String secondName) {
         this.secondName = secondName;
     }
 
+    /**
+     * Gets patronymic.
+     *
+     * @return the patronymic
+     */
     public String getPatronymic() {
         return patronymic;
     }
 
+    /**
+     * Sets patronymic.
+     *
+     * @param patronymic the patronymic
+     */
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
     }
 
+    /**
+     * Gets phone first.
+     *
+     * @return the phone first
+     */
     public String getPhoneFirst() {
         return phoneFirst;
     }
 
+    /**
+     * Sets phone first.
+     *
+     * @param phoneFirst the phone first
+     */
     public void setPhoneFirst(String phoneFirst) {
         this.phoneFirst = phoneFirst;
     }
 
+    /**
+     * Gets phone second.
+     *
+     * @return the phone second
+     */
     public String getPhoneSecond() {
         return phoneSecond;
     }
 
+    /**
+     * Sets phone second.
+     *
+     * @param phoneSecond the phone second
+     */
     public void setPhoneSecond(String phoneSecond) {
         this.phoneSecond = phoneSecond;
     }
 
+    /**
+     * Gets phone third.
+     *
+     * @return the phone third
+     */
     public String getPhoneThird() {
         return phoneThird;
     }
 
+    /**
+     * Sets phone third.
+     *
+     * @param phoneThird the phone third
+     */
     public void setPhoneThird(String phoneThird) {
         this.phoneThird = phoneThird;
     }
 
+    /**
+     * Gets country.
+     *
+     * @return the country
+     */
     public String getCountry() {
         return country;
     }
 
+    /**
+     * Sets country.
+     *
+     * @param country the country
+     */
     public void setCountry(String country) {
         this.country = country;
     }
 
+    /**
+     * Gets postcode.
+     *
+     * @return the postcode
+     */
     public String getPostcode() {
         return postcode;
     }
 
+    /**
+     * Sets postcode.
+     *
+     * @param postcode the postcode
+     */
     public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
 
+    /**
+     * Gets state.
+     *
+     * @return the state
+     */
     public String getState() {
         return state;
     }
 
+    /**
+     * Sets state.
+     *
+     * @param state the state
+     */
     public void setState(String state) {
         this.state = state;
     }
 
+    /**
+     * Gets region.
+     *
+     * @return the region
+     */
     public String getRegion() {
         return region;
     }
 
+    /**
+     * Sets region.
+     *
+     * @param region the region
+     */
     public void setRegion(String region) {
         this.region = region;
     }
 
+    /**
+     * Gets city.
+     *
+     * @return the city
+     */
     public String getCity() {
         return city;
     }
 
+    /**
+     * Sets city.
+     *
+     * @param city the city
+     */
     public void setCity(String city) {
         this.city = city;
     }
 
+    /**
+     * Gets street.
+     *
+     * @return the street
+     */
     public String getStreet() {
         return street;
     }
 
+    /**
+     * Sets street.
+     *
+     * @param street the street
+     */
     public void setStreet(String street) {
         this.street = street;
     }
 
+    /**
+     * Gets house number.
+     *
+     * @return the house number
+     */
     public String getHouseNumber() {
         return houseNumber;
     }
 
+    /**
+     * Sets house number.
+     *
+     * @param houseNumber the house number
+     */
     public void setHouseNumber(String houseNumber) {
         this.houseNumber = houseNumber;
     }
 
+    /**
+     * Gets apartment number.
+     *
+     * @return the apartment number
+     */
     public String getApartmentNumber() {
         return apartmentNumber;
     }
 
+    /**
+     * Sets apartment number.
+     *
+     * @param apartmentNumber the apartment number
+     */
     public void setApartmentNumber(String apartmentNumber) {
         this.apartmentNumber = apartmentNumber;
     }
 
+    /**
+     * Gets note.
+     *
+     * @return the note
+     */
     public String getNote() {
         return note;
     }
 
+    /**
+     * Sets note.
+     *
+     * @param note the note
+     */
     public void setNote(String note) {
         this.note = note;
     }

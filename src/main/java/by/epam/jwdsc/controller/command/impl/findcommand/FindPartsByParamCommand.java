@@ -20,6 +20,9 @@ import java.util.List;
 import static by.epam.jwdsc.controller.command.RequestParameter.FIND_PART_PARAM;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Find parts by param command.
+ */
 public class FindPartsByParamCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

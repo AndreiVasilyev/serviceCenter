@@ -12,6 +12,9 @@ import java.util.Locale;
 
 import static by.epam.jwdsc.controller.command.SessionAttribute.*;
 
+/**
+ * The type Session listener.
+ */
 @WebListener
 public class SessionListener implements HttpSessionListener {
 

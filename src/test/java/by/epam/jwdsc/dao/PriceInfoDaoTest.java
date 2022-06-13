@@ -12,17 +12,28 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The type Price info dao test.
+ */
 public class PriceInfoDaoTest {
     private PriceInfoDao priceInfoDao;
     private PriceInfo testPriceInfo;
 
 
+    /**
+     * Sets up.
+     */
     @Before
     public void setUp() {
         priceInfoDao = DaoProvider.getInstance().getPriceInfoDao();
         testPriceInfo = new PriceInfo(5, RepairLevel.REPAIR_LEVEL_3, new BigDecimal("80"));
     }
 
+    /**
+     * Find by id positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findById_positiveResult() throws DaoException {
         Optional<PriceInfo> foundPriceInfo = priceInfoDao.findById(2L);
@@ -31,12 +42,22 @@ public class PriceInfoDaoTest {
                 .hasFieldOrPropertyWithValue("device", 2L);
     }
 
+    /**
+     * Find by id negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findById_negativeResult() throws DaoException {
         Optional<PriceInfo> foundPriceInfo = priceInfoDao.findById(40);
         assertThat(foundPriceInfo).isEmpty();
     }
 
+    /**
+     * Find all.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findAll() throws DaoException {
         List<PriceInfo> foundPricesInfo = priceInfoDao.findAll();
@@ -46,6 +67,11 @@ public class PriceInfoDaoTest {
                 .hasSizeGreaterThanOrEqualTo(10);
     }
 
+    /**
+     * Find by device and level positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByDeviceAndLevelPositiveResult() throws DaoException {
         long deviceId = 1L;
@@ -57,6 +83,11 @@ public class PriceInfoDaoTest {
                 .hasFieldOrPropertyWithValue("repairCost", new BigDecimal("120.00"));
     }
 
+    /**
+     * Find by device and level negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByDeviceAndLevelNegativeResult() throws DaoException {
         long deviceId = 1L;
@@ -66,6 +97,11 @@ public class PriceInfoDaoTest {
                 .isEmpty();
     }
 
+    /**
+     * Find cost by device and level positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findCostByDeviceAndLevelPositiveResult() throws DaoException {
         long deviceId = 1L;
@@ -78,6 +114,11 @@ public class PriceInfoDaoTest {
                 .isEqualTo(new BigDecimal("120.00"));
     }
 
+    /**
+     * Find cost by device and level negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findCostByDeviceAndLevelNegativeResult() throws DaoException {
         long deviceId = 1L;
@@ -87,6 +128,11 @@ public class PriceInfoDaoTest {
                 .isEmpty();
     }
 
+    /**
+     * Find costs by device positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findCostsByDevicePositiveResult() throws DaoException {
         long deviceId = 1L;
@@ -100,6 +146,11 @@ public class PriceInfoDaoTest {
                 .hasFieldOrPropertyWithValue("device", 1L);
     }
 
+    /**
+     * Find costs by device negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findCostsByDeviceNegativeResult() throws DaoException {
         long deviceId = 0L;
@@ -109,6 +160,11 @@ public class PriceInfoDaoTest {
                 .isEmpty();
     }
 
+    /**
+     * Create.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void create() throws DaoException {
         boolean isCreatedPricesInfo = priceInfoDao.create(testPriceInfo);
@@ -118,6 +174,11 @@ public class PriceInfoDaoTest {
         priceInfoDao.delete(createdPricesInfo.get());
     }
 
+    /**
+     * Update.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void update() throws DaoException {
         priceInfoDao.create(testPriceInfo);
@@ -136,6 +197,11 @@ public class PriceInfoDaoTest {
         priceInfoDao.delete(newPriceInfo);
     }
 
+    /**
+     * Delete.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void delete() throws DaoException {
         priceInfoDao.create(testPriceInfo);
@@ -145,6 +211,11 @@ public class PriceInfoDaoTest {
                 .isTrue();
     }
 
+    /**
+     * Delete by id.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void deleteById() throws DaoException {
         priceInfoDao.create(testPriceInfo);

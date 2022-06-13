@@ -19,6 +19,9 @@ import java.util.List;
 
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Find all devices command.
+ */
 public class FindAllDevicesCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

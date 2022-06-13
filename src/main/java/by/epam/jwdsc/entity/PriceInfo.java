@@ -2,6 +2,9 @@ package by.epam.jwdsc.entity;
 
 import java.math.BigDecimal;
 
+/**
+ * The type Price info.
+ */
 public class PriceInfo extends CommonEntity {
 
     private long id;
@@ -10,6 +13,14 @@ public class PriceInfo extends CommonEntity {
     private BigDecimal repairCost;
 
 
+    /**
+     * Instantiates a new Price info.
+     *
+     * @param id          the id
+     * @param device      the device
+     * @param repairLevel the repair level
+     * @param repairCost  the repair cost
+     */
     public PriceInfo(long id, long device, RepairLevel repairLevel, BigDecimal repairCost) {
         this.id = id;
         this.device = device;
@@ -17,28 +28,60 @@ public class PriceInfo extends CommonEntity {
         this.repairCost = repairCost;
     }
 
+    /**
+     * Instantiates a new Price info.
+     *
+     * @param device      the device
+     * @param repairLevel the repair level
+     * @param repairCost  the repair cost
+     */
     public PriceInfo(long device, RepairLevel repairLevel, BigDecimal repairCost) {
         this.device = device;
         this.repairLevel = repairLevel;
         this.repairCost = repairCost;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Gets device.
+     *
+     * @return the device
+     */
     public long getDevice() {
         return device;
     }
 
+    /**
+     * Gets repair level.
+     *
+     * @return the repair level
+     */
     public RepairLevel getRepairLevel() {
         return repairLevel;
     }
 
+    /**
+     * Gets repair cost.
+     *
+     * @return the repair cost
+     */
     public BigDecimal getRepairCost() {
         return repairCost;
     }
 
+    /**
+     * Sets repair cost.
+     *
+     * @param repairCost the repair cost
+     */
     public void setRepairCost(BigDecimal repairCost) {
         this.repairCost = repairCost;
     }

@@ -12,6 +12,9 @@ import java.util.Arrays;
 
 import static by.epam.jwdsc.validator.ValidatorTemplates.*;
 
+/**
+ * The type Validator.
+ */
 public class ValidatorImpl implements Validator {
 
     private static Validator instance;
@@ -19,6 +22,11 @@ public class ValidatorImpl implements Validator {
     private ValidatorImpl() {
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static Validator getInstance() {
         if (instance == null) {
             instance = new ValidatorImpl();

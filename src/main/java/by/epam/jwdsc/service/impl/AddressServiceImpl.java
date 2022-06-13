@@ -16,15 +16,26 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Address service.
+ */
 public class AddressServiceImpl implements AddressService {
 
     private static final Logger log = LogManager.getLogger();
     private AddressDao addressDao;
 
+    /**
+     * Instantiates a new Address service.
+     */
     public AddressServiceImpl() {
         this.addressDao = DaoProvider.getInstance().getAddressDao();
     }
 
+    /**
+     * Instantiates a new Address service.
+     *
+     * @param addressDao the address dao
+     */
     public AddressServiceImpl(AddressDao addressDao) {
         this.addressDao = addressDao;
     }

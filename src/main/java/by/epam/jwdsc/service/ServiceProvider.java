@@ -4,6 +4,9 @@ import by.epam.jwdsc.service.impl.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The type Service provider.
+ */
 public class ServiceProvider {
 
     private static ServiceProvider instance;
@@ -21,6 +24,11 @@ public class ServiceProvider {
     private ServiceProvider() {
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static ServiceProvider getInstance() {
         if (instance == null) {
             instance = new ServiceProvider();
@@ -28,42 +36,92 @@ public class ServiceProvider {
         return instance;
     }
 
+    /**
+     * Gets email service.
+     *
+     * @return the email service
+     */
     public EmailService getEmailService() {
         return emailService;
     }
 
+    /**
+     * Gets confirmation code service.
+     *
+     * @return the confirmation code service
+     */
     public ConfirmationCodeService getConfirmationCodeService() {
         return confirmationCodeService;
     }
 
+    /**
+     * Gets order service.
+     *
+     * @return the order service
+     */
     public OrderService getOrderService() {
         return orderService;
     }
 
+    /**
+     * Gets employee service.
+     *
+     * @return the employee service
+     */
     public EmployeeService getEmployeeService() {
         return employeeService;
     }
 
+    /**
+     * Gets company service.
+     *
+     * @return the company service
+     */
     public CompanyService getCompanyService() {
         return companyService;
     }
 
+    /**
+     * Gets device service.
+     *
+     * @return the device service
+     */
     public DeviceService getDeviceService() {
         return deviceService;
     }
 
+    /**
+     * Gets client service.
+     *
+     * @return the client service
+     */
     public ClientService getClientService() {
         return clientService;
     }
 
+    /**
+     * Gets address service.
+     *
+     * @return the address service
+     */
     public AddressService getAddressService() {
         return addressService;
     }
 
+    /**
+     * Gets spare part service.
+     *
+     * @return the spare part service
+     */
     public SparePartService getSparePartService() {
         return sparePartService;
     }
 
+    /**
+     * Gets price service.
+     *
+     * @return the price service
+     */
     public PriceService getPriceService() {
         return priceService;
     }

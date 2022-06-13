@@ -23,6 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+/**
+ * The type Address service test.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class AddressServiceTest {
 
@@ -32,6 +35,11 @@ public class AddressServiceTest {
     private AddressServiceImpl addressService = new AddressServiceImpl();
     private Address testAddress;
 
+    /**
+     * Sets up.
+     *
+     * @throws DaoException the dao exception
+     */
     @Before
     public void setUp() throws DaoException {
         testAddress = new Address.Builder("testCity", "testStreet", 1111)
@@ -43,6 +51,12 @@ public class AddressServiceTest {
                 .build();
     }
 
+    /**
+     * Find addresses by params positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findAddressesByParamsPositiveResult() throws ServiceException, DaoException {
         NewOrderData newOrderData = new NewOrderData();
@@ -61,6 +75,12 @@ public class AddressServiceTest {
                 .hasFieldOrPropertyWithValue("postcode", 111111);
     }
 
+    /**
+     * Find addresses by params negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findAddressesByParamsNegativeResult() throws ServiceException, DaoException {
         NewOrderData newOrderData = new NewOrderData();
@@ -75,6 +95,12 @@ public class AddressServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Create address positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void createAddressPositiveResult() throws ServiceException, DaoException {
         NewOrderData newOrderData = new NewOrderData();
@@ -90,6 +116,12 @@ public class AddressServiceTest {
                 .isEqualTo(5L);
     }
 
+    /**
+     * Create address negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void createAddressNegativeResult() throws ServiceException, DaoException {
         NewOrderData newOrderData = new NewOrderData();
@@ -101,6 +133,12 @@ public class AddressServiceTest {
         addressService.findAddressesByParams(newOrderData);
     }
 
+    /**
+     * Find by id positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findByIdPositiveResult() throws ServiceException, DaoException {
         when(addressDao.findById(5L)).thenReturn(Optional.of(testAddress));
@@ -112,6 +150,12 @@ public class AddressServiceTest {
                 .hasFieldOrPropertyWithValue("postcode", 111111);
     }
 
+    /**
+     * Find by id negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findByIdNegativeResult() throws ServiceException, DaoException {
         when(addressDao.findById(-5L)).thenReturn(Optional.empty());
@@ -120,6 +164,12 @@ public class AddressServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Update address positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void updateAddressPositiveResult() throws ServiceException, DaoException {
         OrderData orderData = new OrderData();
@@ -137,6 +187,12 @@ public class AddressServiceTest {
                 .hasFieldOrPropertyWithValue("postcode", 111111);
     }
 
+    /**
+     * Update address negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void updateAddressNegativeResult() throws ServiceException, DaoException {
         OrderData orderData = new OrderData();

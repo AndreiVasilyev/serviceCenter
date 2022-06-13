@@ -1,5 +1,8 @@
 package by.epam.jwdsc.entity;
 
+/**
+ * The type Address.
+ */
 public class Address extends CommonEntity {
     private long id;
     private String country;
@@ -24,74 +27,164 @@ public class Address extends CommonEntity {
         this.apartmentNumber = apartmentNumber;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(long id) {
         this.id = id;
     }
 
+    /**
+     * Gets country.
+     *
+     * @return the country
+     */
     public String getCountry() {
         return country;
     }
 
+    /**
+     * Sets country.
+     *
+     * @param country the country
+     */
     public void setCountry(String country) {
         this.country = country;
     }
 
+    /**
+     * Gets postcode.
+     *
+     * @return the postcode
+     */
     public int getPostcode() {
         return postcode;
     }
 
+    /**
+     * Sets postcode.
+     *
+     * @param postcode the postcode
+     */
     public void setPostcode(int postcode) {
         this.postcode = postcode;
     }
 
+    /**
+     * Gets state.
+     *
+     * @return the state
+     */
     public String getState() {
         return state;
     }
 
+    /**
+     * Sets state.
+     *
+     * @param state the state
+     */
     public void setState(String state) {
         this.state = state;
     }
 
+    /**
+     * Gets region.
+     *
+     * @return the region
+     */
     public String getRegion() {
         return region;
     }
 
+    /**
+     * Sets region.
+     *
+     * @param region the region
+     */
     public void setRegion(String region) {
         this.region = region;
     }
 
+    /**
+     * Gets city.
+     *
+     * @return the city
+     */
     public String getCity() {
         return city;
     }
 
+    /**
+     * Sets city.
+     *
+     * @param city the city
+     */
     public void setCity(String city) {
         this.city = city;
     }
 
+    /**
+     * Gets street.
+     *
+     * @return the street
+     */
     public String getStreet() {
         return street;
     }
 
+    /**
+     * Sets street.
+     *
+     * @param street the street
+     */
     public void setStreet(String street) {
         this.street = street;
     }
 
+    /**
+     * Gets house number.
+     *
+     * @return the house number
+     */
     public int getHouseNumber() {
         return houseNumber;
     }
 
+    /**
+     * Sets house number.
+     *
+     * @param houseNumber the house number
+     */
     public void setHouseNumber(int houseNumber) {
         this.houseNumber = houseNumber;
     }
 
+    /**
+     * Gets apartment number.
+     *
+     * @return the apartment number
+     */
     public int getApartmentNumber() {
         return apartmentNumber;
     }
 
+    /**
+     * Sets apartment number.
+     *
+     * @param apartmentNumber the apartment number
+     */
     public void setApartmentNumber(int apartmentNumber) {
         this.apartmentNumber = apartmentNumber;
     }
@@ -144,6 +237,9 @@ public class Address extends CommonEntity {
         return sb.toString();
     }
 
+    /**
+     * The type Builder.
+     */
     public static class Builder {
 
         private long id;
@@ -156,42 +252,90 @@ public class Address extends CommonEntity {
         private final int houseNumber;
         private int apartmentNumber;
 
+        /**
+         * Instantiates a new Builder.
+         *
+         * @param city        the city
+         * @param street      the street
+         * @param houseNumber the house number
+         */
         public Builder(String city, String street, int houseNumber) {
             this.city = city;
             this.street = street;
             this.houseNumber = houseNumber;
         }
 
+        /**
+         * Id builder.
+         *
+         * @param id the id
+         * @return the builder
+         */
         public Builder id(long id) {
             this.id = id;
             return this;
         }
 
+        /**
+         * Country builder.
+         *
+         * @param country the country
+         * @return the builder
+         */
         public Builder country(String country) {
             this.country = country;
             return this;
         }
 
+        /**
+         * Postcode builder.
+         *
+         * @param postcode the postcode
+         * @return the builder
+         */
         public Builder postcode(int postcode) {
             this.postcode = postcode;
             return this;
         }
 
+        /**
+         * State builder.
+         *
+         * @param state the state
+         * @return the builder
+         */
         public Builder state(String state) {
             this.state = state;
             return this;
         }
 
+        /**
+         * Region builder.
+         *
+         * @param region the region
+         * @return the builder
+         */
         public Builder region(String region) {
             this.region = region;
             return this;
         }
 
+        /**
+         * Apartment number builder.
+         *
+         * @param apartmentNumber the apartment number
+         * @return the builder
+         */
         public Builder apartmentNumber(int apartmentNumber) {
             this.apartmentNumber = apartmentNumber;
             return this;
         }
 
+        /**
+         * Build address.
+         *
+         * @return the address
+         */
         public Address build() {
             return new Address(this.id, this.country, this.postcode, this.state, this.region, this.city,
                     this.street, this.houseNumber, this.apartmentNumber);

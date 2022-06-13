@@ -8,11 +8,28 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 
+/**
+ * The type User dao.
+ */
 public abstract class UserDao {
 
+    /**
+     * The constant SQL_CREATE_PHONE_NUMBER.
+     */
     protected static final String SQL_CREATE_PHONE_NUMBER = "INSERT INTO phone_numbers(user_id, phone_number) VALUES(?,?)";
+    /**
+     * The constant SQL_DELETE_PHONE_NUMBER.
+     */
     protected static final String SQL_DELETE_PHONE_NUMBER = "DELETE FROM phone_numbers WHERE user_id=?";
 
+    /**
+     * Collect create address query.
+     *
+     * @param <T>       the type parameter
+     * @param statement the statement
+     * @param user      the user
+     * @throws SQLException the sql exception
+     */
     protected <T extends AbstractUser> void collectCreateAddressQuery(PreparedStatement statement, T user) throws SQLException {
         Address address = user.getAddress();
         if (address.getCountry() != null && !address.getCountry().isBlank()) {
@@ -45,6 +62,14 @@ public abstract class UserDao {
         }
     }
 
+    /**
+     * Collect create user query.
+     *
+     * @param <T>       the type parameter
+     * @param statement the statement
+     * @param user      the user
+     * @throws SQLException the sql exception
+     */
     protected <T extends AbstractUser> void collectCreateUserQuery(PreparedStatement statement, T user) throws SQLException {
         statement.setString(1, user.getFirstName());
         statement.setString(2, user.getSecondName());
@@ -70,6 +95,15 @@ public abstract class UserDao {
         }
     }
 
+    /**
+     * Update phone numbers.
+     *
+     * @param <T>        the type parameter
+     * @param connection the connection
+     * @param user       the user
+     * @param oldUser    the old user
+     * @throws SQLException the sql exception
+     */
     protected <T extends AbstractUser> void updatePhoneNumbers(Connection connection, T user, T oldUser) throws SQLException {
         try (PreparedStatement statementAddPhone = connection.prepareStatement(SQL_CREATE_PHONE_NUMBER);
              PreparedStatement statementDeletePhone = connection.prepareStatement(SQL_DELETE_PHONE_NUMBER)) {

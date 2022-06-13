@@ -25,6 +25,9 @@ import static by.epam.jwdsc.controller.command.RequestParameter.*;
 import static by.epam.jwdsc.controller.command.ResponseJsonText.*;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Registration first step command.
+ */
 public class RegistrationFirstStepCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

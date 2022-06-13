@@ -4,35 +4,71 @@ import by.epam.jwdsc.entity.Order;
 
 import java.util.List;
 
+/**
+ * The type Orders with pagination.
+ */
 public class OrdersWithPagination {
 
     private List<Order> orders;
     private long totalOrdersQuantity;
     private long currentPage;
 
+    /**
+     * Instantiates a new Orders with pagination.
+     */
     public OrdersWithPagination() {
     }
 
+    /**
+     * Gets orders.
+     *
+     * @return the orders
+     */
     public List<Order> getOrders() {
         return orders;
     }
 
+    /**
+     * Sets orders.
+     *
+     * @param orders the orders
+     */
     public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
 
+    /**
+     * Gets total orders quantity.
+     *
+     * @return the total orders quantity
+     */
     public long getTotalOrdersQuantity() {
         return totalOrdersQuantity;
     }
 
+    /**
+     * Sets total orders quantity.
+     *
+     * @param totalOrdersQuantity the total orders quantity
+     */
     public void setTotalOrdersQuantity(long totalOrdersQuantity) {
         this.totalOrdersQuantity = totalOrdersQuantity;
     }
 
+    /**
+     * Gets current page.
+     *
+     * @return the current page
+     */
     public long getCurrentPage() {
         return currentPage;
     }
 
+    /**
+     * Sets current page.
+     *
+     * @param currentPage the current page
+     */
     public void setCurrentPage(long currentPage) {
         this.currentPage = currentPage;
     }

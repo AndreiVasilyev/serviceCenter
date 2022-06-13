@@ -23,6 +23,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+/**
+ * The type Device service test.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class DeviceServiceTest {
 
@@ -32,11 +35,22 @@ public class DeviceServiceTest {
     private DeviceServiceImpl deviceService = new DeviceServiceImpl();
     private Device testDevice;
 
+    /**
+     * Sets up.
+     *
+     * @throws DaoException the dao exception
+     */
     @Before
     public void setUp() throws DaoException {
         testDevice = new Device("testDevice");
     }
 
+    /**
+     * Find all positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findAllPositiveResult() throws ServiceException, DaoException {
         when(deviceDao.findAll()).thenReturn(new ArrayList<>(Collections.nCopies(5, testDevice)));
@@ -49,12 +63,24 @@ public class DeviceServiceTest {
                 .hasFieldOrPropertyWithValue("name", "testDevice");
     }
 
+    /**
+     * Find all negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void findAllNegativeResult() throws ServiceException, DaoException {
         when(deviceDao.findAll()).thenThrow(DaoException.class);
         deviceService.findAll();
     }
 
+    /**
+     * Find devices by parameters positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findDevicesByParametersPositiveResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
@@ -71,6 +97,12 @@ public class DeviceServiceTest {
                 .hasFieldOrPropertyWithValue("name", "testDevice");
     }
 
+    /**
+     * Find devices by parameters negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findDevicesByParametersNegativeResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
@@ -84,6 +116,12 @@ public class DeviceServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Create device positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void createDevicePositiveResult() throws ServiceException, DaoException {
         when(deviceDao.createDevice(testDevice)).thenReturn(5L);
@@ -94,6 +132,12 @@ public class DeviceServiceTest {
                 .isEqualTo(5L);
     }
 
+    /**
+     * Create device negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void createDeviceNegativeResult() throws ServiceException, DaoException {
         when(deviceDao.createDevice(testDevice)).thenThrow(DaoException.class);

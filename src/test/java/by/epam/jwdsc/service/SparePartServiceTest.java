@@ -22,6 +22,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+/**
+ * The type Spare part service test.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class SparePartServiceTest {
 
@@ -31,6 +34,11 @@ public class SparePartServiceTest {
     private SparePartServiceImpl sparePartService = new SparePartServiceImpl();
     private SparePart testSparePart;
 
+    /**
+     * Sets up.
+     *
+     * @throws DaoException the dao exception
+     */
     @Before
     public void setUp() throws DaoException {
         testSparePart = new SparePart.Builder("testName", new BigDecimal("50.50"))
@@ -39,6 +47,12 @@ public class SparePartServiceTest {
                 .build();
     }
 
+    /**
+     * Find parts by param positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findPartsByParamPositiveResult() throws ServiceException, DaoException {
         when(sparePartDao.findByParam("test")).thenReturn(new ArrayList<>(Collections.nCopies(5, testSparePart)));
@@ -52,6 +66,12 @@ public class SparePartServiceTest {
                 .hasFieldOrPropertyWithValue("name", "testName");
     }
 
+    /**
+     * Find parts by param negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findPartsByParamNegativeResult() throws ServiceException, DaoException {
         when(sparePartDao.findByParam("test")).thenReturn(new ArrayList<>());
@@ -61,6 +81,12 @@ public class SparePartServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Find parts by parameters positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findPartsByParametersPositiveResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
@@ -78,6 +104,12 @@ public class SparePartServiceTest {
                 .hasFieldOrPropertyWithValue("name", "testName");
     }
 
+    /**
+     * Find parts by parameters negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findPartsByParametersNegativeResult() throws ServiceException, DaoException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
@@ -91,6 +123,12 @@ public class SparePartServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Add new part positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void addNewPartPositiveResult() throws ServiceException, DaoException {
         SparePartData sparePartData = new SparePartData();
@@ -104,6 +142,12 @@ public class SparePartServiceTest {
                 .isTrue();
     }
 
+    /**
+     * Add new part negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void addNewPartNegativeResult() throws ServiceException, DaoException {
         SparePartData sparePartData = new SparePartData();

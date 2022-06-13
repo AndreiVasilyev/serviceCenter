@@ -24,6 +24,9 @@ import static by.epam.jwdsc.controller.command.RequestParameter.*;
 import static by.epam.jwdsc.controller.command.ResponseJsonText.*;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Check login command.
+ */
 public class CheckLoginCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

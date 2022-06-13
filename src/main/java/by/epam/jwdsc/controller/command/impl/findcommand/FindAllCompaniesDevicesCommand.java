@@ -18,6 +18,9 @@ import org.apache.logging.log4j.Logger;
 
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Find all companies devices command.
+ */
 public class FindAllCompaniesDevicesCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

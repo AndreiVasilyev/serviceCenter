@@ -20,16 +20,27 @@ import java.util.*;
 import static by.epam.jwdsc.dao.ColumnName.*;
 import static by.epam.jwdsc.dao.TableAliasName.*;
 
+/**
+ * The type Order service.
+ */
 public class OrderServiceImpl implements OrderService {
 
     private static final Logger log = LogManager.getLogger();
     private static final String PARTS_SEPARATOR = " ";
     private OrderDao orderDao;
 
+    /**
+     * Instantiates a new Order service.
+     */
     public OrderServiceImpl() {
         this.orderDao = DaoProvider.getInstance().getOrderDao();
     }
 
+    /**
+     * Instantiates a new Order service.
+     *
+     * @param orderDao the order dao
+     */
     public OrderServiceImpl(OrderDao orderDao) {
         this.orderDao = orderDao;
     }

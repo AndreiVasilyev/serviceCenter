@@ -27,6 +27,9 @@ import java.util.ResourceBundle;
 import static by.epam.jwdsc.controller.command.ResponseJsonText.*;
 import static by.epam.jwdsc.controller.command.SessionAttribute.*;
 
+/**
+ * The type Save new order command.
+ */
 public class SaveNewOrderCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

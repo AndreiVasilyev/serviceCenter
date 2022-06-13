@@ -13,15 +13,26 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+/**
+ * The type Spare part service.
+ */
 public class SparePartServiceImpl implements SparePartService {
 
     private static final Logger log = LogManager.getLogger();
     private SparePartDao sparePartDao;
 
+    /**
+     * Instantiates a new Spare part service.
+     */
     public SparePartServiceImpl() {
         this.sparePartDao = DaoProvider.getInstance().getSparePartDao();
     }
 
+    /**
+     * Instantiates a new Spare part service.
+     *
+     * @param sparePartDao the spare part dao
+     */
     public SparePartServiceImpl(SparePartDao sparePartDao) {
         this.sparePartDao = sparePartDao;
     }

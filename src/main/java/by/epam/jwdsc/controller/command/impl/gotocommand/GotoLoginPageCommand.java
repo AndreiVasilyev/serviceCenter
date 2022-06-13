@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import static by.epam.jwdsc.controller.command.PagePath.LOGIN_PAGE;
 import static by.epam.jwdsc.controller.command.Router.RouterType.FORWARD;
 
+/**
+ * The type Goto login page command.
+ */
 public class GotoLoginPageCommand implements by.epam.jwdsc.controller.command.Command {
 
     @Override

@@ -7,6 +7,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+/**
+ * The type Gson util.
+ */
 public final class GsonUtil {
 
     private static GsonUtil instance;
@@ -19,6 +22,11 @@ public final class GsonUtil {
         this.gson = gson;
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static GsonUtil getInstance() {
         if (instance == null) {
             GsonBuilder gsonBuilder = new GsonBuilder();
@@ -30,10 +38,18 @@ public final class GsonUtil {
         return instance;
     }
 
+    /**
+     * Gets gson.
+     *
+     * @return the gson
+     */
     public Gson getGson() {
         return gson;
     }
 
+    /**
+     * The type Local date time serializer.
+     */
     static class LocalDateTimeSerializer implements JsonSerializer<LocalDateTime> {
         private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_PATTERN);
 
@@ -43,6 +59,9 @@ public final class GsonUtil {
         }
     }
 
+    /**
+     * The type Local date time deserializer.
+     */
     static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
         @Override
         public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)

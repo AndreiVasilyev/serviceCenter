@@ -23,6 +23,9 @@ import static by.epam.jwdsc.controller.command.ResponseJsonText.POSITIVE_RESPONS
 import static by.epam.jwdsc.controller.command.SessionAttribute.EMPLOYEE_ID;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Take order to work command.
+ */
 public class TakeOrderToWorkCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

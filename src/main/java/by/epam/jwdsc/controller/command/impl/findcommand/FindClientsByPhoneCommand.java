@@ -22,6 +22,9 @@ import java.util.List;
 import static by.epam.jwdsc.controller.command.RequestParameter.FIND_PHONE_NUMBER_PARAM;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Find clients by phone command.
+ */
 public class FindClientsByPhoneCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

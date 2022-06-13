@@ -9,14 +9,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The type Entity mapper.
+ */
 public class EntityMapper {
 
     private static EntityMapper instance;
+    /**
+     * The constant PHONES_DELIMITER.
+     */
     public static final String PHONES_DELIMITER = ",";
 
     private EntityMapper() {
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static EntityMapper getInstance() {
         if (instance == null) {
             instance = new EntityMapper();
@@ -24,6 +35,14 @@ public class EntityMapper {
         return instance;
     }
 
+    /**
+     * Map client client.
+     *
+     * @param newOrderData the new order data
+     * @param address      the address
+     * @param phones       the phones
+     * @return the client
+     */
     public Client mapClient(NewOrderData newOrderData, Address address, List<String> phones) {
         return UserBuilders.newClient()
                 .firstName(newOrderData.getFirstName())
@@ -35,6 +54,14 @@ public class EntityMapper {
                 .build();
     }
 
+    /**
+     * Map client client.
+     *
+     * @param orderData the order data
+     * @param address   the address
+     * @param phones    the phones
+     * @return the client
+     */
     public Client mapClient(OrderData orderData, Address address, List<String> phones) {
         long id = Long.parseLong(orderData.getClientId());
         return UserBuilders.newClient()
@@ -48,6 +75,12 @@ public class EntityMapper {
                 .build();
     }
 
+    /**
+     * Map address address.
+     *
+     * @param newOrderData the new order data
+     * @return the address
+     */
     public Address mapAddress(NewOrderData newOrderData) {
         int houseNumber = Integer.parseInt(newOrderData.getHouseNumber());
         Address address = new Address.Builder(newOrderData.getCity(), newOrderData.getStreet(), houseNumber)
@@ -66,6 +99,12 @@ public class EntityMapper {
         return address;
     }
 
+    /**
+     * Map address address.
+     *
+     * @param orderData the order data
+     * @return the address
+     */
     public Address mapAddress(OrderData orderData) {
         long id = Long.parseLong(orderData.getAddressId());
         int houseNumber = Integer.parseInt(orderData.getHouseNumber());
@@ -86,6 +125,13 @@ public class EntityMapper {
         return address;
     }
 
+    /**
+     * Map employee employee.
+     *
+     * @param employeeParameters the employee parameters
+     * @param hashedPassword     the hashed password
+     * @return the employee
+     */
     public Employee mapEmployee(EmployeeParameters employeeParameters, String hashedPassword) {
         long userId = Long.parseLong(employeeParameters.getId());
         int houseNumber = Integer.parseInt(employeeParameters.getHouseNumber());

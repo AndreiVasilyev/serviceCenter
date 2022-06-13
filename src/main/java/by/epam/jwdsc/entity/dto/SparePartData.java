@@ -1,5 +1,8 @@
 package by.epam.jwdsc.entity.dto;
 
+/**
+ * The type Spare part data.
+ */
 public class SparePartData {
     private String id;
     private String partNumber;
@@ -9,58 +12,128 @@ public class SparePartData {
     private String sortByName;
     private String sortDirection;
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Gets part number.
+     *
+     * @return the part number
+     */
     public String getPartNumber() {
         return partNumber;
     }
 
+    /**
+     * Sets part number.
+     *
+     * @param partNumber the part number
+     */
     public void setPartNumber(String partNumber) {
         this.partNumber = partNumber;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets description.
+     *
+     * @return the description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Sets description.
+     *
+     * @param description the description
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Gets cost.
+     *
+     * @return the cost
+     */
     public String getCost() {
         return cost;
     }
 
+    /**
+     * Sets cost.
+     *
+     * @param cost the cost
+     */
     public void setCost(String cost) {
         this.cost = cost;
     }
 
+    /**
+     * Gets sort by name.
+     *
+     * @return the sort by name
+     */
     public String getSortByName() {
         return sortByName;
     }
 
+    /**
+     * Sets sort by name.
+     *
+     * @param sortByName the sort by name
+     */
     public void setSortByName(String sortByName) {
         this.sortByName = sortByName;
     }
 
+    /**
+     * Gets sort direction.
+     *
+     * @return the sort direction
+     */
     public String getSortDirection() {
         return sortDirection;
     }
 
+    /**
+     * Sets sort direction.
+     *
+     * @param sortDirection the sort direction
+     */
     public void setSortDirection(String sortDirection) {
         this.sortDirection = sortDirection;
     }

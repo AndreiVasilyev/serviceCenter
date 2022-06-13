@@ -9,6 +9,9 @@ import org.apache.logging.log4j.util.Strings;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * The type Spare part dao.
+ */
 public class SparePartDaoImpl implements SparePartDao {
 
     private static final String SQL_SELECT_ALL_SPARE_PARTS = "SELECT s.id, s.part_number, s.name, s.description, " +

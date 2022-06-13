@@ -5,6 +5,9 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 
+/**
+ * The type Context listener.
+ */
 @WebListener
 public class ContextListener implements ServletContextListener {
     @Override

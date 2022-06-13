@@ -22,6 +22,9 @@ import java.util.List;
 
 import static by.epam.jwdsc.controller.command.SessionAttribute.*;
 
+/**
+ * The type Update order command.
+ */
 public class UpdateOrderCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

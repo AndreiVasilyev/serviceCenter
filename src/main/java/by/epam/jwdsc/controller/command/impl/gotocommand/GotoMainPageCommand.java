@@ -9,6 +9,9 @@ import static by.epam.jwdsc.controller.command.PagePath.MAIN_PAGE;
 import static by.epam.jwdsc.controller.command.Router.RouterType.FORWARD;
 import static by.epam.jwdsc.controller.command.Router.RouterType.REDIRECT;
 
+/**
+ * The type Goto main page command.
+ */
 public class GotoMainPageCommand implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {

@@ -21,6 +21,9 @@ import java.util.Optional;
 import static by.epam.jwdsc.controller.command.RequestParameter.*;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Find work cost command.
+ */
 public class FindWorkCostCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

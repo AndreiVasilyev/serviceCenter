@@ -12,15 +12,26 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 
+/**
+ * The type Confirmation code service.
+ */
 public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
 
     private static final Logger log = LogManager.getLogger();
     private CodeDao codeDao;
 
+    /**
+     * Instantiates a new Confirmation code service.
+     */
     public ConfirmationCodeServiceImpl() {
         this.codeDao = DaoProvider.getInstance().getCodeDao();
     }
 
+    /**
+     * Instantiates a new Confirmation code service.
+     *
+     * @param codeDao the code dao
+     */
     public ConfirmationCodeServiceImpl(CodeDao codeDao) {
         this.codeDao = codeDao;
     }

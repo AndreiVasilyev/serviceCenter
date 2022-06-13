@@ -6,6 +6,9 @@ import by.epam.jwdsc.entity.Employee;
 
 import java.util.List;
 
+/**
+ * The type Selectable items.
+ */
 public class SelectableItems {
 
     private List<Company> companies;
@@ -13,38 +16,81 @@ public class SelectableItems {
     private List<Employee> employees;
     private List<String> levels;
 
+    /**
+     * Instantiates a new Selectable items.
+     */
     public SelectableItems() {
 
     }
 
+    /**
+     * Gets companies.
+     *
+     * @return the companies
+     */
     public List<Company> getCompanies() {
         return companies;
     }
 
+    /**
+     * Sets companies.
+     *
+     * @param companies the companies
+     */
     public void setCompanies(List<Company> companies) {
         this.companies = companies;
     }
 
+    /**
+     * Gets devices.
+     *
+     * @return the devices
+     */
     public List<Device> getDevices() {
         return devices;
     }
 
+    /**
+     * Sets devices.
+     *
+     * @param devices the devices
+     */
     public void setDevices(List<Device> devices) {
         this.devices = devices;
     }
 
+    /**
+     * Gets employees.
+     *
+     * @return the employees
+     */
     public List<Employee> getEmployees() {
         return employees;
     }
 
+    /**
+     * Sets employees.
+     *
+     * @param employees the employees
+     */
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
     }
 
+    /**
+     * Gets levels.
+     *
+     * @return the levels
+     */
     public List<String> getLevels() {
         return levels;
     }
 
+    /**
+     * Sets levels.
+     *
+     * @param levels the levels
+     */
     public void setLevels(List<String> levels) {
         this.levels = levels;
     }

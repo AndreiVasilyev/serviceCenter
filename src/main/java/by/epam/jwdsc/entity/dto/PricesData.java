@@ -1,5 +1,8 @@
 package by.epam.jwdsc.entity.dto;
 
+/**
+ * The type Prices data.
+ */
 public class PricesData {
     private String device;
     private String diagnostic;
@@ -9,58 +12,128 @@ public class PricesData {
     private String repairLevel3;
     private String technicalConclusion;
 
+    /**
+     * Gets device.
+     *
+     * @return the device
+     */
     public String getDevice() {
         return device;
     }
 
+    /**
+     * Sets device.
+     *
+     * @param device the device
+     */
     public void setDevice(String device) {
         this.device = device;
     }
 
+    /**
+     * Gets diagnostic.
+     *
+     * @return the diagnostic
+     */
     public String getDiagnostic() {
         return diagnostic;
     }
 
+    /**
+     * Sets diagnostic.
+     *
+     * @param diagnostic the diagnostic
+     */
     public void setDiagnostic(String diagnostic) {
         this.diagnostic = diagnostic;
     }
 
+    /**
+     * Gets maintenance.
+     *
+     * @return the maintenance
+     */
     public String getMaintenance() {
         return maintenance;
     }
 
+    /**
+     * Sets maintenance.
+     *
+     * @param maintenance the maintenance
+     */
     public void setMaintenance(String maintenance) {
         this.maintenance = maintenance;
     }
 
+    /**
+     * Gets repair level 1.
+     *
+     * @return the repair level 1
+     */
     public String getRepairLevel1() {
         return repairLevel1;
     }
 
+    /**
+     * Sets repair level 1.
+     *
+     * @param repairLevel1 the repair level 1
+     */
     public void setRepairLevel1(String repairLevel1) {
         this.repairLevel1 = repairLevel1;
     }
 
+    /**
+     * Gets repair level 2.
+     *
+     * @return the repair level 2
+     */
     public String getRepairLevel2() {
         return repairLevel2;
     }
 
+    /**
+     * Sets repair level 2.
+     *
+     * @param repairLevel2 the repair level 2
+     */
     public void setRepairLevel2(String repairLevel2) {
         this.repairLevel2 = repairLevel2;
     }
 
+    /**
+     * Gets repair level 3.
+     *
+     * @return the repair level 3
+     */
     public String getRepairLevel3() {
         return repairLevel3;
     }
 
+    /**
+     * Sets repair level 3.
+     *
+     * @param repairLevel3 the repair level 3
+     */
     public void setRepairLevel3(String repairLevel3) {
         this.repairLevel3 = repairLevel3;
     }
 
+    /**
+     * Gets technical conclusion.
+     *
+     * @return the technical conclusion
+     */
     public String getTechnicalConclusion() {
         return technicalConclusion;
     }
 
+    /**
+     * Sets technical conclusion.
+     *
+     * @param technicalConclusion the technical conclusion
+     */
     public void setTechnicalConclusion(String technicalConclusion) {
         this.technicalConclusion = technicalConclusion;
     }

@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import static by.epam.jwdsc.controller.command.PagePath.REGISTRATION_PAGE;
 import static by.epam.jwdsc.controller.command.Router.RouterType.FORWARD;
 
+/**
+ * The type Goto registration page.
+ */
 public class GotoRegistrationPage implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {

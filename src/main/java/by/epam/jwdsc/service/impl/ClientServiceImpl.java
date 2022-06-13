@@ -16,15 +16,26 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Client service.
+ */
 public class ClientServiceImpl implements ClientService {
 
     private static final Logger log = LogManager.getLogger();
     private ClientDao clientDao;
 
+    /**
+     * Instantiates a new Client service.
+     */
     public ClientServiceImpl() {
         this.clientDao = DaoProvider.getInstance().getClientDao();
     }
 
+    /**
+     * Instantiates a new Client service.
+     *
+     * @param clientDao the client dao
+     */
     public ClientServiceImpl(ClientDao clientDao) {
         this.clientDao = clientDao;
     }

@@ -1,5 +1,8 @@
 package by.epam.jwdsc.entity.dto;
 
+/**
+ * The type Order parameters.
+ */
 public class OrderParameters {
     private String orderNumber;
     private String orderStatus;
@@ -21,158 +24,351 @@ public class OrderParameters {
     private String sortDirection;
     private String pageNumber;
 
+    /**
+     * Instantiates a new Order parameters.
+     */
     public OrderParameters() {
 
     }
 
+    /**
+     * Gets order number.
+     *
+     * @return the order number
+     */
     public String getOrderNumber() {
         return orderNumber;
     }
 
+    /**
+     * Sets order number.
+     *
+     * @param orderNumber the order number
+     */
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
 
+    /**
+     * Gets order status.
+     *
+     * @return the order status
+     */
     public String getOrderStatus() {
         return orderStatus;
     }
 
+    /**
+     * Sets order status.
+     *
+     * @param orderStatus the order status
+     */
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
 
+    /**
+     * Gets creation date.
+     *
+     * @return the creation date
+     */
     public String getCreationDate() {
         return creationDate;
     }
 
+    /**
+     * Sets creation date.
+     *
+     * @param creationDate the creation date
+     */
     public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 
+    /**
+     * Gets client.
+     *
+     * @return the client
+     */
     public String getClient() {
         return client;
     }
 
+    /**
+     * Sets client.
+     *
+     * @param client the client
+     */
     public void setClient(String client) {
         this.client = client;
     }
 
+    /**
+     * Gets device.
+     *
+     * @return the device
+     */
     public String getDevice() {
         return device;
     }
 
+    /**
+     * Sets device.
+     *
+     * @param device the device
+     */
     public void setDevice(String device) {
         this.device = device;
     }
 
+    /**
+     * Gets company.
+     *
+     * @return the company
+     */
     public String getCompany() {
         return company;
     }
 
+    /**
+     * Sets company.
+     *
+     * @param company the company
+     */
     public void setCompany(String company) {
         this.company = company;
     }
 
+    /**
+     * Gets model.
+     *
+     * @return the model
+     */
     public String getModel() {
         return model;
     }
 
+    /**
+     * Sets model.
+     *
+     * @param model the model
+     */
     public void setModel(String model) {
         this.model = model;
     }
 
+    /**
+     * Gets serial number.
+     *
+     * @return the serial number
+     */
     public String getSerialNumber() {
         return serialNumber;
     }
 
+    /**
+     * Sets serial number.
+     *
+     * @param serialNumber the serial number
+     */
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
 
+    /**
+     * Gets accepted employee.
+     *
+     * @return the accepted employee
+     */
     public String getAcceptedEmployee() {
         return acceptedEmployee;
     }
 
+    /**
+     * Sets accepted employee.
+     *
+     * @param acceptedEmployee the accepted employee
+     */
     public void setAcceptedEmployee(String acceptedEmployee) {
         this.acceptedEmployee = acceptedEmployee;
     }
 
+    /**
+     * Gets completed employee.
+     *
+     * @return the completed employee
+     */
     public String getCompletedEmployee() {
         return completedEmployee;
     }
 
+    /**
+     * Sets completed employee.
+     *
+     * @param completedEmployee the completed employee
+     */
     public void setCompletedEmployee(String completedEmployee) {
         this.completedEmployee = completedEmployee;
     }
 
+    /**
+     * Gets completion date.
+     *
+     * @return the completion date
+     */
     public String getCompletionDate() {
         return completionDate;
     }
 
+    /**
+     * Sets completion date.
+     *
+     * @param completionDate the completion date
+     */
     public void setCompletionDate(String completionDate) {
         this.completionDate = completionDate;
     }
 
+    /**
+     * Gets issue date.
+     *
+     * @return the issue date
+     */
     public String getIssueDate() {
         return issueDate;
     }
 
+    /**
+     * Sets issue date.
+     *
+     * @param issueDate the issue date
+     */
     public void setIssueDate(String issueDate) {
         this.issueDate = issueDate;
     }
 
+    /**
+     * Gets work description.
+     *
+     * @return the work description
+     */
     public String getWorkDescription() {
         return workDescription;
     }
 
+    /**
+     * Sets work description.
+     *
+     * @param workDescription the work description
+     */
     public void setWorkDescription(String workDescription) {
         this.workDescription = workDescription;
     }
 
+    /**
+     * Gets repair level.
+     *
+     * @return the repair level
+     */
     public String getRepairLevel() {
         return repairLevel;
     }
 
+    /**
+     * Sets repair level.
+     *
+     * @param repairLevel the repair level
+     */
     public void setRepairLevel(String repairLevel) {
         this.repairLevel = repairLevel;
     }
 
+    /**
+     * Gets repair cost.
+     *
+     * @return the repair cost
+     */
     public String getRepairCost() {
         return repairCost;
     }
 
+    /**
+     * Sets repair cost.
+     *
+     * @param repairCost the repair cost
+     */
     public void setRepairCost(String repairCost) {
         this.repairCost = repairCost;
     }
 
+    /**
+     * Gets note.
+     *
+     * @return the note
+     */
     public String getNote() {
         return note;
     }
 
+    /**
+     * Sets note.
+     *
+     * @param note the note
+     */
     public void setNote(String note) {
         this.note = note;
     }
 
+    /**
+     * Gets sort by name.
+     *
+     * @return the sort by name
+     */
     public String getSortByName() {
         return sortByName;
     }
 
+    /**
+     * Sets sort by name.
+     *
+     * @param sortByName the sort by name
+     */
     public void setSortByName(String sortByName) {
         this.sortByName = sortByName;
     }
 
+    /**
+     * Gets sort direction.
+     *
+     * @return the sort direction
+     */
     public String getSortDirection() {
         return sortDirection;
     }
 
+    /**
+     * Sets sort direction.
+     *
+     * @param sortDirection the sort direction
+     */
     public void setSortDirection(String sortDirection) {
         this.sortDirection = sortDirection;
     }
 
+    /**
+     * Gets page number.
+     *
+     * @return the page number
+     */
     public String getPageNumber() {
         return pageNumber;
     }
 
+    /**
+     * Sets page number.
+     *
+     * @param pageNumber the page number
+     */
     public void setPageNumber(String pageNumber) {
         this.pageNumber = pageNumber;
     }

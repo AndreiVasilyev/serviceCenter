@@ -11,6 +11,9 @@ import java.util.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
+/**
+ * The type Client dao.
+ */
 public class ClientDaoImpl extends UserDao implements ClientDao {
 
     private static final String SQL_SELECT_ALL_CLIENTS = "SELECT c.user_id, c.discount, u.first_name, u.second_name, " +

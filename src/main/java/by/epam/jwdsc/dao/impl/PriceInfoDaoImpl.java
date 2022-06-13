@@ -13,6 +13,9 @@ import java.util.Optional;
 
 import static by.epam.jwdsc.dao.ColumnName.*;
 
+/**
+ * The type Price info dao.
+ */
 public class PriceInfoDaoImpl implements PriceInfoDao {
 
     private static final String SQL_SELECT_ALL_PRICES = "SELECT p.id, p.device_id, p.repair_level, p.repair_cost, " +

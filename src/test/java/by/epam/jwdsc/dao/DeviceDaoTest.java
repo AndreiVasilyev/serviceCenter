@@ -9,17 +9,28 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The type Device dao test.
+ */
 public class DeviceDaoTest {
 
     private DeviceDao deviceDao;
     private Device testDevice;
 
+    /**
+     * Sets up.
+     */
     @Before
     public void setUp() {
         deviceDao = DaoProvider.getInstance().getDeviceDao();
         testDevice = new Device("testDevice");
     }
 
+    /**
+     * Find all.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findAll() throws DaoException {
         List<Device> foundDevices = deviceDao.findAll();
@@ -29,6 +40,11 @@ public class DeviceDaoTest {
                 .hasSizeGreaterThanOrEqualTo(10);
     }
 
+    /**
+     * Find by id positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByIdPositiveResult() throws DaoException {
         Optional<Device> foundDevice = deviceDao.findById(1);
@@ -38,6 +54,11 @@ public class DeviceDaoTest {
                 .hasFieldOrPropertyWithValue("name", "Смартфон");
     }
 
+    /**
+     * Find by id negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByIdNegativeResult() throws DaoException {
         Optional<Device> foundDevice = deviceDao.findById(0);
@@ -45,6 +66,11 @@ public class DeviceDaoTest {
                 .isEmpty();
     }
 
+    /**
+     * Find by parameters with sort positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParametersWithSortPositiveResult() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -73,6 +99,11 @@ public class DeviceDaoTest {
                 .isSortedAccordingTo((o1, o2) -> o2.getName().compareTo(o1.getName()));
     }
 
+    /**
+     * Find by parameters with sort with exception.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test(expected = DaoException.class)
     public void findByParametersWithSortWithException() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -81,6 +112,11 @@ public class DeviceDaoTest {
         deviceDao.findByParametersWithSort(parameters, sortParam);
     }
 
+    /**
+     * Create.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void create() throws DaoException {
         boolean isCreatedDevice = deviceDao.create(testDevice);
@@ -96,6 +132,11 @@ public class DeviceDaoTest {
         deviceDao.delete(createdDevice.get(0));
     }
 
+    /**
+     * Create device.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void createDevice() throws DaoException {
         long createdDeviceId = deviceDao.createDevice(testDevice);
@@ -110,6 +151,11 @@ public class DeviceDaoTest {
         deviceDao.delete(createdDevice.get());
     }
 
+    /**
+     * Update.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void update() throws DaoException {
         long createdDeviceId = deviceDao.createDevice(testDevice);
@@ -128,6 +174,11 @@ public class DeviceDaoTest {
         deviceDao.deleteById(createdDeviceId);
     }
 
+    /**
+     * Delete.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void delete() throws DaoException {
         long createdDeviceId = deviceDao.createDevice(testDevice);
@@ -137,6 +188,11 @@ public class DeviceDaoTest {
                 .isTrue();
     }
 
+    /**
+     * Delete by id.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void deleteById() throws DaoException {
         long createdDeviceId = deviceDao.createDevice(testDevice);

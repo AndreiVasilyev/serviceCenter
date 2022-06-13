@@ -1,5 +1,8 @@
 package by.epam.jwdsc.entity.dto;
 
+/**
+ * The type Employee parameters.
+ */
 public class EmployeeParameters {
     private String id;
     private String userRole;
@@ -20,149 +23,332 @@ public class EmployeeParameters {
     private String sortByName;
     private String sortDirection;
 
+    /**
+     * Instantiates a new Employee parameters.
+     */
     public EmployeeParameters() {
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Gets user role.
+     *
+     * @return the user role
+     */
     public String getUserRole() {
         return userRole;
     }
 
+    /**
+     * Sets user role.
+     *
+     * @param userRole the user role
+     */
     public void setUserRole(String userRole) {
         this.userRole = userRole;
     }
 
+    /**
+     * Gets login.
+     *
+     * @return the login
+     */
     public String getLogin() {
         return login;
     }
 
+    /**
+     * Sets login.
+     *
+     * @param login the login
+     */
     public void setLogin(String login) {
         this.login = login;
     }
 
+    /**
+     * Gets first name.
+     *
+     * @return the first name
+     */
     public String getFirstName() {
         return firstName;
     }
 
+    /**
+     * Sets first name.
+     *
+     * @param firstName the first name
+     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    /**
+     * Gets second name.
+     *
+     * @return the second name
+     */
     public String getSecondName() {
         return secondName;
     }
 
+    /**
+     * Sets second name.
+     *
+     * @param secondName the second name
+     */
     public void setSecondName(String secondName) {
         this.secondName = secondName;
     }
 
+    /**
+     * Gets patronymic.
+     *
+     * @return the patronymic
+     */
     public String getPatronymic() {
         return patronymic;
     }
 
+    /**
+     * Sets patronymic.
+     *
+     * @param patronymic the patronymic
+     */
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
     }
 
+    /**
+     * Gets email.
+     *
+     * @return the email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Sets email.
+     *
+     * @param email the email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Gets postcode.
+     *
+     * @return the postcode
+     */
     public String getPostcode() {
         return postcode;
     }
 
+    /**
+     * Sets postcode.
+     *
+     * @param postcode the postcode
+     */
     public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
 
+    /**
+     * Gets country.
+     *
+     * @return the country
+     */
     public String getCountry() {
         return country;
     }
 
+    /**
+     * Sets country.
+     *
+     * @param country the country
+     */
     public void setCountry(String country) {
         this.country = country;
     }
 
+    /**
+     * Gets state.
+     *
+     * @return the state
+     */
     public String getState() {
         return state;
     }
 
+    /**
+     * Sets state.
+     *
+     * @param state the state
+     */
     public void setState(String state) {
         this.state = state;
     }
 
+    /**
+     * Gets region.
+     *
+     * @return the region
+     */
     public String getRegion() {
         return region;
     }
 
+    /**
+     * Sets region.
+     *
+     * @param region the region
+     */
     public void setRegion(String region) {
         this.region = region;
     }
 
+    /**
+     * Gets city.
+     *
+     * @return the city
+     */
     public String getCity() {
         return city;
     }
 
+    /**
+     * Sets city.
+     *
+     * @param city the city
+     */
     public void setCity(String city) {
         this.city = city;
     }
 
+    /**
+     * Gets street.
+     *
+     * @return the street
+     */
     public String getStreet() {
         return street;
     }
 
+    /**
+     * Sets street.
+     *
+     * @param street the street
+     */
     public void setStreet(String street) {
         this.street = street;
     }
 
+    /**
+     * Gets house number.
+     *
+     * @return the house number
+     */
     public String getHouseNumber() {
         return houseNumber;
     }
 
+    /**
+     * Sets house number.
+     *
+     * @param houseNumber the house number
+     */
     public void setHouseNumber(String houseNumber) {
         this.houseNumber = houseNumber;
     }
 
+    /**
+     * Gets apartment number.
+     *
+     * @return the apartment number
+     */
     public String getApartmentNumber() {
         return apartmentNumber;
     }
 
+    /**
+     * Sets apartment number.
+     *
+     * @param apartmentNumber the apartment number
+     */
     public void setApartmentNumber(String apartmentNumber) {
         this.apartmentNumber = apartmentNumber;
     }
 
+    /**
+     * Gets phones.
+     *
+     * @return the phones
+     */
     public String getPhones() {
         return phones;
     }
 
+    /**
+     * Sets phones.
+     *
+     * @param phones the phones
+     */
     public void setPhones(String phones) {
         this.phones = phones;
     }
 
+    /**
+     * Gets sort by name.
+     *
+     * @return the sort by name
+     */
     public String getSortByName() {
         return sortByName;
     }
 
+    /**
+     * Sets sort by name.
+     *
+     * @param sortByName the sort by name
+     */
     public void setSortByName(String sortByName) {
         this.sortByName = sortByName;
     }
 
+    /**
+     * Gets sort direction.
+     *
+     * @return the sort direction
+     */
     public String getSortDirection() {
         return sortDirection;
     }
 
+    /**
+     * Sets sort direction.
+     *
+     * @param sortDirection the sort direction
+     */
     public void setSortDirection(String sortDirection) {
         this.sortDirection = sortDirection;
     }

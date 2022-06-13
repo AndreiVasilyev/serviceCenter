@@ -15,6 +15,9 @@ import static by.epam.jwdsc.dao.ColumnName.*;
 import static by.epam.jwdsc.dao.TableAliasName.SC_EMPLOYEES;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
+/**
+ * The type Employee dao.
+ */
 public class EmployeeDaoImpl extends UserDao implements EmployeeDao {
 
     private static final String SQL_SELECT_EMPLOYEES_TEMPLATE = "SELECT e.user_id, e.login, e.password, u.user_role, " +

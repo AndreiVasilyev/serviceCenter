@@ -9,10 +9,16 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The type Employee dao test.
+ */
 public class EmployeeDaoTest {
     private EmployeeDao employeeDao;
     private Employee testEmployee;
 
+    /**
+     * Sets up.
+     */
     @Before
     public void setUp() {
         employeeDao = DaoProvider.getInstance().getEmployeeDao();
@@ -36,6 +42,11 @@ public class EmployeeDaoTest {
                 .build();
     }
 
+    /**
+     * Find all.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findAll() throws DaoException {
         List<Employee> foundEmployees = employeeDao.findAll();
@@ -45,6 +56,11 @@ public class EmployeeDaoTest {
                 .hasSizeGreaterThanOrEqualTo(10);
     }
 
+    /**
+     * Find by id positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByIdPositiveResult() throws DaoException {
         Optional<Employee> foundEmployee = employeeDao.findById(1);
@@ -54,6 +70,11 @@ public class EmployeeDaoTest {
                 .hasFieldOrPropertyWithValue("id", 1L);
     }
 
+    /**
+     * Find by id negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByIdNegativeResult() throws DaoException {
         Optional<Employee> foundEmployee = employeeDao.findById(0);
@@ -61,6 +82,11 @@ public class EmployeeDaoTest {
                 .isEmpty();
     }
 
+    /**
+     * Find by params positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParamsPositiveResult() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -76,6 +102,11 @@ public class EmployeeDaoTest {
                 .hasFieldOrPropertyWithValue("userRole", UserRole.MANAGER);
     }
 
+    /**
+     * Find by params negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParamsNegativeResult() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -86,6 +117,11 @@ public class EmployeeDaoTest {
                 .isEmpty();
     }
 
+    /**
+     * Find by params with exception.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test(expected = DaoException.class)
     public void findByParamsWithException() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -93,6 +129,11 @@ public class EmployeeDaoTest {
         employeeDao.findByParams(parameters);
     }
 
+    /**
+     * Find by params with sort positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParamsWithSortPositiveResult() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -122,6 +163,11 @@ public class EmployeeDaoTest {
                 .isSortedAccordingTo((o1, o2) -> o2.getFirstName().compareTo(o1.getFirstName()));
     }
 
+    /**
+     * Find by params with sort with exception.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test(expected = DaoException.class)
     public void findByParamsWithSortWithException() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -130,6 +176,11 @@ public class EmployeeDaoTest {
         employeeDao.findByParamsWithSort(parameters, sortParam);
     }
 
+    /**
+     * Create.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void create() throws DaoException {
         boolean isCreatedEmployee = employeeDao.create(testEmployee);
@@ -145,6 +196,11 @@ public class EmployeeDaoTest {
         employeeDao.delete(createdEmployee.get(0));
     }
 
+    /**
+     * Update.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void update() throws DaoException {
         employeeDao.create(testEmployee);
@@ -170,6 +226,11 @@ public class EmployeeDaoTest {
         employeeDao.deleteById(createdEmployee.getId());
     }
 
+    /**
+     * Delete.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void delete() throws DaoException {
         employeeDao.create(testEmployee);
@@ -179,6 +240,11 @@ public class EmployeeDaoTest {
                 .isTrue();
     }
 
+    /**
+     * Delete by id.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void deleteById() throws DaoException {
         employeeDao.create(testEmployee);

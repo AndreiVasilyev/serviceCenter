@@ -13,12 +13,18 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The type Spare part dao test.
+ */
 public class SparePartDaoTest {
 
     private SparePartDao sparePartDao;
     private SparePart testSparePart;
 
 
+    /**
+     * Sets up.
+     */
     @Before
     public void setUp() {
         sparePartDao = DaoProvider.getInstance().getSparePartDao();
@@ -28,6 +34,11 @@ public class SparePartDaoTest {
                 .build();
     }
 
+    /**
+     * Find by id positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findById_positiveResult() throws DaoException {
         Optional<SparePart> foundParts = sparePartDao.findById(2);
@@ -37,12 +48,22 @@ public class SparePartDaoTest {
                 .hasFieldOrPropertyWithValue("name", "Дисплей");
     }
 
+    /**
+     * Find by id negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findById_negativeResult() throws DaoException {
         Optional<SparePart> foundParts = sparePartDao.findById(0);
         assertThat(foundParts).isEmpty();
     }
 
+    /**
+     * Find all.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findAll() throws DaoException {
         List<SparePart> foundParts = sparePartDao.findAll();
@@ -52,6 +73,11 @@ public class SparePartDaoTest {
                 .hasSizeGreaterThanOrEqualTo(10);
     }
 
+    /**
+     * Find by param positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParamPositiveResult() throws DaoException {
         String searchParameter = "te";
@@ -64,6 +90,11 @@ public class SparePartDaoTest {
                 .hasFieldOrPropertyWithValue("name", "Микрофон");
     }
 
+    /**
+     * Find by param negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParamNegativeResult() throws DaoException {
         String searchParameter = "333";
@@ -73,6 +104,11 @@ public class SparePartDaoTest {
                 .isEmpty();
     }
 
+    /**
+     * Find by parameters with sort positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParametersWithSortPositiveResult() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -102,6 +138,11 @@ public class SparePartDaoTest {
                 .isSortedAccordingTo((o1, o2) -> o2.getName().compareTo(o1.getName()));
     }
 
+    /**
+     * Find by parameters with sort with exception.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test(expected = DaoException.class)
     public void findByParametersWithSortWithException() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -110,6 +151,11 @@ public class SparePartDaoTest {
         sparePartDao.findByParametersWithSort(parameters, sortParam);
     }
 
+    /**
+     * Create.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void create() throws DaoException {
         boolean isCreatedPart = sparePartDao.create(testSparePart);
@@ -119,6 +165,11 @@ public class SparePartDaoTest {
         sparePartDao.delete(createdPart);
     }
 
+    /**
+     * Update.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void update() throws DaoException {
         sparePartDao.create(testSparePart);
@@ -138,6 +189,11 @@ public class SparePartDaoTest {
         sparePartDao.delete(newParts.get(0));
     }
 
+    /**
+     * Delete.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void delete() throws DaoException {
         sparePartDao.create(testSparePart);
@@ -147,6 +203,11 @@ public class SparePartDaoTest {
                 .isTrue();
     }
 
+    /**
+     * Delete by id.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void deleteById() throws DaoException {
         sparePartDao.create(testSparePart);

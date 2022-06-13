@@ -1,5 +1,8 @@
 package by.epam.jwdsc.entity.dto;
 
+/**
+ * The type Order data.
+ */
 public class OrderData {
     private String id;
     private String orderNumber;
@@ -38,294 +41,657 @@ public class OrderData {
     private String spareParts;
     private String note;
 
+    /**
+     * Instantiates a new Order data.
+     */
     public OrderData() {
 
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Gets order number.
+     *
+     * @return the order number
+     */
     public String getOrderNumber() {
         return orderNumber;
     }
 
+    /**
+     * Sets order number.
+     *
+     * @param orderNumber the order number
+     */
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
 
+    /**
+     * Gets order status.
+     *
+     * @return the order status
+     */
     public String getOrderStatus() {
         return orderStatus;
     }
 
+    /**
+     * Sets order status.
+     *
+     * @param orderStatus the order status
+     */
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
 
+    /**
+     * Gets creation date.
+     *
+     * @return the creation date
+     */
     public String getCreationDate() {
         return creationDate;
     }
 
+    /**
+     * Sets creation date.
+     *
+     * @param creationDate the creation date
+     */
     public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 
+    /**
+     * Gets accepted employee id.
+     *
+     * @return the accepted employee id
+     */
     public String getAcceptedEmployeeId() {
         return acceptedEmployeeId;
     }
 
+    /**
+     * Sets accepted employee id.
+     *
+     * @param acceptedEmployeeId the accepted employee id
+     */
     public void setAcceptedEmployeeId(String acceptedEmployeeId) {
         this.acceptedEmployeeId = acceptedEmployeeId;
     }
 
+    /**
+     * Gets device name.
+     *
+     * @return the device name
+     */
     public String getDeviceName() {
         return deviceName;
     }
 
+    /**
+     * Sets device name.
+     *
+     * @param deviceName the device name
+     */
     public void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
     }
 
+    /**
+     * Gets device id.
+     *
+     * @return the device id
+     */
     public String getDeviceId() {
         return deviceId;
     }
 
+    /**
+     * Sets device id.
+     *
+     * @param deviceId the device id
+     */
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
 
+    /**
+     * Gets company name.
+     *
+     * @return the company name
+     */
     public String getCompanyName() {
         return companyName;
     }
 
+    /**
+     * Sets company name.
+     *
+     * @param companyName the company name
+     */
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
     }
 
+    /**
+     * Gets company id.
+     *
+     * @return the company id
+     */
     public String getCompanyId() {
         return companyId;
     }
 
+    /**
+     * Sets company id.
+     *
+     * @param companyId the company id
+     */
     public void setCompanyId(String companyId) {
         this.companyId = companyId;
     }
 
+    /**
+     * Gets model.
+     *
+     * @return the model
+     */
     public String getModel() {
         return model;
     }
 
+    /**
+     * Sets model.
+     *
+     * @param model the model
+     */
     public void setModel(String model) {
         this.model = model;
     }
 
+    /**
+     * Gets serial.
+     *
+     * @return the serial
+     */
     public String getSerial() {
         return serial;
     }
 
+    /**
+     * Sets serial.
+     *
+     * @param serial the serial
+     */
     public void setSerial(String serial) {
         this.serial = serial;
     }
 
+    /**
+     * Gets client id.
+     *
+     * @return the client id
+     */
     public String getClientId() {
         return clientId;
     }
 
+    /**
+     * Sets client id.
+     *
+     * @param clientId the client id
+     */
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
+    /**
+     * Gets email.
+     *
+     * @return the email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Sets email.
+     *
+     * @param email the email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Gets first name.
+     *
+     * @return the first name
+     */
     public String getFirstName() {
         return firstName;
     }
 
+    /**
+     * Sets first name.
+     *
+     * @param firstName the first name
+     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    /**
+     * Gets second name.
+     *
+     * @return the second name
+     */
     public String getSecondName() {
         return secondName;
     }
 
+    /**
+     * Sets second name.
+     *
+     * @param secondName the second name
+     */
     public void setSecondName(String secondName) {
         this.secondName = secondName;
     }
 
+    /**
+     * Gets patronymic.
+     *
+     * @return the patronymic
+     */
     public String getPatronymic() {
         return patronymic;
     }
 
+    /**
+     * Sets patronymic.
+     *
+     * @param patronymic the patronymic
+     */
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
     }
 
+    /**
+     * Gets phone first.
+     *
+     * @return the phone first
+     */
     public String getPhoneFirst() {
         return phoneFirst;
     }
 
+    /**
+     * Sets phone first.
+     *
+     * @param phoneFirst the phone first
+     */
     public void setPhoneFirst(String phoneFirst) {
         this.phoneFirst = phoneFirst;
     }
 
+    /**
+     * Gets phone second.
+     *
+     * @return the phone second
+     */
     public String getPhoneSecond() {
         return phoneSecond;
     }
 
+    /**
+     * Sets phone second.
+     *
+     * @param phoneSecond the phone second
+     */
     public void setPhoneSecond(String phoneSecond) {
         this.phoneSecond = phoneSecond;
     }
 
+    /**
+     * Gets phone third.
+     *
+     * @return the phone third
+     */
     public String getPhoneThird() {
         return phoneThird;
     }
 
+    /**
+     * Sets phone third.
+     *
+     * @param phoneThird the phone third
+     */
     public void setPhoneThird(String phoneThird) {
         this.phoneThird = phoneThird;
     }
 
+    /**
+     * Gets country.
+     *
+     * @return the country
+     */
     public String getCountry() {
         return country;
     }
 
+    /**
+     * Sets country.
+     *
+     * @param country the country
+     */
     public void setCountry(String country) {
         this.country = country;
     }
 
+    /**
+     * Gets address id.
+     *
+     * @return the address id
+     */
     public String getAddressId() {
         return addressId;
     }
 
+    /**
+     * Sets address id.
+     *
+     * @param addressId the address id
+     */
     public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
+    /**
+     * Gets postcode.
+     *
+     * @return the postcode
+     */
     public String getPostcode() {
         return postcode;
     }
 
+    /**
+     * Sets postcode.
+     *
+     * @param postcode the postcode
+     */
     public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
 
+    /**
+     * Gets state.
+     *
+     * @return the state
+     */
     public String getState() {
         return state;
     }
 
+    /**
+     * Sets state.
+     *
+     * @param state the state
+     */
     public void setState(String state) {
         this.state = state;
     }
 
+    /**
+     * Gets region.
+     *
+     * @return the region
+     */
     public String getRegion() {
         return region;
     }
 
+    /**
+     * Sets region.
+     *
+     * @param region the region
+     */
     public void setRegion(String region) {
         this.region = region;
     }
 
+    /**
+     * Gets city.
+     *
+     * @return the city
+     */
     public String getCity() {
         return city;
     }
 
+    /**
+     * Sets city.
+     *
+     * @param city the city
+     */
     public void setCity(String city) {
         this.city = city;
     }
 
+    /**
+     * Gets street.
+     *
+     * @return the street
+     */
     public String getStreet() {
         return street;
     }
 
+    /**
+     * Sets street.
+     *
+     * @param street the street
+     */
     public void setStreet(String street) {
         this.street = street;
     }
 
+    /**
+     * Gets house number.
+     *
+     * @return the house number
+     */
     public String getHouseNumber() {
         return houseNumber;
     }
 
+    /**
+     * Sets house number.
+     *
+     * @param houseNumber the house number
+     */
     public void setHouseNumber(String houseNumber) {
         this.houseNumber = houseNumber;
     }
 
+    /**
+     * Gets apartment number.
+     *
+     * @return the apartment number
+     */
     public String getApartmentNumber() {
         return apartmentNumber;
     }
 
+    /**
+     * Sets apartment number.
+     *
+     * @param apartmentNumber the apartment number
+     */
     public void setApartmentNumber(String apartmentNumber) {
         this.apartmentNumber = apartmentNumber;
     }
 
+    /**
+     * Gets completed employee id.
+     *
+     * @return the completed employee id
+     */
     public String getCompletedEmployeeId() {
         return completedEmployeeId;
     }
 
+    /**
+     * Sets completed employee id.
+     *
+     * @param completedEmployeeId the completed employee id
+     */
     public void setCompletedEmployeeId(String completedEmployeeId) {
         this.completedEmployeeId = completedEmployeeId;
     }
 
+    /**
+     * Gets completion date.
+     *
+     * @return the completion date
+     */
     public String getCompletionDate() {
         return completionDate;
     }
 
+    /**
+     * Sets completion date.
+     *
+     * @param completionDate the completion date
+     */
     public void setCompletionDate(String completionDate) {
         this.completionDate = completionDate;
     }
 
+    /**
+     * Gets issue date.
+     *
+     * @return the issue date
+     */
     public String getIssueDate() {
         return issueDate;
     }
 
+    /**
+     * Sets issue date.
+     *
+     * @param issueDate the issue date
+     */
     public void setIssueDate(String issueDate) {
         this.issueDate = issueDate;
     }
 
+    /**
+     * Gets work price id.
+     *
+     * @return the work price id
+     */
     public String getWorkPriceId() {
         return workPriceId;
     }
 
+    /**
+     * Sets work price id.
+     *
+     * @param workPriceId the work price id
+     */
     public void setWorkPriceId(String workPriceId) {
         this.workPriceId = workPriceId;
     }
 
+    /**
+     * Gets repair level.
+     *
+     * @return the repair level
+     */
     public String getRepairLevel() {
         return repairLevel;
     }
 
+    /**
+     * Sets repair level.
+     *
+     * @param repairLevel the repair level
+     */
     public void setRepairLevel(String repairLevel) {
         this.repairLevel = repairLevel;
     }
 
+    /**
+     * Gets work description.
+     *
+     * @return the work description
+     */
     public String getWorkDescription() {
         return workDescription;
     }
 
+    /**
+     * Sets work description.
+     *
+     * @param workDescription the work description
+     */
     public void setWorkDescription(String workDescription) {
         this.workDescription = workDescription;
     }
 
+    /**
+     * Gets spare parts.
+     *
+     * @return the spare parts
+     */
     public String getSpareParts() {
         return spareParts;
     }
 
+    /**
+     * Sets spare parts.
+     *
+     * @param spareParts the spare parts
+     */
     public void setSpareParts(String spareParts) {
         this.spareParts = spareParts;
     }
 
+    /**
+     * Gets note.
+     *
+     * @return the note
+     */
     public String getNote() {
         return note;
     }
 
+    /**
+     * Sets note.
+     *
+     * @param note the note
+     */
     public void setNote(String note) {
         this.note = note;
     }

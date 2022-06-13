@@ -22,6 +22,9 @@ import static by.epam.jwdsc.controller.command.RequestParameter.ORDER_ID_PARAM;
 import static by.epam.jwdsc.controller.command.ResponseJsonText.POSITIVE_RESPONSE;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Issue order command.
+ */
 public class IssueOrderCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

@@ -26,6 +26,9 @@ import static by.epam.jwdsc.controller.command.RequestParameter.DEVICE_ID_PARAM;
 import static by.epam.jwdsc.controller.command.ResponseJsonText.*;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Find prices by device command.
+ */
 public class FindPricesByDeviceCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

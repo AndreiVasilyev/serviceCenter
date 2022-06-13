@@ -23,6 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+/**
+ * The type Client service test.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class ClientServiceTest {
 
@@ -33,6 +36,11 @@ public class ClientServiceTest {
     private Client testClient;
     private Address testAddress;
 
+    /**
+     * Sets up.
+     *
+     * @throws DaoException the dao exception
+     */
     @Before
     public void setUp() throws DaoException {
         testAddress = new Address.Builder("testCity", "testStreet", 1111)
@@ -54,6 +62,12 @@ public class ClientServiceTest {
                 .build();
     }
 
+    /**
+     * Find clients by phone positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findClientsByPhonePositiveResult() throws ServiceException, DaoException {
         when(clientDao.findByPhone("375111111111")).thenReturn(new ArrayList<>(Collections.nCopies(5, testClient)));
@@ -67,6 +81,12 @@ public class ClientServiceTest {
                 .hasFieldOrPropertyWithValue("discount", 1);
     }
 
+    /**
+     * Find clients by phone negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findClientsByPhoneNegativeResult() throws ServiceException, DaoException {
         when(clientDao.findByPhone("-375111111111")).thenReturn(new ArrayList<>());
@@ -76,6 +96,12 @@ public class ClientServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Find client by id positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findClientByIdPositiveResult() throws ServiceException, DaoException {
         when(clientDao.findById(5L)).thenReturn(Optional.ofNullable(testClient));
@@ -87,6 +113,12 @@ public class ClientServiceTest {
                 .hasFieldOrPropertyWithValue("discount", 1);
     }
 
+    /**
+     * Find client by id negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findClientByIdNegativeResult() throws ServiceException, DaoException {
         when(clientDao.findById(-5L)).thenReturn(Optional.empty());
@@ -95,6 +127,12 @@ public class ClientServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Create client positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void createClientPositiveResult() throws ServiceException, DaoException {
         when(clientDao.createClient(any())).thenReturn(5L);
@@ -105,12 +143,24 @@ public class ClientServiceTest {
                 .isEqualTo(5L);
     }
 
+    /**
+     * Create client negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void createClientNegativeResult() throws ServiceException, DaoException {
         when(clientDao.createClient(any())).thenThrow(DaoException.class);
         clientService.createClient(new NewOrderData(), testAddress, new ArrayList<>());
     }
 
+    /**
+     * Update new client positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void updateNewClientPositiveResult() throws ServiceException, DaoException {
         NewOrderData newOrderData = new NewOrderData();
@@ -128,6 +178,12 @@ public class ClientServiceTest {
                 .hasFieldOrPropertyWithValue("discount", 1);
     }
 
+    /**
+     * Update new client negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void updateNewClientNegativeResult() throws ServiceException, DaoException {
         NewOrderData newOrderData = new NewOrderData();
@@ -140,6 +196,12 @@ public class ClientServiceTest {
         clientService.updateClient(newOrderData, new ArrayList<>());
     }
 
+    /**
+     * Update client positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void updateClientPositiveResult() throws ServiceException, DaoException {
         OrderData orderData = new OrderData();
@@ -157,6 +219,12 @@ public class ClientServiceTest {
                 .hasFieldOrPropertyWithValue("discount", 1);
     }
 
+    /**
+     * Update client negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void updateClientNegativeResult() throws ServiceException, DaoException {
         OrderData orderData = new OrderData();

@@ -14,6 +14,9 @@ import java.util.*;
 import static by.epam.jwdsc.dao.ColumnName.*;
 import static by.epam.jwdsc.dao.TableAliasName.*;
 
+/**
+ * The type Order dao.
+ */
 public class OrderDaoImpl implements OrderDao {
 
     private static final String SQL_SELECT_ORDERS_TEMPLATE = "SELECT o.order_id,o.order_number,o.order_status, " +
@@ -42,6 +45,9 @@ public class OrderDaoImpl implements OrderDao {
             "LEFT JOIN phone_numbers AS p ON (u.user_id=p.user_id) WHERE e.user_id=? GROUP BY e.user_id";
     private static final String SQL_SELECT_PRICE_BY_ID = "SELECT pr.id, pr.device_id, pr.repair_level, pr.repair_cost " +
             "FROM prices AS pr WHERE pr.id=? ";
+    /**
+     * The constant SQL_SELECT_PARTS_BY_ORDER_ID.
+     */
     public static final String SQL_SELECT_PARTS_BY_ORDER_ID = "SELECT s.id, s.part_number, s.name, s.description, s.cost " +
             "FROM spare_parts AS s JOIN orders_spare_parts AS os ON (s.id=os.spare_part_id) WHERE os.order_id=?";
     private static final String SQL_DELETE_ORDER_BY_ID = "DELETE o, os FROM orders AS o LEFT JOIN orders_spare_parts AS os " +

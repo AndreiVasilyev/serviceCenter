@@ -11,11 +11,19 @@ import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The type Order dao test.
+ */
 public class OrderDaoTest {
 
     private OrderDao orderDao;
     private Order testOrder;
 
+    /**
+     * Sets up.
+     *
+     * @throws DaoException the dao exception
+     */
     @Before
     public void setUp() throws DaoException {
         orderDao = DaoProvider.getInstance().getOrderDao();
@@ -30,6 +38,11 @@ public class OrderDaoTest {
                 .build();
     }
 
+    /**
+     * Find all.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findAll() throws DaoException {
         List<Order> foundOrders = orderDao.findAll();
@@ -39,6 +52,11 @@ public class OrderDaoTest {
                 .hasSizeGreaterThanOrEqualTo(10);
     }
 
+    /**
+     * Find by id positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByIdPositiveResult() throws DaoException {
         Optional<Order> foundOrder = orderDao.findById(2);
@@ -48,6 +66,11 @@ public class OrderDaoTest {
                 .hasFieldOrPropertyWithValue("id", 2L);
     }
 
+    /**
+     * Find by id negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByIdNegativeResult() throws DaoException {
         Optional<Order> foundOrder = orderDao.findById(-5L);
@@ -55,6 +78,11 @@ public class OrderDaoTest {
                 .isEmpty();
     }
 
+    /**
+     * Find by params positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParamsPositiveResult() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -69,6 +97,11 @@ public class OrderDaoTest {
                 .hasFieldOrPropertyWithValue("orderNumber", "P3");
     }
 
+    /**
+     * Find by params negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParamsNegativeResult() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -80,6 +113,11 @@ public class OrderDaoTest {
                 .isEmpty();
     }
 
+    /**
+     * Find by params with exception.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test(expected = DaoException.class)
     public void findByParamsWithException() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -87,6 +125,11 @@ public class OrderDaoTest {
         orderDao.findByParams(parameters);
     }
 
+    /**
+     * Find by params with sort and page positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParamsWithSortAndPagePositiveResult() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -123,6 +166,11 @@ public class OrderDaoTest {
                 });
     }
 
+    /**
+     * Find by params with sort and page with exception.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test(expected = DaoException.class)
     public void findByParamsWithSortAndPageWithException() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -132,6 +180,11 @@ public class OrderDaoTest {
         orderDao.findByParamsWithSortAndPage(parameters, sortParam, pageNumber);
     }
 
+    /**
+     * Count orders by params positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void countOrdersByParamsPositiveResult() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -144,6 +197,11 @@ public class OrderDaoTest {
                 .isGreaterThanOrEqualTo(2L);
     }
 
+    /**
+     * Count orders by params negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void countOrdersByParamsNegativeResult() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -154,6 +212,11 @@ public class OrderDaoTest {
                 .isZero();
     }
 
+    /**
+     * Count orders by params with exception.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test(expected = DaoException.class)
     public void countOrdersByParamsWithException() throws DaoException {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -162,6 +225,11 @@ public class OrderDaoTest {
         orderDao.countOrdersByParams(parameters);
     }
 
+    /**
+     * Find last order number positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findLastOrderNumberPositiveResult() throws DaoException {
         String orderType = "P";
@@ -172,12 +240,22 @@ public class OrderDaoTest {
                 .matches(Pattern.compile("\\d+"));
     }
 
+    /**
+     * Find last order number with exception.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test(expected = DaoException.class)
     public void findLastOrderNumberWithException() throws DaoException {
         String orderType = "R";
         orderDao.findLastOrderNumber(orderType);
     }
 
+    /**
+     * Create.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void create() throws DaoException {
         boolean isOrderCreated = orderDao.create(testOrder);
@@ -193,6 +271,11 @@ public class OrderDaoTest {
         orderDao.delete(createdOrder.get(0));
     }
 
+    /**
+     * Update.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void update() throws DaoException {
         orderDao.create(testOrder);
@@ -221,6 +304,11 @@ public class OrderDaoTest {
         orderDao.deleteById(createdOrder.getId());
     }
 
+    /**
+     * Delete.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void delete() throws DaoException {
         orderDao.create(testOrder);
@@ -230,6 +318,11 @@ public class OrderDaoTest {
                 .isTrue();
     }
 
+    /**
+     * Delete by id.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void deleteById() throws DaoException {
         orderDao.create(testOrder);

@@ -24,6 +24,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
+/**
+ * The type Price service test.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class PriceServiceTest {
 
@@ -33,11 +36,22 @@ public class PriceServiceTest {
     private PriceServiceImpl priceService = new PriceServiceImpl();
     private PriceInfo testPriceInfo;
 
+    /**
+     * Sets up.
+     *
+     * @throws DaoException the dao exception
+     */
     @Before
     public void setUp() throws DaoException {
         testPriceInfo = new PriceInfo(5, RepairLevel.REPAIR_LEVEL_3, new BigDecimal("80"));
     }
 
+    /**
+     * Find cost by device and level positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findCostByDeviceAndLevelPositiveResult() throws ServiceException, DaoException {
         when(priceInfoDao.findCostByDeviceAndLevel(5L, "DIAGNOSTIC")).thenReturn(Optional.of(new BigDecimal("50.50")));
@@ -48,6 +62,12 @@ public class PriceServiceTest {
                 .isEqualTo(new BigDecimal("50.50"));
     }
 
+    /**
+     * Find cost by device and level negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findCostByDeviceAndLevelNegativeResult() throws ServiceException, DaoException {
         when(priceInfoDao.findCostByDeviceAndLevel(5L, "DIAGNOSTIC")).thenReturn(Optional.empty());
@@ -56,6 +76,12 @@ public class PriceServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Find prices by device positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findPricesByDevicePositiveResult() throws ServiceException, DaoException {
         when(priceInfoDao.findCostsByDevice(5L)).thenReturn(new ArrayList<>(Collections.nCopies(5, testPriceInfo)));
@@ -69,6 +95,12 @@ public class PriceServiceTest {
                 .hasFieldOrPropertyWithValue("repairCost", new BigDecimal("80"));
     }
 
+    /**
+     * Find prices by device negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void findPricesByDeviceNegativeResult() throws ServiceException, DaoException {
         when(priceInfoDao.findCostsByDevice(5L)).thenReturn(new ArrayList<>());
@@ -78,6 +110,12 @@ public class PriceServiceTest {
                 .isEmpty();
     }
 
+    /**
+     * Save prices by device for existing with positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void savePricesByDeviceForExistingWithPositiveResult() throws ServiceException, DaoException {
         PricesData pricesData = new PricesData();
@@ -95,6 +133,12 @@ public class PriceServiceTest {
                 .isTrue();
     }
 
+    /**
+     * Save prices by device for new with positive result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test
     public void savePricesByDeviceForNewWithPositiveResult() throws ServiceException, DaoException {
         PricesData pricesData = new PricesData();
@@ -112,6 +156,12 @@ public class PriceServiceTest {
                 .isTrue();
     }
 
+    /**
+     * Save prices by device negative result.
+     *
+     * @throws ServiceException the service exception
+     * @throws DaoException     the dao exception
+     */
     @Test(expected = ServiceException.class)
     public void savePricesByDeviceNegativeResult() throws ServiceException, DaoException {
         PricesData pricesData = new PricesData();

@@ -18,6 +18,9 @@ import static by.epam.jwdsc.controller.command.RequestParameter.ORDER_ID_PARAM;
 import static by.epam.jwdsc.controller.command.ResponseJsonText.POSITIVE_RESPONSE;
 import static by.epam.jwdsc.controller.command.SessionAttribute.EXCEPTION;
 
+/**
+ * The type Remove order by id command.
+ */
 public class RemoveOrderByIdCommand implements Command {
 
     private static final Logger log = LogManager.getLogger();

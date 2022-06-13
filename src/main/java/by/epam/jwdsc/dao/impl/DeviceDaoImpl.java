@@ -11,6 +11,9 @@ import java.util.*;
 import static by.epam.jwdsc.dao.ColumnName.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
+/**
+ * The type Device dao.
+ */
 public class DeviceDaoImpl implements DeviceDao {
 
     private static final String SQL_SELECT_ALL_DEVICES = "SELECT d.device_id, d.device_name FROM devices AS d";

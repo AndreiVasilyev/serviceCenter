@@ -2,26 +2,54 @@ package by.epam.jwdsc.entity;
 
 import java.util.List;
 
+/**
+ * The type User builders.
+ */
 public class UserBuilders {
 
+    /**
+     * New client client builder.
+     *
+     * @return the client builder
+     */
     public static ClientBuilder newClient() {
         return new ClientBuilder();
     }
 
+    /**
+     * New employee employee builder.
+     *
+     * @return the employee builder
+     */
     public static EmployeeBuilder newEmployee() {
         return new EmployeeBuilder();
     }
 
+    /**
+     * The type Employee builder.
+     */
     public static class EmployeeBuilder extends AbstractUserBuilder<EmployeeBuilder, Employee> {
 
         private String login;
         private String password;
 
+        /**
+         * Login employee builder.
+         *
+         * @param login the login
+         * @return the employee builder
+         */
         public EmployeeBuilder login(String login) {
             this.login = login;
             return this;
         }
 
+        /**
+         * Password employee builder.
+         *
+         * @param password the password
+         * @return the employee builder
+         */
         public EmployeeBuilder password(String password) {
             this.password = password;
             return this;
@@ -34,10 +62,19 @@ public class UserBuilders {
         }
     }
 
+    /**
+     * The type Client builder.
+     */
     public static class ClientBuilder extends AbstractUserBuilder<ClientBuilder, Client> {
 
         private int discount;
 
+        /**
+         * Discount client builder.
+         *
+         * @param discount the discount
+         * @return the client builder
+         */
         public ClientBuilder discount(int discount) {
             this.discount = discount;
             return this;
@@ -50,14 +87,44 @@ public class UserBuilders {
         }
     }
 
+    /**
+     * The type Abstract user builder.
+     *
+     * @param <S> the type parameter
+     * @param <T> the type parameter
+     */
     abstract static class AbstractUserBuilder<S extends UserBuilder, T extends AbstractUser> implements UserBuilder<S, T> {
+        /**
+         * The Id.
+         */
         long id;
+        /**
+         * The First name.
+         */
         String firstName;
+        /**
+         * The Second name.
+         */
         String secondName;
+        /**
+         * The Patronymic.
+         */
         String patronymic;
+        /**
+         * The Address.
+         */
         Address address;
+        /**
+         * The Phones.
+         */
         List<String> phones;
+        /**
+         * The Email.
+         */
         String email;
+        /**
+         * The User role.
+         */
         UserRole userRole;
 
         @Override
@@ -113,8 +180,18 @@ public class UserBuilders {
             return innerBuild();
         }
 
+        /**
+         * Inner build t.
+         *
+         * @return the t
+         */
         protected abstract T innerBuild();
 
+        /**
+         * Self s.
+         *
+         * @return the s
+         */
         S self() {
             return (S) this;
         }

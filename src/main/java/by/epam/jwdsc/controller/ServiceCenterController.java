@@ -21,6 +21,9 @@ import java.util.List;
 
 import static by.epam.jwdsc.controller.command.RequestParameter.COMMAND_PARAM;
 
+/**
+ * The type Service center controller.
+ */
 @WebServlet(name = "scServlet", urlPatterns = "/control")
 @MultipartConfig
 public class ServiceCenterController extends HttpServlet {

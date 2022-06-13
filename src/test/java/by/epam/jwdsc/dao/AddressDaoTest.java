@@ -10,12 +10,18 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
+/**
+ * The type Address dao test.
+ */
 public class AddressDaoTest {
 
     private AddressDao addressDao;
     private Address testAddress;
 
 
+    /**
+     * Sets up.
+     */
     @Before
     public void setUp() {
         addressDao = DaoProvider.getInstance().getAddressDao();
@@ -28,6 +34,11 @@ public class AddressDaoTest {
                 .build();
     }
 
+    /**
+     * Find by id positive result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findById_positiveResult() throws DaoException {
         Optional<Address> foundAddress = addressDao.findById(2);
@@ -37,12 +48,22 @@ public class AddressDaoTest {
                 .hasFieldOrPropertyWithValue("city", "Минск");
     }
 
+    /**
+     * Find by id negative result.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findById_negativeResult() throws DaoException {
         Optional<Address> foundAddress = addressDao.findById(-2);
         assertThat(foundAddress).isEmpty();
     }
 
+    /**
+     * Find all.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findAll() throws DaoException {
         List<Address> foundAddresses = addressDao.findAll();
@@ -52,6 +73,11 @@ public class AddressDaoTest {
                 .hasSizeGreaterThanOrEqualTo(19);
     }
 
+    /**
+     * Find by params.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void findByParams() throws DaoException {
         Address addressTemplate = new Address.Builder("Минск", "пр.Джержинского", 112)
@@ -68,6 +94,11 @@ public class AddressDaoTest {
                 .hasFieldOrPropertyWithValue("id", 2L);
     }
 
+    /**
+     * Create address.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void createAddress() throws DaoException {
         long createdAddressId = addressDao.createAddress(testAddress);
@@ -77,6 +108,11 @@ public class AddressDaoTest {
         addressDao.deleteById(createdAddressId);
     }
 
+    /**
+     * Create.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void create() throws DaoException {
         boolean isCreatedAddress = addressDao.create(testAddress);
@@ -86,6 +122,11 @@ public class AddressDaoTest {
         addressDao.deleteById(createdAddress.getId());
     }
 
+    /**
+     * Update.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void update() throws DaoException {
         long createdAddressId = addressDao.createAddress(testAddress);
@@ -104,6 +145,11 @@ public class AddressDaoTest {
         addressDao.deleteById(testAddress.getId());
     }
 
+    /**
+     * Delete.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void delete() throws DaoException {
         long createdAddressId = addressDao.createAddress(testAddress);
@@ -113,6 +159,11 @@ public class AddressDaoTest {
                 .isTrue();
     }
 
+    /**
+     * Delete by id.
+     *
+     * @throws DaoException the dao exception
+     */
     @Test
     public void deleteById() throws DaoException {
         long createdAddressId = addressDao.createAddress(testAddress);

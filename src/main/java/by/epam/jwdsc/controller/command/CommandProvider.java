@@ -13,6 +13,9 @@ import static by.epam.jwdsc.controller.command.CommandName.*;
 import static by.epam.jwdsc.controller.command.RequestParameter.COMMAND_PARAM;
 
 
+/**
+ * The type Command provider.
+ */
 public class CommandProvider {
 
     private static final Logger log = LogManager.getLogger();
@@ -62,6 +65,11 @@ public class CommandProvider {
         commands.put(SAVE_PRICES_BY_DEVICE, new SavePricesByDevice());
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static CommandProvider getInstance() {
         if (instance == null) {
             instance = new CommandProvider();
@@ -69,6 +77,12 @@ public class CommandProvider {
         return instance;
     }
 
+    /**
+     * Gets command.
+     *
+     * @param request the request
+     * @return the command
+     */
     public Command getCommand(HttpServletRequest request) {
         String name = request.getParameter(COMMAND_PARAM);
         Command command;
