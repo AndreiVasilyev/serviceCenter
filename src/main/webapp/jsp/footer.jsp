@@ -1,10 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="cpr" uri="/WEB-INF/tld/copyright.tld" %>
 
 <footer class="fixed-bottom">
     <div class="container-fluid bg-secondary text-light px-5">
         <div class="row">
             <div class="col-auto me-auto align-self-center">
-                <span class="">&#169; Copyright</span>
+                <cpr:copyrightTag/>
             </div>
             <div class="col-auto">
                 <nav class="navbar ">
